@@ -98,6 +98,8 @@ class AdaptiveModelRouterTests(unittest.TestCase):
         self.assertEqual(first.initial_model, "cheap-bad")
         self.assertEqual(first.selected_model, "expensive")
         self.assertTrue(first.fallback_used)
+        self.assertEqual(first.total_model_latency_ms, 15)
+        self.assertEqual(first.total_estimated_cost_dollars, 0.010001)
         self.assertIn("MODEL_POLICY_RUNTIME_FAILURE", memory.policy)
 
         second_runner = FakeRunner()

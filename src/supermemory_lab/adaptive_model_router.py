@@ -41,6 +41,7 @@ class ModelRun:
     completion_tokens: int
     total_tokens: int
     estimated_cost_dollars: float
+    finish_reason: str = ""
 
 
 @dataclass(frozen=True)
@@ -72,6 +73,22 @@ class ModelRoutingReport:
     fallback_used: bool
     initial_run: ModelRun
     run: ModelRun
+
+    @property
+    def total_model_latency_ms(self) -> float:
+        return round(
+            self.initial_run.latency_ms
+            + (self.run.latency_ms if self.fallback_used else 0.0),
+            1,
+        )
+
+    @property
+    def total_estimated_cost_dollars(self) -> float:
+        return round(
+            self.initial_run.estimated_cost_dollars
+            + (self.run.estimated_cost_dollars if self.fallback_used else 0.0),
+            9,
+        )
 
 
 class ModelRunner(Protocol):
@@ -134,6 +151,7 @@ class OpenRouterModelRunner:
             completion_tokens=completion_tokens,
             total_tokens=total_tokens,
             estimated_cost_dollars=round(cost, 9),
+            finish_reason=str(choices[0].get("finish_reason") or ""),
         )
 
 

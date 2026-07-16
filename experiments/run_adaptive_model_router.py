@@ -124,6 +124,7 @@ def main() -> None:
                         "promptTokens": run.prompt_tokens,
                         "completionTokens": run.completion_tokens,
                         "estimatedCostDollars": run.estimated_cost_dollars,
+                        "finishReason": run.finish_reason,
                     }
                     for run in value.attempts
                 ],
@@ -172,10 +173,14 @@ def main() -> None:
                 "selectionSource": value.selection_source,
                 "fallbackUsed": value.fallback_used,
                 "initialAnswer": value.initial_run.answer,
+                "initialLatencyMs": value.initial_run.latency_ms,
+                "initialFinishReason": value.initial_run.finish_reason,
                 "answer": value.run.answer,
                 "latencyMs": value.run.latency_ms,
+                "totalModelLatencyMs": value.total_model_latency_ms,
                 "totalTokens": value.run.total_tokens,
                 "estimatedCostDollars": value.run.estimated_cost_dollars,
+                "totalEstimatedCostDollars": value.total_estimated_cost_dollars,
             },
         )
         failure_memory = None
@@ -242,10 +247,14 @@ def main() -> None:
             "selectionSource": routed.selection_source,
             "fallbackUsed": routed.fallback_used,
             "initialRoutedAnswer": routed.initial_run.answer,
+            "initialRoutedLatencyMs": routed.initial_run.latency_ms,
+            "initialFinishReason": routed.initial_run.finish_reason,
             "routedCorrect": routed_correct,
             "routedLatencyMs": routed.run.latency_ms,
+            "routedTotalModelLatencyMs": routed.total_model_latency_ms,
             "routedTokens": routed.run.total_tokens,
             "routedEstimatedCostDollars": routed.run.estimated_cost_dollars,
+            "routedTotalEstimatedCostDollars": routed.total_estimated_cost_dollars,
             "defaultModel": default_model,
             "defaultCorrect": default_correct,
             "defaultLatencyMs": uninformed.latency_ms,
