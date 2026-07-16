@@ -16,6 +16,12 @@ class ProbeSafetyTests(unittest.TestCase):
         self.assertEqual(redacted["nested"]["apiKey"], "[REDACTED]")
         self.assertEqual(redacted["nested"]["safe"], "value")
 
+    def test_redacts_bare_key_field_from_scoped_key_response(self) -> None:
+        redacted = _redact({"id": "key_id", "key": "sm_scoped_secret"})
+
+        self.assertEqual(redacted["id"], "key_id")
+        self.assertEqual(redacted["key"], "[REDACTED]")
+
     def test_search_summary_preserves_result_kind_and_scores(self) -> None:
         summary = _summarize_search(
             {

@@ -224,6 +224,34 @@ class SupermemoryClient:
             "POST", "/v4/profile/buckets", {"containerTag": container_tag}
         )
 
+    def create_scoped_key(
+        self,
+        container_tag: str,
+        *,
+        name: Optional[str] = None,
+        expires_in_days: Optional[int] = None,
+        rate_limit_max: Optional[int] = None,
+        rate_limit_time_window: Optional[int] = None,
+    ) -> JsonObject:
+        return self._transport.request(
+            "POST",
+            "/v3/auth/scoped-key",
+            _without_none(
+                {
+                    "containerTag": container_tag,
+                    "name": name,
+                    "expiresInDays": expires_in_days,
+                    "rateLimitMax": rate_limit_max,
+                    "rateLimitTimeWindow": rate_limit_time_window,
+                }
+            ),
+        )
+
+    def revoke_scoped_key(self, key_id: str) -> JsonObject:
+        return self._transport.request(
+            "DELETE", f"/v3/auth/scoped-key/{quote(key_id, safe='')}"
+        )
+
     def create_connection(
         self,
         provider: str,

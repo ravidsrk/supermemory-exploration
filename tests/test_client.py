@@ -118,6 +118,28 @@ class SupermemoryClientTests(unittest.TestCase):
             },
         )
 
+    def test_scoped_key_lifecycle_uses_container_and_key_id(self) -> None:
+        transport = RecordingTransport()
+        client = SupermemoryClient(transport)
+
+        client.create_scoped_key(
+            "tenant_1",
+            name="sandbox",
+            expires_in_days=7,
+            rate_limit_max=50,
+        )
+        client.revoke_scoped_key("key/id")
+
+        create = transport.calls[0]
+        self.assertEqual(create[0:2], ("POST", "/v3/auth/scoped-key"))
+        self.assertEqual(create[2]["containerTag"], "tenant_1")
+        self.assertEqual(create[2]["expiresInDays"], 7)
+        self.assertNotIn("rateLimitTimeWindow", create[2])
+        self.assertEqual(
+            transport.calls[1][0:2],
+            ("DELETE", "/v3/auth/scoped-key/key%2Fid"),
+        )
+
     def test_structured_conversation_preserves_roles(self) -> None:
         transport = RecordingTransport()
         client = SupermemoryClient(transport)

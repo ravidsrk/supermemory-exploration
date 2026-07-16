@@ -23,7 +23,10 @@ def _utc_now() -> str:
 
 def _redact(value: Any, key: str = "") -> Any:
     lowered = key.lower()
-    if any(secret_key in lowered for secret_key in ("authorization", "api_key", "apikey", "token")):
+    if lowered in {"key", "secret", "password"} or any(
+        secret_key in lowered
+        for secret_key in ("authorization", "api_key", "apikey", "token")
+    ):
         return "[REDACTED]"
     if isinstance(value, Mapping):
         return {str(k): _redact(v, str(k)) for k, v in value.items()}
@@ -661,6 +664,157 @@ def run_memory_router(config: LabConfig) -> Path:
     return path
 
 
+def run_scoped_key(config: LabConfig) -> Path:
+    suffix = secrets.token_hex(3)
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
+    run_id = f"scoped-key-{stamp}-{suffix}"
+    allowed = f"lab:scoped:allowed:{stamp}:{suffix}"
+    denied = f"lab:scoped:denied:{stamp}:{suffix}"
+    _, admin = _build_clients(config)
+    recorder = ProbeRecorder(run_id)
+    recorder.report["containers"] = [allowed, denied]
+
+    seed_allowed = recorder.capture(
+        "admin_seed_allowed_container",
+        lambda: admin.create_memories(
+            allowed,
+            [
+                {
+                    "content": "The scoped-key canary color is ultraviolet.",
+                    "isStatic": True,
+                    "metadata": {"probe": run_id},
+                }
+            ],
+        ),
+    )
+    seed_denied = recorder.capture(
+        "admin_seed_denied_container",
+        lambda: admin.create_memories(
+            denied,
+            [
+                {
+                    "content": "The denied-container canary color is infrared.",
+                    "isStatic": True,
+                    "metadata": {"probe": run_id},
+                }
+            ],
+        ),
+    )
+    scoped = recorder.capture(
+        "create_container_scoped_key",
+        lambda: admin.create_scoped_key(
+            allowed,
+            name=f"field-lab-{suffix}",
+            expires_in_days=1,
+            rate_limit_max=100,
+            rate_limit_time_window=60_000,
+        ),
+    )
+    scoped_key = scoped.get("key") if isinstance(scoped, Mapping) else None
+    scoped_key_id = scoped.get("id") if isinstance(scoped, Mapping) else None
+    scoped_client: Optional[SupermemoryClient] = None
+    scoped_write: Optional[Any] = None
+
+    if isinstance(scoped_key, str):
+        scoped_client = SupermemoryClient(
+            UrlLibTransport(
+                config.supermemory_base_url,
+                scoped_key,
+                timeout_seconds=60,
+            )
+        )
+        recorder.capture(
+            "scoped_read_allowed_container",
+            lambda: scoped_client.search_memories(
+                "scoped-key canary color",
+                container_tag=allowed,
+                search_mode="memories",
+                threshold=0.0,
+            ),
+            _summarize_search,
+        )
+        recorder.capture(
+            "scoped_read_denied_container",
+            lambda: scoped_client.search_memories(
+                "denied-container canary color",
+                container_tag=denied,
+                search_mode="memories",
+                threshold=0.0,
+            ),
+            _summarize_search,
+        )
+        scoped_write = recorder.capture(
+            "scoped_write_allowed_container",
+            lambda: scoped_client.create_memories(
+                allowed,
+                [
+                    {
+                        "content": "Scoped writes are allowed in the bound container.",
+                        "isStatic": True,
+                        "metadata": {"probe": run_id},
+                    }
+                ],
+            ),
+        )
+        recorder.capture(
+            "scoped_write_denied_container",
+            lambda: scoped_client.create_memories(
+                denied,
+                [
+                    {
+                        "content": "This cross-container write must be rejected.",
+                        "isStatic": True,
+                        "metadata": {"probe": run_id},
+                    }
+                ],
+            ),
+        )
+
+    if isinstance(scoped_key_id, str):
+        recorder.capture(
+            "revoke_container_scoped_key",
+            lambda: admin.revoke_scoped_key(scoped_key_id),
+        )
+    if scoped_client is not None:
+        recorder.capture(
+            "revoked_key_negative_control",
+            lambda: scoped_client.search_memories(
+                "scoped-key canary color",
+                container_tag=allowed,
+                search_mode="memories",
+                threshold=0.0,
+            ),
+            _summarize_search,
+        )
+
+    seen_ids = set()
+    for container_tag, response in (
+        (allowed, seed_allowed),
+        (denied, seed_denied),
+        (allowed, scoped_write),
+    ):
+        memories = response.get("memories") if isinstance(response, Mapping) else None
+        if not isinstance(memories, list):
+            continue
+        for item in memories:
+            memory_id = item.get("id") if isinstance(item, Mapping) else None
+            if not isinstance(memory_id, str) or memory_id in seen_ids:
+                continue
+            seen_ids.add(memory_id)
+            recorder.capture(
+                f"cleanup_memory_{len(seen_ids)}",
+                lambda memory_id=memory_id, container_tag=container_tag: admin.forget_memory(
+                    container_tag=container_tag,
+                    memory_id=memory_id,
+                    reason="field-lab scoped-key cleanup",
+                ),
+            )
+
+    path = recorder.write()
+    print(f"Raw secret-free run written to {path}", flush=True)
+    return path
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -686,15 +840,27 @@ def main() -> None:
         action="store_true",
         help="run only the OpenRouter-backed Memory Router probe",
     )
+    parser.add_argument(
+        "--with-scoped-key",
+        action="store_true",
+        help="exercise container-scoped key enforcement and revocation",
+    )
+    parser.add_argument(
+        "--scoped-key-only",
+        action="store_true",
+        help="run only the container-scoped key security probe",
+    )
     parser.add_argument("--env-file", default=".env.local")
     args = parser.parse_args()
     config = load_config(args.env_file)
-    if not args.connector_only and not args.router_only:
+    if not args.connector_only and not args.router_only and not args.scoped_key_only:
         run_core(config, with_llm=args.with_llm)
     if args.with_connector or args.connector_only:
         run_web_crawler(config)
     if args.with_router or args.router_only:
         run_memory_router(config)
+    if args.with_scoped_key or args.scoped_key_only:
+        run_scoped_key(config)
 
 
 if __name__ == "__main__":
