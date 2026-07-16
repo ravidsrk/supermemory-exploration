@@ -9,6 +9,7 @@ PYTHONPATH=src python3 -m supermemory_lab.probes --connector-only
 PYTHONPATH=src python3 -m supermemory_lab.probes --router-only
 PYTHONPATH=src python3 -m supermemory_lab.probes --scoped-key-only
 PYTHONPATH=src python3 experiments/run_safe_tool_execution.py
+PYTHONPATH=src python3 experiments/run_governance_scorecard.py
 ```
 
 The core probe exercises:
@@ -29,3 +30,9 @@ the Monid tool must be explicitly allowlisted, inspect as `GET`, and cost no mor
 the configured cap; the Composio tool must be explicitly allowlisted, report `no_auth`,
 and contain no mutation verb token. Public results are stored as untrusted SuperRAG
 documents, while the verified execution policy is stored as a direct dynamic memory.
+
+`run_governance_scorecard.py` runs 15 synthetic cases: three versioned corrections,
+three precise-forget cases with retained controls, four tenant-isolation pairs, and five
+attacker-controlled document payloads. It checks profile, memories, and hybrid reads. The
+injection agent can answer from retrieved facts, but authorization is always decided by
+trusted application code and remains false regardless of model output.
