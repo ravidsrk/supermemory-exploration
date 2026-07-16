@@ -12,6 +12,7 @@ dependencies = []
 
 [project.scripts]
 supermemory-probe = "supermemory_lab.probes:main"
+supermemory-advanced = "experiments.run_advanced_agents:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

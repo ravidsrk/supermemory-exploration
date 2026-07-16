@@ -21,16 +21,20 @@ class SuperServeClient:
         template: str = "superserve/base",
         timeout_seconds: int = 900,
         metadata: Optional[Mapping[str, str]] = None,
+        network: Optional[Mapping[str, Any]] = None,
     ) -> JsonObject:
+        body: JsonObject = {
+            "name": name,
+            "from_template": template,
+            "timeout_seconds": timeout_seconds,
+            "metadata": dict(metadata or {}),
+        }
+        if network is not None:
+            body["network"] = dict(network)
         return self._transport.request(
             "POST",
             "/sandboxes",
-            {
-                "name": name,
-                "from_template": template,
-                "timeout_seconds": timeout_seconds,
-                "metadata": dict(metadata or {}),
-            },
+            body,
         )
 
     def delete_sandbox(self, sandbox_id: str) -> JsonObject:

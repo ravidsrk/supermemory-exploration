@@ -48,6 +48,39 @@ class SupermemoryClientTests(unittest.TestCase):
         self.assertEqual(body["threshold"], 0.63)
         self.assertTrue(body["rerank"])
 
+    def test_wait_for_memory_polls_until_result_is_searchable(self) -> None:
+        transport = RecordingTransport(
+            responses=[{"results": []}, {"results": [{"id": "mem_1"}]}]
+        )
+        client = SupermemoryClient(transport)
+
+        response = client.wait_for_memory(
+            "GitHub tool",
+            container_tag="tools:one",
+            poll_seconds=0.001,
+            timeout_seconds=1,
+        )
+
+        self.assertEqual(len(transport.calls), 2)
+        self.assertEqual(response["_pollAttempts"], 2)
+        self.assertEqual(transport.calls[0][2]["searchMode"], "hybrid")
+
+    def test_wait_for_profile_polls_until_dynamic_memory_is_visible(self) -> None:
+        transport = RecordingTransport(
+            responses=[
+                {"profile": {"static": [], "dynamic": []}},
+                {"profile": {"static": [], "dynamic": ["Use GitHub search"]}},
+            ]
+        )
+        client = SupermemoryClient(transport)
+
+        response = client.wait_for_profile(
+            "tools:one", poll_seconds=0.001, timeout_seconds=1
+        )
+
+        self.assertEqual(response["_pollAttempts"], 2)
+        self.assertEqual(len(transport.calls), 2)
+
     def test_profile_can_request_only_selected_buckets(self) -> None:
         transport = RecordingTransport()
         client = SupermemoryClient(transport)

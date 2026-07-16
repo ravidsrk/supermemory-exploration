@@ -194,6 +194,45 @@ class SupermemoryClient:
             ),
         )
 
+    def wait_for_memory(
+        self,
+        query: str,
+        *,
+        container_tag: str,
+        search_mode: str = "hybrid",
+        timeout_seconds: float = 60.0,
+        poll_seconds: float = 2.0,
+        limit: int = 10,
+        threshold: float = 0.0,
+    ) -> JsonObject:
+        """Poll until a newly written memory becomes searchable.
+
+        Hosted writes can be accepted before their memory representation is visible to
+        every search mode. Callers that need read-after-write semantics should use this
+        explicit barrier instead of sleeping for an assumed indexing duration.
+        """
+
+        deadline = time.monotonic() + timeout_seconds
+        attempts = 0
+        last: JsonObject = {}
+        while time.monotonic() < deadline:
+            attempts += 1
+            last = self.search_memories(
+                query,
+                container_tag=container_tag,
+                search_mode=search_mode,
+                limit=limit,
+                threshold=threshold,
+            )
+            results = last.get("results")
+            if isinstance(results, list) and results:
+                last["_pollAttempts"] = attempts
+                return last
+            time.sleep(poll_seconds)
+        raise TimeoutError(
+            f"memory did not become searchable in {container_tag}; attempts={attempts}"
+        )
+
     def profile(
         self,
         container_tag: str,
@@ -222,6 +261,46 @@ class SupermemoryClient:
     def list_profile_buckets(self, container_tag: str) -> JsonObject:
         return self._transport.request(
             "POST", "/v4/profile/buckets", {"containerTag": container_tag}
+        )
+
+    def wait_for_profile(
+        self,
+        container_tag: str,
+        *,
+        query: Optional[str] = None,
+        timeout_seconds: float = 30.0,
+        poll_seconds: float = 2.0,
+    ) -> JsonObject:
+        """Poll until a profile exposes at least one static, dynamic, or bucket item."""
+
+        deadline = time.monotonic() + timeout_seconds
+        attempts = 0
+        while time.monotonic() < deadline:
+            attempts += 1
+            response = self.profile(
+                container_tag,
+                query=query,
+                threshold=0.0,
+                include=["static", "dynamic", "buckets"],
+            )
+            profile = response.get("profile")
+            profile = profile if isinstance(profile, Mapping) else {}
+            has_values = any(
+                isinstance(profile.get(name), list) and bool(profile.get(name))
+                for name in ("static", "dynamic")
+            )
+            buckets = profile.get("buckets")
+            if isinstance(buckets, Mapping):
+                has_values = has_values or any(
+                    isinstance(value, list) and bool(value)
+                    for value in buckets.values()
+                )
+            if has_values:
+                response["_pollAttempts"] = attempts
+                return response
+            time.sleep(poll_seconds)
+        raise TimeoutError(
+            f"profile did not become visible in {container_tag}; attempts={attempts}"
         )
 
     def create_scoped_key(
