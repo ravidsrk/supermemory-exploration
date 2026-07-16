@@ -46,12 +46,22 @@ class MemoryRouterClient:
         self,
         *,
         user_id: str,
-        conversation_id: str,
+        conversation_id: Optional[str],
         messages: Sequence[Mapping[str, str]],
         max_tokens: int = 200,
     ) -> JsonObject:
         provider_url = f"{self._provider_base_url}/chat/completions"
         router_url = f"https://api.supermemory.ai/v3/{provider_url}"
+        headers = {
+            "Accept": "application/json",
+            "Authorization": f"Bearer {self._provider_api_key}",
+            "Content-Type": "application/json",
+            "User-Agent": "supermemory-field-lab/0.1",
+            "x-supermemory-api-key": self._supermemory_api_key,
+            "x-sm-user-id": user_id,
+        }
+        if conversation_id is not None:
+            headers["x-sm-conversation-id"] = conversation_id
         request = Request(
             router_url,
             data=json.dumps(
@@ -62,15 +72,7 @@ class MemoryRouterClient:
                     "messages": [dict(message) for message in messages],
                 }
             ).encode("utf-8"),
-            headers={
-                "Accept": "application/json",
-                "Authorization": f"Bearer {self._provider_api_key}",
-                "Content-Type": "application/json",
-                "User-Agent": "supermemory-field-lab/0.1",
-                "x-supermemory-api-key": self._supermemory_api_key,
-                "x-sm-user-id": user_id,
-                "x-sm-conversation-id": conversation_id,
-            },
+            headers=headers,
             method="POST",
         )
 
@@ -102,7 +104,18 @@ class MemoryRouterClient:
                 "response was not valid JSON",
             ) from None
         text = _assistant_text(payload)
-        return {"text": text, "diagnostics": diagnostics}
+        usage = payload.get("usage") if isinstance(payload, Mapping) else None
+        model = payload.get("model") if isinstance(payload, Mapping) else None
+        choices = payload.get("choices") if isinstance(payload, Mapping) else None
+        first = choices[0] if isinstance(choices, list) and choices else None
+        finish_reason = first.get("finish_reason") if isinstance(first, Mapping) else None
+        return {
+            "text": text,
+            "diagnostics": diagnostics,
+            "usage": dict(usage) if isinstance(usage, Mapping) else None,
+            "model": model if isinstance(model, str) else None,
+            "finishReason": finish_reason if isinstance(finish_reason, str) else None,
+        }
 
 
 def _assistant_text(payload: Any) -> str:

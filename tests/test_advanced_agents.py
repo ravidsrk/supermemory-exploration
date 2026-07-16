@@ -187,6 +187,12 @@ class AdvancedAgentTests(unittest.TestCase):
         cleaned = redact({"api_token": "anything", "text": f"leak {secret}"})
         self.assertEqual(cleaned["api_token"], "[REDACTED]")
         self.assertNotIn(secret, cleaned["text"])
+        token_counts = redact(
+            {"promptTokens": 120, "completion_tokens": 8, "accessToken": "secret"}
+        )
+        self.assertEqual(token_counts["promptTokens"], 120)
+        self.assertEqual(token_counts["completion_tokens"], 8)
+        self.assertEqual(token_counts["accessToken"], "[REDACTED]")
 
         with tempfile.TemporaryDirectory() as directory:
             trace = RunTrace("test-run", experiment="unit")

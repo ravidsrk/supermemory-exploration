@@ -10,6 +10,12 @@ from typing import Any, Callable, Dict, Iterator, List, Mapping, Optional
 
 
 _SECRET_KEY_PARTS = ("authorization", "api_key", "apikey", "password", "secret", "token")
+_SAFE_TOKEN_COUNT_KEYS = {
+    "prompttokens",
+    "completiontokens",
+    "totaltokens",
+    "tokensprocessed",
+}
 _SECRET_VALUE = re.compile(
     r"(?:sk-or-v1|sm|ss_live|monid_live|ctxt_secret|vcp|ak)_[A-Za-z0-9_-]{8,}"
 )
@@ -21,7 +27,13 @@ def utc_now() -> str:
 
 def redact(value: Any, key: str = "") -> Any:
     lowered = key.lower()
-    if lowered == "key" or any(part in lowered for part in _SECRET_KEY_PARTS):
+    normalized = re.sub(r"[^a-z]", "", lowered)
+    safe_token_count = normalized in _SAFE_TOKEN_COUNT_KEYS and isinstance(
+        value, (int, float)
+    )
+    if not safe_token_count and (
+        lowered == "key" or any(part in lowered for part in _SECRET_KEY_PARTS)
+    ):
         return "[REDACTED]"
     if isinstance(value, Mapping):
         return {str(k): redact(v, str(k)) for k, v in value.items()}

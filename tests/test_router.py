@@ -25,7 +25,16 @@ class FakeResponse:
 
     def read(self) -> bytes:
         return json.dumps(
-            {"choices": [{"message": {"content": "Remembered answer"}}]}
+            {
+                "model": "test/model",
+                "usage": {"prompt_tokens": 12, "completion_tokens": 3},
+                "choices": [
+                    {
+                        "message": {"content": "Remembered answer"},
+                        "finish_reason": "stop",
+                    }
+                ],
+            }
         ).encode("utf-8")
 
 
@@ -61,6 +70,32 @@ class MemoryRouterTests(unittest.TestCase):
         self.assertEqual(request.get_header("X-sm-user-id"), "user_1")
         self.assertEqual(result["text"], "Remembered answer")
         self.assertEqual(result["diagnostics"]["x-supermemory-chunks-retrieved"], "2")
+        self.assertEqual(result["usage"]["prompt_tokens"], 12)
+        self.assertEqual(result["model"], "test/model")
+        self.assertEqual(result["finishReason"], "stop")
+
+    def test_conversation_header_can_be_omitted_for_user_pool_lookup(self) -> None:
+        captured = {}
+
+        def opener(request, timeout):
+            captured["request"] = request
+            return FakeResponse()
+
+        client = MemoryRouterClient(
+            supermemory_api_key="sm_test",
+            provider_api_key="or_test",
+            provider_base_url="https://openrouter.ai/api/v1",
+            model="test/model",
+            opener=opener,
+        )
+
+        client.complete(
+            user_id="user_1",
+            conversation_id=None,
+            messages=[{"role": "user", "content": "What do you remember?"}],
+        )
+
+        self.assertIsNone(captured["request"].get_header("X-sm-conversation-id"))
 
 
 if __name__ == "__main__":
