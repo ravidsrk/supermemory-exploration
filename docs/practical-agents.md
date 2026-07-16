@@ -6,8 +6,9 @@ This chapter is the executable part of the wiki. The foundational implementation
 [multi-provider](../evidence/2026-07-16-multi-provider-agents.md),
 [second-pass](../evidence/2026-07-16-second-pass-agents.md), and
 [lifecycle/Router/domain](../evidence/2026-07-16-third-pass-lifecycle-and-benchmark.md)
-evidence notes. Newer agents are split into focused modules so their safety boundary can be
-tested independently.
+evidence notes. The latest five systems are in the
+[fourth-pass evidence](../evidence/2026-07-16-fourth-pass-agent-systems.md). Newer agents are
+split into focused modules so their safety boundary can be tested independently.
 
 ## Run them
 
@@ -32,6 +33,11 @@ python experiments/run_filter_erasure_agent.py
 python experiments/run_lifecycle_agents.py
 python experiments/run_router_continuity_matrix.py
 python experiments/run_domain_memory_benchmark.py
+python experiments/run_enterprise_context_agent.py
+python experiments/run_corroborated_research_swarm.py
+python experiments/run_adaptive_model_router.py
+python experiments/run_temporal_agenda_agent.py
+python experiments/run_dependency_risk_guardian.py
 ```
 
 Raw traces go to ignored `.runs/` files. They contain bounded experiment details but should
@@ -334,6 +340,77 @@ conversation ID. A Router-generated session token was not recalled in a new conv
 while another user remained isolated. Keep Router prototype-only until its generated-memory,
 outage, latency, and token controls pass for the pinned workload.
 
+## 16. Hierarchical enterprise-context agent
+
+Providers: Supermemory + OpenRouter.
+
+This agent reads organization policy, project state, and user preference through a single
+multi-container scoped key, but preserves a deterministic precedence lattice. Organization
+policy controls project state, which controls presentation preference; none of the retrieved
+text can authorize a deployment. A no-memory baseline makes missing context visible.
+
+The live run read all three allowed scopes, denied another tenant with `403`, denied the
+revoked key with `401`, and refused a Friday deployment even though the user memory asked it
+to ignore organization rules. The scoped-key response included all requested tags. Use this
+for enterprise copilots, portfolio assistants, support escalation, and agents that combine
+shared policy with project and personal context.
+
+## 17. Corroboration-gated research swarm
+
+Providers: Context.dev + Exa + ScrapeCreators + Supermemory + OpenRouter.
+
+Fresh source payloads are written as SuperRAG evidence. Trusted code promotes a compact claim
+only when at least two acquisition providers support it, one supporting observation is
+official, and no fresh observation contradicts it. Prior memory is orientation, never a vote.
+
+The live run retrieved a seeded prompt-injection memory yet omitted its requested token,
+promoted the fresh four-channel claim, and made the conclusion searchable. With all fresh
+providers disabled it emitted an explicit memory-only banner and refused promotion. Track the
+upstream publisher as well as the acquisition provider: four APIs can still repeat one source.
+
+## 18. Self-repairing adaptive model router
+
+Providers: OpenRouter + Supermemory.
+
+The router calibrates candidate models on exact-output tasks, persists the quality/cost/latency
+policy, retrieves it in a new process, checks the runtime output contract, and writes failures
+back as route outcomes. Runtime failure triggers a bounded fallback; later processes avoid the
+failed route for that task family.
+
+The live calibration chose Gemini Flash Lite after a 3/3 result and lowest cost among the
+perfect candidates. It then failed a related `PRIME=97` output contract, so GPT-4.1 Mini took
+over. A new process remembered the failure and selected the fallback directly. The lesson is
+not “memory picks the best model”; it is that persistent policies need holdouts, expiration,
+exploration, contract checks, and total-route cost accounting.
+
+## 19. Natural-language temporal agenda agent
+
+Providers: Supermemory + OpenRouter.
+
+The agent searches dated facts using a trusted current date and explicit timezone, then asks
+the model to answer only inside a bounded window. Exact ranges, `last week`, exact today,
+`in August 2026`, and an unrelated negative all passed with query rewriting both off and on.
+The final answer included past/today and excluded the future event.
+
+Use this for relationship timelines, incident histories, meeting preparation, and project
+agendas. Keep canonical timestamps and recurrence in the application; memory supplies semantic
+event discovery, not calendaring authority.
+
+## 20. Dependency-risk guardian
+
+Providers: Monid + Exa + Composio + SuperServe + Supermemory + OpenRouter.
+
+This agent reads the dependency version installed in a fresh sandbox, inspects a price-capped
+exact-version CVE tool, searches official evidence, reads public discussion, and runs an
+egress-blocked compatibility smoke test. Raw evidence remains SuperRAG; only the verified
+lesson is promoted. Human change authorization stays false in code.
+
+The live run tested `urllib3==2.7.0`, received zero point-in-time CVE records, six official web
+results, six Hacker News hits, and a passing sandbox check. It did not authorize an upgrade.
+Use it for dependency baselines and upgrade proposals, never as an autonomous patch-and-deploy
+loop; vulnerability feeds can be incomplete and compatibility smoke tests are necessarily
+bounded.
+
 ## Other high-value builds
 
 | Agent | Providers | Memory design |
@@ -354,6 +431,11 @@ outage, latency, and token controls pass for the pinned workload.
 | Incident memory lease | Supermemory | Direct dynamic fact with server expiry and cancellation. |
 | Workspace consolidation | Supermemory | Queued merge state machine plus deterministic source/target policy. |
 | Domain release gate | Supermemory + OpenRouter | Matched memory/no-memory QA with isolation and injection controls. |
+| Enterprise context composer | Supermemory + OpenRouter | Org/project/user scopes with deterministic precedence and multi-scope key. |
+| Corroboration council | Context.dev + Exa + public social + OpenRouter + Supermemory | Fresh sources, conflict gate, stale fallback, promoted claim. |
+| Adaptive model router | OpenRouter + Supermemory | Calibrated route policy, runtime contracts, failure memory, bounded fallback. |
+| Temporal agenda | Supermemory + OpenRouter | Dated direct memories, natural-time retrieval, bounded answer window. |
+| Dependency-risk guardian | Monid + Exa + Composio + SuperServe + OpenRouter + Supermemory | Exact risk, official evidence, public signals, isolated compatibility, human gate. |
 
 ## What not to build
 
@@ -365,3 +447,6 @@ outage, latency, and token controls pass for the pinned workload.
 - A tool agent that treats catalog ranking as a safety or quality score.
 - A social agent that promotes a single post into a durable fact.
 - A production debugger that runs generated code on the host or with unrestricted egress.
+- A routing loop that trusts calibration memory without validating the current output.
+- A research swarm that counts provider APIs without tracking the original publisher.
+- An enterprise agent that lets the model decide scope precedence or action authority.

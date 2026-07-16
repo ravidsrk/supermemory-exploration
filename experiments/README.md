@@ -18,6 +18,11 @@ PYTHONPATH=src python3 experiments/run_filter_erasure_agent.py
 PYTHONPATH=src python3 experiments/run_lifecycle_agents.py
 PYTHONPATH=src python3 experiments/run_router_continuity_matrix.py
 PYTHONPATH=src python3 experiments/run_domain_memory_benchmark.py
+PYTHONPATH=src python3 experiments/run_enterprise_context_agent.py
+PYTHONPATH=src python3 experiments/run_corroborated_research_swarm.py
+PYTHONPATH=src python3 experiments/run_adaptive_model_router.py
+PYTHONPATH=src python3 experiments/run_temporal_agenda_agent.py
+PYTHONPATH=src python3 experiments/run_dependency_risk_guardian.py
 ```
 
 The core probe exercises:
@@ -83,3 +88,22 @@ recall, response diagnostics, token counts, API visibility, and cleanup.
 update, temporal, multi-hop, isolation, and prompt-injection categories. It separately scores
 retrieval canaries and answer semantics, reports p50/p95 search latency and bounded context,
 and requires zero leaks/bypasses before passing.
+
+`run_enterprise_context_agent.py` creates organization, project, user, and other-tenant scopes,
+uses one multi-container key for the allowed hierarchy, verifies denial/revocation, and keeps
+action permission in trusted code.
+
+`run_corroborated_research_swarm.py` acquires a current official page, web and public-social
+signals, writes source evidence, resists seeded memory injection, promotes only through a
+deterministic fresh-source gate, and exercises a memory-only degraded cycle.
+
+`run_adaptive_model_router.py` calibrates live OpenRouter models, persists the route policy,
+injects a related-task contract failure, falls back, writes the outcome, and verifies that a
+new process repairs its route.
+
+`run_temporal_agenda_agent.py` tests exact and natural-language date windows with query rewriting
+off/on, an unrelated negative, a bounded answer window, and complete cleanup.
+
+`run_dependency_risk_guardian.py` discovers a price-capped exact-version CVE tool, reads official
+and public evidence, tests the actual installed package in an egress-blocked sandbox, and writes
+a verified lesson without authorizing production change.

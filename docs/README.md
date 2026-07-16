@@ -46,6 +46,11 @@ shapes, expiry/cancellation, workspace merge, a Router continuity matrix, and a 
 matched memory/no-memory benchmark. See the
 [lifecycle and benchmark evidence](../evidence/2026-07-16-third-pass-lifecycle-and-benchmark.md).
 
+The fourth pass adds hierarchical organization/project/user context, a fresh-evidence
+promotion council, a self-repairing model router, natural-language temporal recall, and an
+exact-version dependency guardian. See the
+[memory-native agent-systems evidence](../evidence/2026-07-16-fourth-pass-agent-systems.md).
+
 ## Update discipline
 
 - Retest the core probe monthly and before a production launch.

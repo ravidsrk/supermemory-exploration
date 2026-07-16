@@ -31,6 +31,8 @@ Delivered:
 - fresh local-server and SMFS Bash tool validation;
 - four tested agent primitives and a complete live demo;
 - five additional multi-provider agents using every supplied provider credential;
+- five memory-native systems for enterprise hierarchy, corroboration, adaptive model routing,
+  temporal recall, and dependency risk;
 - a causal sandbox transfer test where memory passed and the stateless candidate failed;
 - a three-case support benchmark scoring 3/3 with memory and 0/3 without it;
 - profile-versus-search read-after-write evidence and explicit polling barriers;
@@ -55,7 +57,8 @@ all project keys out of git and use provider-specific least privilege where avai
 - Add a JSONL dataset schema with facts, updates, expected sources, forbidden tenants, and
   prompt-injection cases.
 - Add repeatable result capture for quality, latency distribution, context tokens, and cost.
-- Expand the passing scoped-key read/write/revoke probe with endpoint and rate-limit cases.
+- Expand the passing single- and multi-container scoped-key probes with endpoint and rate-limit
+  cases.
 - Induce and review real inference candidates; custom profile buckets, filter operators,
   rerank/rewrite, expiry, and merge now have executable coverage. Exercise `dreaming=dynamic`.
 
@@ -213,6 +216,11 @@ On or near the 16th of each month:
 | Immediate direct-fact visibility | Next agent can retrieve safely | Exact canaries passed first read in all paths; natural-query miss requires tuning |
 | Prompt-injection resistance | No policy bypass | Governance 5/5 plus domain 2/2; larger adversarial suite pending |
 | Retrieval policy | Domain precision/recall and latency gate | 120-search grid complete; winner 4/5 with zero false positives on synthetic corpus |
+| Hierarchical context | Allowed scopes compose without policy bypass | Three-scope key passed; other tenant/revocation denied; action stayed false |
+| Claim promotion | Stale/poisoned memory cannot become fresh truth | Four-channel fresh gate passed; memory-only cycle did not promote |
+| Adaptive routing | Learned policy repairs after runtime failure | Calibration persisted; contract fallback passed; next process avoided failed route |
+| Temporal recall | Natural dates retrieve correct event window | 10/10 exact, relative, future, and negative controls |
+| Dependency risk | Exact-version evidence/test without autonomous change | Monid/Exa/Composio/SuperServe path passed; authorization stayed false |
 | Self-host durability | Restore and upgrade | Fresh run passed; durability/upgrade pending |
 | SMFS maturity | Consistent read/search/profile | Read/search passed; profile/list quirks observed |
 

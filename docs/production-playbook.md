@@ -72,6 +72,20 @@ Render selected context with:
 - current-state precedence rules;
 - no raw HTML or tool-call syntax if it is not required.
 
+For multi-scope enterprise reads, retrieve each allowed container separately or through a
+multi-container scoped key, preserve the source scope in the rendered context, and apply a
+trusted precedence table. Organization/project/user retrieval composition is not permission
+composition.
+
+For fresh research, distinguish three states: raw source evidence, a model synthesis, and a
+policy-approved durable claim. Require publisher-aware corroboration and let any unresolved
+fresh contradiction veto promotion. A memory-only fallback must be labeled stale.
+
+For learned control policies such as model routes, persist the task family, benchmark set,
+catalog/version, cost, latency, expiry, and invalidation condition. Validate the current output
+contract, use a bounded fallback, and record failed outcomes so the next process can repair the
+route.
+
 ## Consistency and latency
 
 Classify operations by whether they belong in the synchronous request path.
@@ -125,6 +139,13 @@ If the current fact is known, use versioned update. If two sources genuinely dis
 both as source-backed claims with dates and ask the answer layer to state the conflict. Do not
 force a generated merge into canonical truth.
 
+### Stale learned policy
+
+Calibration, tool choice, and retrieval settings drift. Before applying a remembered policy,
+check its scope, age, model/tool version, and task family. Runtime validation owns the decision;
+the policy only proposes a default. Record total latency and cost including search, failed
+attempts, fallbacks, and outcome writes.
+
 ### Wrapper failure
 
 Framework middleware often chooses recall timing, add timing, default mode, dedup logic, and
@@ -167,6 +188,8 @@ documents, GitHub files, old conversations, and other agents can contain instruc
 - Require confirmation or policy checks for external writes.
 - Allow-list tools and arguments; do not execute retrieved commands verbatim.
 - Store tool results as evidence only after validating success.
+- Never count acquisition providers as independent corroboration without tracking the upstream
+  publisher and claim each one supports.
 
 Coding-agent memories are especially hazardous because a remembered command looks executable.
 Preserve it as a quoted prior attempt and re-derive the action from current repo state.
@@ -254,4 +277,6 @@ Measure, because current pricing and provider behavior can change.
 - [ ] Wrapper/SDK version pinned with contract tests.
 - [ ] Quality/latency/context-token baseline recorded.
 - [ ] Changelog and current open issues reviewed.
+- [ ] Learned routes/tools carry expiry, runtime contract, and bounded fallback.
+- [ ] Multi-scope precedence and fresh-claim promotion are deterministic and tested.
 - [ ] Self-hosted backup/restore and version-upgrade drill passes, if applicable.

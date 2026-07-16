@@ -68,13 +68,26 @@ current facts. Server expiry hid a temporary fact, cancellation preserved anothe
 ### 4. Isolation is simple and testable
 
 Container tags create deterministic namespaces. A negative-control search against a
-different tag returned zero results. Container-scoped API keys can additionally enforce a
-single tag at the credential layer. See the official
+different tag returned zero results. Container-scoped API keys can additionally enforce one
+or several allowed tags at the credential layer. See the official
 [container model](https://supermemory.ai/docs/concepts/container-tags) and
 [scoped-key documentation](https://supermemory.ai/docs/authentication).
 
 **Observed:** a scoped key could read and write its bound container, received `403` for both
-operations against another container, and received `401` immediately after revocation.
+operations against another container, and received `401` immediately after revocation. A
+later three-scope key read organization, project, and user context, denied another tenant,
+and preserved deterministic organization-over-user policy precedence.
+
+### 5. It supports durable agent policies, if outcomes can correct them
+
+The adaptive router persisted a model calibration winner across processes, then discovered
+that the winner failed a related exact-output task. A runtime contract triggered a fallback,
+wrote the failure outcome, and caused a new process to avoid the failed route. The
+corroboration council similarly persisted only claims that passed a fresh-source gate.
+
+This is a strong general pattern for model routes, retrieval settings, tool choices, and
+workflow recipes: memory can carry a learned policy forward, while deterministic checks and
+new outcomes revise it. Never interpret durable policy memory as permanent correctness.
 
 ## Where caution is required
 
@@ -115,7 +128,7 @@ self-hosting production. See [Ecosystem](ecosystem.md#current-risk-signals).
 
 ### Defaults and docs can drift
 
-Two examples found in this pass:
+Examples found across the passes:
 
 - omitting v4 `searchMode` behaved as `memories`, not hybrid; the generated SDK says
   `memories`, while some overview language implies hybrid;
@@ -123,6 +136,11 @@ Two examples found in this pass:
   the request without it and the generated SDK includes it.
 - the inspected SuperServe OpenAPI described Python 3.12 in `superserve/base`, while live
   `python3` execution returned command-not-found; the explicit Python 3.11 template worked.
+- the Supermemory API changelog documents multi-container scoped keys, while the current
+  authentication page still describes a singular `containerTag`; the hosted multi-tag key
+  worked and also returned a legacy singular field;
+- the Context.dev Markdown endpoint currently requires a GET query, while the lab's older POST
+  adapter returned `403`; the corrected contract passed live.
 
 Use explicit parameters even when defaults look convenient. Treat generated SDK types plus
 a contract test as the effective API contract.
@@ -154,6 +172,11 @@ the next gate remains the blinded 100-case suite at realistic corpus volume.
 | Decision journal | **Adopt** | Exact writes and version history match the domain. |
 | Customer-support copilot | **Pilot** | Valuable personalization; requires tenancy, PII, and deletion review. |
 | Competitive-intelligence memory | **Pilot** | Five-provider live path worked; public-social claims need corroboration. |
+| Corroboration-gated research | **Pilot with publisher tracking** | Fresh/official/conflict gate resisted poisoned memory; provider diversity alone is not source independence. |
+| Hierarchical enterprise copilot | **Pilot** | Three-scope key and policy precedence passed; application still owns authorization. |
+| Adaptive model router | **Pilot with runtime contracts** | Cross-process policy repair worked, but the calibration winner failed a related task. |
+| Temporal agenda | **Pilot** | Natural-date matrix passed; canonical clock and event state remain outside memory. |
+| Dependency-risk guardian | **Pilot as decision support** | Exact-version evidence and isolated test passed; CVE feeds are incomplete and human approval remains required. |
 | Sandboxed coding/debug agent | **Pilot with strict sandbox policy** | Memory-backed transfer passed where stateless failed; template and egress must be explicit. |
 | Release-memory copilot | **Adopt read-only first** | Snapshot/history fit well; mutations remain approval-gated. |
 | Temporary incident context | **Pilot** | Expiry/cancel worked; keep canonical incident state and verify disappearance. |

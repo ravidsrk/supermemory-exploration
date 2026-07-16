@@ -20,10 +20,24 @@ This repository implements four framework-independent patterns in
 These patterns intentionally avoid tying memory to an orchestration framework. Any agent
 runtime can call them.
 
-Five additional production-shaped implementations cover competitive intelligence, dynamic
-tool selection, sandboxed debugging, support continuity, and release memory. See
+Twenty-one additional production-shaped implementations now cover intelligence, dynamic
+tool selection, sandboxed execution, governance, lifecycle, enterprise hierarchy,
+corroboration, temporal recall, adaptive model routing, and dependency risk. See
 [Practical multi-provider agents](practical-agents.md) and the
 [provider combination map](provider-combinations.md).
+
+The fourth live pass added five architecture rules:
+
+1. **Compose retrieval scopes, not authority.** Organization, project, and user context may be
+   read together, but trusted code owns precedence and action permission.
+2. **Separate acquisition diversity from publisher diversity.** Several APIs can repeat one
+   official source; record both before promoting a claim.
+3. **Persist control outcomes, not just control choices.** A model-routing winner is useful
+   only when runtime failures also become scoped, expiring evidence.
+4. **Give temporal agents a trusted clock.** Natural-language date recall is semantic;
+   timezone, recurrence, and canonical event state remain deterministic inputs.
+5. **Require exact versions before dependency reasoning.** Discover evidence and rehearse in
+   isolation, but keep change approval outside memory and the model.
 
 ## Architecture 1: personalized chief of staff
 

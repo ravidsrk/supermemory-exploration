@@ -34,6 +34,7 @@ SDKs, and live probes. “Maturity” is a lab judgment, not a vendor status lab
 | Metadata filters | AND/OR, scalar, string, numeric, array, negation | [Filtering](https://supermemory.ai/docs/concepts/filtering); seven-shape hosted matrix | Put tenant in container; use metadata for subsets. Dotted search keys worked despite doc ambiguity. |
 | Reranking | Better result order for added latency | [Search](https://supermemory.ai/docs/search) | Enable selectively; benchmark quality gain. |
 | Query rewriting | Broader query understanding for added latency | Same source | Use for difficult natural-language queries, not every turn. |
+| Natural-language time windows | Retrieve past, present, and future facts using phrases such as `last week` or `in August 2026` | [June 25 API changelog](https://supermemory.ai/changelog/api/); 10-case hosted matrix | Passed with rewrite off/on on a three-event corpus; provide trusted date/timezone and keep canonical event state elsewhere. |
 | Aggregate results | Compress multiple memories into query-specific context | Current SDK/changelog and HandoffBoard probe contract | Useful for multi-agent boards; verify citations are not lost. |
 | User profile | Stable, dynamic, bucketed, and query-specific context | [Profiles](https://supermemory.ai/docs/concepts/user-profiles); hosted probe | Excellent session-start primitive. |
 | Profile buckets | Built-in preferences plus custom org/container categories | [Buckets API](https://supermemory.ai/docs/api-reference/profiles/get-profile-buckets); custom-bucket hosted probe | Custom buckets persisted and classified the corrected fact; definitions are add-only. |
@@ -44,7 +45,7 @@ SDKs, and live probes. “Maturity” is a lab judgment, not a vendor status lab
 | Capability | Notes |
 |---|---|
 | Container tags | Strict namespace, current v4 singular field, 100 characters, pattern `^[a-zA-Z0-9_:-]+$`. A negative-control search returned zero. |
-| Scoped keys | One-container key, expiry and rate-window controls, restricted endpoint set. Hosted read/write denial and immediate revocation were observed. Prefer these in user-facing or sandboxed agents. |
+| Scoped keys | One- or multi-container key, expiry and rate-window controls, restricted endpoint set. Hosted single-scope and three-scope reads, cross-tenant denial, and immediate revocation were observed. Current authentication prose still shows the singular form. Prefer scoped keys in user-facing or sandboxed agents. |
 | Per-container entity context | Steers extraction for a domain or tenant. Treat it as processing configuration, not an authorization policy. |
 | Organization context/filter prompt | Shapes extraction and relevance for new content. Existing content is not retroactively rebuilt. |
 | Chunk size/settings | Organization-level ingestion tuning. Changing embedding dimension in self-hosting requires a new data directory. |

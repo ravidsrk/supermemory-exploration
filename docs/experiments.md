@@ -194,6 +194,34 @@ See the curated
 [third-pass evidence](../evidence/2026-07-16-third-pass-lifecycle-and-benchmark.md) for run IDs,
 failed rehearsals, contradictions, and operating rules.
 
+## Fourth-pass memory-native agent systems
+
+```bash
+PYTHONPATH=src python3 experiments/run_enterprise_context_agent.py
+PYTHONPATH=src python3 experiments/run_corroborated_research_swarm.py
+PYTHONPATH=src python3 experiments/run_adaptive_model_router.py
+PYTHONPATH=src python3 experiments/run_temporal_agenda_agent.py
+PYTHONPATH=src python3 experiments/run_dependency_risk_guardian.py
+```
+
+Final observed outcomes:
+
+- a three-container scoped key read organization/project/user context, received `403` for
+  another tenant and `401` after revocation, while application action authority stayed false;
+- the research swarm promoted only after official plus multi-channel fresh support, resisted a
+  retrieved poison memory, and refused promotion in memory-only mode;
+- a persisted model calibration winner failed a related output contract, fell back correctly,
+  wrote the failure, and was avoided by the next process;
+- natural-time retrieval passed 10/10 exact, relative, future, and negative controls at 923.9 ms
+  client-wall p50 and 1,186.9 ms p95;
+- the dependency guardian tested the actual installed version with Monid, Exa, Composio, and an
+  egress-blocked SuperServe sandbox, but kept production authorization false;
+- the current Context.dev Markdown GET contract was verified after the older POST shape returned
+  `403`.
+
+See the [fourth-pass evidence](../evidence/2026-07-16-fourth-pass-agent-systems.md) for exact run
+IDs, model calibration numbers, first failures, caveats, and cleanup.
+
 ## Disposable self-hosted probe
 
 Follow the official [quickstart](https://supermemory.ai/docs/self-hosting/quickstart) in a
@@ -271,6 +299,9 @@ For each run, add a dated evidence note containing:
 - batch upload and 50 MB boundary behavior;
 - connector sync/update/delete on an entitled plan;
 - expanded scoped-key endpoint/rate-limit matrix beyond the passing read/write/revoke probe;
+- model-router holdouts, exploration/expiry, and repeated end-to-end economics;
+- temporal recall across timezones, recurrence, corrections, and larger corpora;
+- dependency guardian fail-closed controls using known-vulnerable and ambiguous packages;
 - Router outage fail-open behavior and token headers;
 - self-hosted upgrade/backup/restore and large-file regressions;
 - SMFS mount concurrency and bidirectional 30-second sync;
