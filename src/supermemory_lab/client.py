@@ -427,19 +427,27 @@ class SupermemoryClient:
 
     def create_scoped_key(
         self,
-        container_tag: str,
+        container_tag: Optional[str] = None,
         *,
+        container_tags: Optional[Sequence[str]] = None,
         name: Optional[str] = None,
         expires_in_days: Optional[int] = None,
         rate_limit_max: Optional[int] = None,
         rate_limit_time_window: Optional[int] = None,
     ) -> JsonObject:
+        if container_tag is not None and container_tags is not None:
+            raise ValueError("provide container_tag or container_tags, not both")
+        if container_tag is None and not container_tags:
+            raise ValueError("at least one scoped container tag is required")
         return self._transport.request(
             "POST",
             "/v3/auth/scoped-key",
             _without_none(
                 {
                     "containerTag": container_tag,
+                    "containerTags": list(container_tags)
+                    if container_tags is not None
+                    else None,
                     "name": name,
                     "expiresInDays": expires_in_days,
                     "rateLimitMax": rate_limit_max,

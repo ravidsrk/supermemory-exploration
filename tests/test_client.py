@@ -324,6 +324,35 @@ class SupermemoryClientTests(unittest.TestCase):
             ("DELETE", "/v3/auth/scoped-key/key%2Fid"),
         )
 
+    def test_scoped_key_can_request_multiple_containers(self) -> None:
+        transport = RecordingTransport([{"id": "key-id", "key": "secret"}])
+        client = SupermemoryClient(transport)
+
+        client.create_scoped_key(
+            container_tags=["org:one", "project:one", "user:one"],
+            name="enterprise-agent",
+            expires_in_days=1,
+        )
+
+        method, path, body = transport.calls[0]
+        self.assertEqual((method, path), ("POST", "/v3/auth/scoped-key"))
+        self.assertEqual(
+            body,
+            {
+                "containerTags": ["org:one", "project:one", "user:one"],
+                "name": "enterprise-agent",
+                "expiresInDays": 1,
+            },
+        )
+
+    def test_scoped_key_rejects_ambiguous_or_empty_scope(self) -> None:
+        client = SupermemoryClient(RecordingTransport())
+
+        with self.assertRaises(ValueError):
+            client.create_scoped_key()
+        with self.assertRaises(ValueError):
+            client.create_scoped_key("one", container_tags=["two"])
+
     def test_structured_conversation_preserves_roles(self) -> None:
         transport = RecordingTransport()
         client = SupermemoryClient(transport)
