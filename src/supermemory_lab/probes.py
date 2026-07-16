@@ -257,6 +257,7 @@ def run_core(config: LabConfig, *, with_llm: bool = False) -> Path:
             "v4_versioned_memory_update",
             lambda: client.update_memory(
                 memory_id=memory_ids[1],
+                container_tag=container,
                 new_content="Ravi plans to launch Project Amber on 2026-09-01.",
                 metadata={"kind": "project", "probe": run_id, "revision": 2},
             ),
@@ -343,6 +344,20 @@ def run_core(config: LabConfig, *, with_llm: bool = False) -> Path:
                 container_tag=container,
                 search_mode="hybrid",
                 threshold=0.0,
+            ),
+            _summarize_search,
+        )
+        recorder.capture(
+            "v4_default_mode_with_document",
+            lambda: transport.request(
+                "POST",
+                "/v4/search",
+                {
+                    "q": "Zephyr rollback command and gateway port",
+                    "containerTag": container,
+                    "threshold": 0,
+                    "limit": 10,
+                },
             ),
             _summarize_search,
         )

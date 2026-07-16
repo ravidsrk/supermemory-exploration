@@ -216,6 +216,7 @@ class DecisionJournal:
     ) -> Dict[str, Any]:
         return self._memory.update_memory(
             memory_id=memory_id,
+            container_tag=self._project_id,
             new_content=new_decision,
             metadata={"kind": "decision", "revisionReason": reason},
         )

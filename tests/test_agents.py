@@ -112,6 +112,7 @@ class AgentPatternTests(unittest.TestCase):
 
         self.assertTrue(memory.calls[0][2][0]["isStatic"])
         self.assertEqual(memory.calls[1][1]["memory_id"], "mem_1")
+        self.assertEqual(memory.calls[1][1]["container_tag"], "project_alpha")
         self.assertEqual(memory.calls[1][1]["new_content"], "Use PostgreSQL 18")
 
 

@@ -78,6 +78,25 @@ class SupermemoryClientTests(unittest.TestCase):
         self.assertTrue(body["dryRun"])
         self.assertEqual(body["maxForget"], 100)
 
+    def test_versioned_update_includes_observed_required_container(self) -> None:
+        transport = RecordingTransport()
+        client = SupermemoryClient(transport)
+
+        client.update_memory(
+            memory_id="mem_1",
+            container_tag="project_alpha",
+            new_content="Use PostgreSQL 18",
+        )
+
+        self.assertEqual(
+            transport.calls[0][2],
+            {
+                "id": "mem_1",
+                "containerTag": "project_alpha",
+                "newContent": "Use PostgreSQL 18",
+            },
+        )
+
     def test_structured_conversation_preserves_roles(self) -> None:
         transport = RecordingTransport()
         client = SupermemoryClient(transport)

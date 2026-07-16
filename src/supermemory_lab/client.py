@@ -233,6 +233,7 @@ class SupermemoryClient:
     def update_memory(
         self,
         *,
+        container_tag: str,
         new_content: str,
         memory_id: Optional[str] = None,
         content: Optional[str] = None,
@@ -245,6 +246,7 @@ class SupermemoryClient:
                 {
                     "id": memory_id,
                     "content": content,
+                    "containerTag": container_tag,
                     "newContent": new_content,
                     "metadata": dict(metadata) if metadata is not None else None,
                 }
