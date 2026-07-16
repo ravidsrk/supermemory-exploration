@@ -44,7 +44,7 @@ all project keys out of git and use provider-specific least privilege where avai
 - Add a JSONL dataset schema with facts, updates, expected sources, forbidden tenants, and
   prompt-injection cases.
 - Add repeatable result capture for quality, latency distribution, context tokens, and cost.
-- Add scoped-key creation/revocation and cross-container denial tests.
+- Expand the passing scoped-key read/write/revoke probe with endpoint and rate-limit cases.
 - Exercise custom profile buckets, inference review, filter operators, rerank, rewrite, and
   `dreaming=dynamic`.
 
@@ -189,7 +189,7 @@ On or near the 16th of each month:
 
 | Dimension | Target | Current first-pass status |
 |---|---|---|
-| Isolation | Zero negative-control leaks | Passed tiny hosted core and Router controls |
+| Isolation | Zero negative-control leaks | Passed container, Router-user, and scoped-key read/write controls |
 | Exact fact lifecycle | Create/update/forget works | Passed |
 | Source retrieval | Correct chunk and citation | Passed synthetic text |
 | Profile usefulness | Stable/dynamic are relevant | Passed synthetic facts; buckets pending |

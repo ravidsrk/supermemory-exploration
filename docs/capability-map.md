@@ -42,7 +42,7 @@ SDKs, and live probes. “Maturity” is a lab judgment, not a vendor status lab
 | Capability | Notes |
 |---|---|
 | Container tags | Strict namespace, current v4 singular field, 100 characters, pattern `^[a-zA-Z0-9_:-]+$`. A negative-control search returned zero. |
-| Scoped keys | One-container key, expiry and rate-window controls, restricted endpoint set. Prefer these in user-facing or sandboxed agents. |
+| Scoped keys | One-container key, expiry and rate-window controls, restricted endpoint set. Hosted read/write denial and immediate revocation were observed. Prefer these in user-facing or sandboxed agents. |
 | Per-container entity context | Steers extraction for a domain or tenant. Treat it as processing configuration, not an authorization policy. |
 | Organization context/filter prompt | Shapes extraction and relevance for new content. Existing content is not retroactively rebuilt. |
 | Chunk size/settings | Organization-level ingestion tuning. Changing embedding dimension in self-hosting requires a new data directory. |

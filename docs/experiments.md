@@ -71,6 +71,20 @@ On the current account it stops at the plan entitlement response.
 Do not automate OAuth connection creation with real user accounts until redirect handling,
 resource selection, container scope, deletion, and consent are designed.
 
+## Scoped-key security probe
+
+```bash
+supermemory-probe --scoped-key-only
+```
+
+The probe creates two synthetic containers and a one-day key bound to only one. It checks an
+allowed read, denied read, allowed write, denied write, revocation, a post-revocation read,
+and admin cleanup. Denied operations and the revoked-key check are expected API errors.
+The raw reporter redacts both ordinary secret-shaped fields and a bare `key` response field.
+
+The 2026-07-16 run returned `403` for both cross-container operations and `401` immediately
+after revocation; allowed operations and cleanup succeeded.
+
 ## Agent pattern demo
 
 ```bash
@@ -164,7 +178,7 @@ For each run, add a dated evidence note containing:
 - rerank/rewrite quality versus latency;
 - batch upload and 50 MB boundary behavior;
 - connector sync/update/delete on an entitled plan;
-- scoped-key endpoint and cross-container denial matrix;
+- expanded scoped-key endpoint/rate-limit matrix beyond the passing read/write/revoke probe;
 - container merge/delete lifecycle;
 - Router outage fail-open behavior and token headers;
 - self-hosted upgrade/backup/restore and large-file regressions;

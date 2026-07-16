@@ -66,6 +66,9 @@ single tag at the credential layer. See the official
 [container model](https://supermemory.ai/docs/concepts/container-tags) and
 [scoped-key documentation](https://supermemory.ai/docs/authentication).
 
+**Observed:** a scoped key could read and write its bound container, received `403` for both
+operations against another container, and received `401` immediately after revocation.
+
 ## Where caution is required
 
 ### Memory Router is not yet the default recommendation
