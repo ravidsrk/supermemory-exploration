@@ -1,0 +1,29 @@
+# Env / secrets
+.env
+.env.*
+!.env.example
+*.pem
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~
+
+# Dependencies / build
+node_modules/
+dist/
+build/
+.next/
+.turbo/
+coverage/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# Logs
+*.log
+npm-debug.log*
