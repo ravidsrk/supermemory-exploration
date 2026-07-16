@@ -14,6 +14,7 @@ from .client import SupermemoryClient
 from .config import LabConfig, load_config
 from .http import JsonObject, UrlLibTransport
 from .openrouter import OpenRouterClient
+from .router import MemoryRouterClient
 
 
 def _utc_now() -> str:
@@ -543,6 +544,123 @@ def run_web_crawler(config: LabConfig) -> Path:
     return path
 
 
+def run_memory_router(config: LabConfig) -> Path:
+    if not config.openrouter_api_key:
+        raise RuntimeError("OPENROUTER_API_KEY is required for the Router probe")
+
+    suffix = secrets.token_hex(3)
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
+    run_id = f"memory-router-{stamp}-{suffix}"
+    user_id = f"lab-router-user-{stamp}-{suffix}"
+    conversation_id = f"lab-router-conversation-{stamp}-{suffix}"
+    other_user_id = f"lab-router-negative-{stamp}-{suffix}"
+    recorder = ProbeRecorder(run_id)
+    recorder.report["subjects"] = [user_id, other_user_id]
+    _, memory = _build_clients(config)
+    router = MemoryRouterClient(
+        supermemory_api_key=config.supermemory_api_key,
+        provider_api_key=config.openrouter_api_key,
+        provider_base_url=config.openrouter_base_url,
+        model=config.openrouter_model,
+    )
+
+    recorder.capture(
+        "router_initial_fact",
+        lambda: router.complete(
+            user_id=user_id,
+            conversation_id=conversation_id,
+            messages=[
+                {
+                    "role": "user",
+                    "content": (
+                        "For this synthetic field-lab conversation, remember that "
+                        "the audit code phrase is cobalt lighthouse. Reply only with "
+                        "a short acknowledgement."
+                    ),
+                }
+            ],
+        ),
+    )
+    time.sleep(20)
+    recorder.capture(
+        "router_same_user_continuation",
+        lambda: router.complete(
+            user_id=user_id,
+            conversation_id=conversation_id,
+            messages=[
+                {
+                    "role": "user",
+                    "content": "What was the synthetic audit code phrase?",
+                }
+            ],
+        ),
+    )
+    recorder.capture(
+        "router_same_user_new_conversation",
+        lambda: router.complete(
+            user_id=user_id,
+            conversation_id=f"new-{conversation_id}",
+            messages=[
+                {
+                    "role": "user",
+                    "content": "What was the synthetic audit code phrase?",
+                }
+            ],
+        ),
+    )
+    recorder.capture(
+        "router_full_history_control",
+        lambda: router.complete(
+            user_id=user_id,
+            conversation_id=f"full-{conversation_id}",
+            messages=[
+                {
+                    "role": "user",
+                    "content": (
+                        "For this synthetic field-lab conversation, remember that "
+                        "the audit code phrase is cobalt lighthouse."
+                    ),
+                },
+                {"role": "assistant", "content": "Acknowledged."},
+                {
+                    "role": "user",
+                    "content": "What was the synthetic audit code phrase?",
+                },
+            ],
+        ),
+    )
+    recorder.capture(
+        "router_memory_api_visibility",
+        lambda: memory.search_memories(
+            "synthetic audit code phrase",
+            container_tag=user_id,
+            search_mode="hybrid",
+            threshold=0.0,
+        ),
+        _summarize_search,
+    )
+    recorder.capture(
+        "router_other_user_negative_control",
+        lambda: router.complete(
+            user_id=other_user_id,
+            conversation_id=f"negative-{conversation_id}",
+            messages=[
+                {
+                    "role": "user",
+                    "content": (
+                        "What is the synthetic audit code phrase? If you have no "
+                        "context for it, say unknown."
+                    ),
+                }
+            ],
+        ),
+    )
+
+    path = recorder.write()
+    print(f"Raw secret-free run written to {path}", flush=True)
+    return path
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -558,13 +676,25 @@ def main() -> None:
         action="store_true",
         help="run only the no-OAuth web-crawler connector probe",
     )
+    parser.add_argument(
+        "--with-router",
+        action="store_true",
+        help="exercise the OpenAI-compatible Memory Router via OpenRouter",
+    )
+    parser.add_argument(
+        "--router-only",
+        action="store_true",
+        help="run only the OpenRouter-backed Memory Router probe",
+    )
     parser.add_argument("--env-file", default=".env.local")
     args = parser.parse_args()
     config = load_config(args.env_file)
-    if not args.connector_only:
+    if not args.connector_only and not args.router_only:
         run_core(config, with_llm=args.with_llm)
     if args.with_connector or args.connector_only:
         run_web_crawler(config)
+    if args.with_router or args.router_only:
+        run_memory_router(config)
 
 
 if __name__ == "__main__":

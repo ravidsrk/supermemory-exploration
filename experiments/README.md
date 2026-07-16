@@ -6,6 +6,7 @@ Experiments are opt-in and use isolated container tags prefixed with `lab:`. Raw
 PYTHONPATH=src python3 -m supermemory_lab.probes
 PYTHONPATH=src python3 -m supermemory_lab.probes --with-llm
 PYTHONPATH=src python3 -m supermemory_lab.probes --connector-only
+PYTHONPATH=src python3 -m supermemory_lab.probes --router-only
 ```
 
 The core probe exercises:
@@ -16,5 +17,6 @@ The core probe exercises:
 - v3 document ingestion, processing, search, `customId` upsert, listing, and deletion
 - v4 structured conversation ingestion
 - optional profile-aware agent generation through OpenRouter
+- optional OpenRouter-backed Memory Router continuation and isolation checks
 
 Do not paste raw run files into bug reports without reviewing them first. They contain synthetic experiment content and hosted resource IDs, but the redactor intentionally errs on the side of preserving useful response evidence.
