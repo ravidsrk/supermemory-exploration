@@ -9,6 +9,7 @@ repeat and extend them safely.
 ```bash
 python3 -m venv .venv
 . .venv/bin/activate
+python -m pip install --upgrade pip
 python -m pip install -e .
 cp .env.example .env.local
 ```
