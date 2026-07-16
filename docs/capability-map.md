@@ -1,0 +1,123 @@
+# Capability map
+
+This map covers the current product surface discovered through the official
+[documentation index](https://supermemory.ai/docs/llms.txt), public repositories, generated
+SDKs, and live probes. “Maturity” is a lab judgment, not a vendor status label.
+
+## Core API
+
+| Capability | Practical use | Evidence | Maturity judgment |
+|---|---|---|---|
+| Add text, URL, or file | Knowledge ingestion and extraction | [Add document](https://supermemory.ai/docs/api-reference/ingest/add-document); hosted text probe | Core |
+| Batch/file upload | Bulk knowledge loading; up to documented content limits | [Content types](https://supermemory.ai/docs/concepts/content-types) | Core, not lab-tested |
+| Structured conversation upsert | Preserve roles and append a conversation by ID | [Conversation endpoint](https://supermemory.ai/docs/api-reference/ingest/ingest-or-update-conversation); hosted probe | Core |
+| `customId` upsert | Stable application identity for a document | Hosted probe; same document ID returned | Core, extraction semantics need regression tests |
+| `dreaming=dynamic` | Group related content before memory creation | [Adding memories](https://supermemory.ai/docs/add-memories) | Core, not lab-tested |
+| `dreaming=instant` | Extract each document independently; extra documented operation | Same source; hosted probe | Core |
+| `taskType=superrag` | Index knowledge without generating personal memory facts | [SuperRAG](https://supermemory.ai/docs/concepts/super-rag) | Core |
+| Direct v4 memory creation | Exact, immediate facts; up to 100 per call | [Direct creation](https://supermemory.ai/docs/api-reference/content-management/create-memories-directly); hosted probe | Core |
+| Versioned memory update | Correct a fact while preserving history | [Update](https://supermemory.ai/docs/api-reference/content-management/update-a-memory-creates-new-version); hosted probe | Core |
+| Forget one memory | Remove a fact from normal search | [Forget](https://supermemory.ai/docs/api-reference/content-management/forget-a-memory); hosted probe | Core |
+| Agentic mass-forget | Natural-language deletion with dry-run | [Forget matching](https://supermemory.ai/docs/api-reference/content-management/forget-memories-matching-a-promptquery); hosted probe | Slow/variable; background workflow only |
+| Document lifecycle | List, get, chunks, update, delete, processing state | [Document operations](https://supermemory.ai/docs/document-operations); hosted probe | Core |
+
+## Recall and profile
+
+| Capability | Practical use | Evidence | Guidance |
+|---|---|---|---|
+| v3 document search | Source-oriented RAG with chunks, summaries, full docs | [Search](https://supermemory.ai/docs/search); hosted probe | Use when document grouping/citations matter. |
+| v4 memory search | Low-token distilled fact recall | [v4 search](https://supermemory.ai/docs/api-reference/recall-search/search-memory-entries); hosted probe | Make `searchMode="memories"` explicit. |
+| v4 hybrid search | Facts and raw chunks together | Same source; hosted probe | Best default for research/support questions. |
+| v4 document mode | Raw source retrieval through v4 | Same source | Use when extraction would discard wording. |
+| Metadata filters | AND/OR, scalar, string, numeric, array, negation | [Filtering](https://supermemory.ai/docs/concepts/filtering) | Put tenant in container; use metadata for subsets. |
+| Reranking | Better result order for added latency | [Search](https://supermemory.ai/docs/search) | Enable selectively; benchmark quality gain. |
+| Query rewriting | Broader query understanding for added latency | Same source | Use for difficult natural-language queries, not every turn. |
+| Aggregate results | Compress multiple memories into query-specific context | Current SDK/changelog and HandoffBoard probe contract | Useful for multi-agent boards; verify citations are not lost. |
+| User profile | Stable, dynamic, bucketed, and query-specific context | [Profiles](https://supermemory.ai/docs/concepts/user-profiles); hosted probe | Excellent session-start primitive. |
+| Profile buckets | Built-in preferences plus custom org/container categories | [Buckets API](https://supermemory.ai/docs/api-reference/profiles/get-profile-buckets) | Custom buckets are add-only; design vocabulary early. |
+| Inferred-memory review | Approve, decline, or undo generated inferences | [Memory review](https://supermemory.ai/docs/memory-review) | Add human review for sensitive personalization. |
+
+## Organization, isolation, and customization
+
+| Capability | Notes |
+|---|---|
+| Container tags | Strict namespace, current v4 singular field, 100 characters, pattern `^[a-zA-Z0-9_:-]+$`. A negative-control search returned zero. |
+| Scoped keys | One-container key, expiry and rate-window controls, restricted endpoint set. Prefer these in user-facing or sandboxed agents. |
+| Per-container entity context | Steers extraction for a domain or tenant. Treat it as processing configuration, not an authorization policy. |
+| Organization context/filter prompt | Shapes extraction and relevance for new content. Existing content is not retroactively rebuilt. |
+| Chunk size/settings | Organization-level ingestion tuning. Changing embedding dimension in self-hosting requires a new data directory. |
+| Container merge/delete | Administrative lifecycle. Delete is consequential and should require deterministic authorization. |
+| Metadata | Arbitrary source annotations and filters. Do not put secrets in metadata. |
+
+## Integration surfaces
+
+| Surface | Best fit | Current assessment |
+|---|---|---|
+| TypeScript/Python SDKs | Typed direct API access | Generated clients are useful; pin and wrap them. |
+| `@supermemory/tools` | Framework middleware and tool factories | Convenient; explicit client remains easier to audit. |
+| Vercel AI SDK | TypeScript chat/agent apps | First-class and broadly documented. |
+| OpenAI SDK/Agents | Function tools and middleware | Open issues report default/fail-open drift; contract-test version used. |
+| LangChain/LangGraph | Existing graph/chain stacks | Thin integration; preserve explicit container derivation. |
+| Mastra/Agno/CrewAI/VoltAgent | Agent-framework adoption | Productized wrappers; evaluate the wrapper, not only the API. |
+| Microsoft Agent Framework | .NET/Python agents | Supported; a current issue reports Python dedup type problems. |
+| Convex | Backend-integrated memory | Supported, not lab-tested. |
+| Pipecat/Cartesia | Voice agents | Useful asynchronous memory path; current issue reports Python wrapper bugs. |
+| n8n/Zapier/viaSocket | No/low-code automation | Good for ingest workflows, not a trust boundary. |
+| MCP | Portable `memory`, `recall`, identity/profile context | Current implementation lives in the monorepo; old standalone repo is deprecated. |
+| Coding plugins | Automatic project/user recall and periodic capture | Useful reference architectures; auto-capture and scope deserve review. |
+| Memory Router | Drop-in OpenAI-compatible proxy | Beta/prototype judgment after failed recall control. |
+| Memory Graph UI | Explore documents, memories, relationships | Visualization, not evidence of a particular storage algorithm. |
+
+Official integration pages currently include Vercel AI SDK, Microsoft Agent Framework,
+Agno, OpenAI Agents, CrewAI, Convex, LangChain, LangGraph, Mastra, VoltAgent, Cartesia,
+Pipecat, OpenAI, n8n, Zapier, viaSocket, Claude Memory, and several coding plugins. See the
+[documentation index](https://supermemory.ai/docs/llms.txt) for the current list.
+
+## Connectors
+
+| Connector | Sync model / useful role | Access signal |
+|---|---|---|
+| Google Drive | Files and Google-native exports; workspace knowledge | Documented |
+| Gmail | Threads with incremental Pub/Sub/webhook sync | Scale+ documented |
+| Notion | Pages, databases, blocks, webhooks | Documented |
+| OneDrive | Office documents and scheduled sync | Documented |
+| GitHub | Selected repository documentation resources | Scale+ documented |
+| Granola | Meeting notes/transcripts | Pro+ documented |
+| S3-compatible | Object-bucket knowledge loading | Scale+ documented |
+| Web crawler | Scheduled crawl with robots handling | Scale+; hosted probe returned 403 |
+
+Connector OAuth can show Supermemory branding or use custom credentials for supported
+providers. Treat each connection as a privileged ingestion principal; constrain its
+container and selected resources.
+
+## Alternative runtimes
+
+### Self-hosted server
+
+The local server exposes the hosted-style API with encrypted local storage, local or remote
+embeddings, and a bring-your-own extraction model. The local edition is single-tenant and
+does not include managed connectors/MCP. A fresh v0.0.5 run worked; upgrade and scale paths
+need dedicated testing. See [self-hosting](https://supermemory.ai/docs/self-hosting/overview).
+
+### SMFS
+
+SMFS maps a container to filesystem semantics. The mount uses NFSv3 on macOS or FUSE on
+Linux; the Bash tool provides a virtual shell for serverless agents. `memory.md`/`user.md`
+are memory paths by default, other files use SuperRAG, `profile.md` is virtual, and plain
+`grep` can become semantic. The lab validated the Python Bash tool, including write/read,
+list, semantic search, and cleanup. It also found alpha quirks: delayed profile extraction
+and a zero-byte list entry despite readable content. See [SMFS](https://supermemory.ai/docs/smfs/overview).
+
+### Consumer app and browser extension
+
+The app, Nova agent, extension, and memory graph let an individual collect and query
+personal context without building an application. They share concepts with the developer
+platform but should be evaluated separately for export, deletion, capture scope, and privacy.
+
+## What is not a capability
+
+- Supermemory is not a transactional database, queue, lock service, scheduler, or policy engine.
+- Semantic similarity is not permission or identity verification.
+- A graph visualization does not guarantee that every answer is graph-reasoned.
+- A high benchmark score does not establish production quality without latency and context-token cost.
+- Fail-open generation means availability can survive while memory correctness silently degrades.

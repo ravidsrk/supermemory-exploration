@@ -1,0 +1,48 @@
+# Supermemory practical wiki
+
+This is a dated, evidence-driven operating manual for evaluating and building with
+Supermemory over the next six months. It is not a copy of the product documentation.
+
+## Start here
+
+1. [Practical verdict](verdict.md) — where Supermemory is strong, weak, and fit for use.
+2. [Capability map](capability-map.md) — every material surface and its maturity.
+3. [Memory model](memory-model.md) — documents, chunks, memories, profiles, graph history,
+   containers, and the read/write lifecycle.
+4. [Agent architectures](agent-architectures.md) — build patterns and product ideas.
+5. [Production playbook](production-playbook.md) — isolation, safety, latency, lifecycle,
+   and operational guidance.
+6. [Experiments](experiments.md) — what the lab actually observed.
+7. [Ecosystem and source notes](ecosystem.md) — SDKs, plugins, MCP, connectors, SMFS,
+   self-hosting, and public repository findings.
+8. [Benchmarks](benchmarks.md) — MemoryBench, MemScore, benchmark caveats, and an eval plan.
+9. [Six-month roadmap](roadmap.md) — a staged adoption and retest schedule.
+
+## Evidence language
+
+Every important conclusion uses one of these labels:
+
+| Label | Meaning |
+|---|---|
+| **Documented** | Stated in current official documentation. |
+| **Source-inspected** | Confirmed in a pinned public repository or generated SDK. |
+| **Observed** | Reproduced by this lab against a hosted or local system. |
+| **Reported** | Found in an open issue or third-party account; not reproduced here. |
+| **Inferred** | A design conclusion derived from the evidence. |
+
+“Observed” is strongest for behavior but is still a sample from one account, region,
+date, and small synthetic workload. Product behavior, entitlements, and latency can
+change. All observations in the first research pass are dated **2026-07-16**.
+
+## Update discipline
+
+- Retest the core probe monthly and before a production launch.
+- Pin SDK versions; review the changelog and open issues before upgrading.
+- Never replace a dated observation silently. Add the new result and state what changed.
+- Keep raw runs in ignored `.runs/`; commit only reviewed, secret-free summaries.
+- Treat vendor benchmark claims as hypotheses until reproduced on the product's own data.
+
+The official machine-readable docs index is
+[docs/llms.txt](https://supermemory.ai/docs/llms.txt). The public monorepo and
+MemoryBench are on [GitHub](https://github.com/supermemoryai/supermemory) and
+[GitHub](https://github.com/supermemoryai/memorybench), respectively.
