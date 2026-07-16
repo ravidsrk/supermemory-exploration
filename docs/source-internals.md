@@ -10,6 +10,13 @@ docs, integrations, middleware, MCP, browser extension, and memory-graph package
 expose the hosted ingestion/search backend. Backend architecture claims therefore remain
 documented or inferred, not source-verified.
 
+The inspected upstream repository is licensed under
+[MIT](https://github.com/supermemoryai/supermemory/blob/main/LICENSE). This field lab is also
+MIT-licensed, but it is an independent implementation and research artifact. Links and commit
+pins attribute upstream source behavior; hosted observations and original lab code are labeled
+separately. MIT permission does not make the hosted proprietary extraction/search internals
+available for audit.
+
 ## Agent integration behavior visible in source
 
 ### Profile-first middleware is the main integration pattern

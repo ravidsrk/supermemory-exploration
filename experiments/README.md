@@ -13,6 +13,11 @@ PYTHONPATH=src python3 experiments/run_governance_scorecard.py
 PYTHONPATH=src python3 experiments/run_signal_radar.py
 PYTHONPATH=src python3 experiments/run_retrieval_policy_grid.py
 PYTHONPATH=src python3 experiments/run_release_triage_rehearsal.py
+PYTHONPATH=src python3 experiments/run_evolving_preference_agent.py
+PYTHONPATH=src python3 experiments/run_filter_erasure_agent.py
+PYTHONPATH=src python3 experiments/run_lifecycle_agents.py
+PYTHONPATH=src python3 experiments/run_router_continuity_matrix.py
+PYTHONPATH=src python3 experiments/run_domain_memory_benchmark.py
 ```
 
 The core probe exercises:
@@ -56,3 +61,25 @@ security runbook, OpenRouter patch generation, and an egress-blocked disposable 
 sandbox. It begins with a deliberately failing webhook verifier and stores the lesson only
 after tests pass. Vercel observations and sandbox results remain explicitly separate: a
 synthetic rehearsal is never presented as diagnosis of a real deployment.
+
+`run_evolving_preference_agent.py` archives a role-preserving conversation, explicitly
+normalizes confirmed preferences, versions corrections, configures custom buckets, checks
+idempotency and isolation, and deletes the synthetic container. It does not assume completed
+conversation processing has already produced the needed profile fact.
+
+`run_filter_erasure_agent.py` evaluates seven v4 search-filter shapes and requires a bounded
+dry-run candidate set before semantic erasure. Protected canaries, candidate drift, excessive
+cardinality, and unexpected empty previews fail closed.
+
+`run_lifecycle_agents.py` gives a temporary incident fact server-enforced expiry, cancels a
+second expiry through versioned update, and consolidates two synthetic workspaces through the
+queued merge state machine while verifying data, settings, source removal, and cleanup.
+
+`run_router_continuity_matrix.py` separates delta-only model continuity, explicit full history,
+direct API memory-pool injection, another-user isolation, Router-generated cross-session
+recall, response diagnostics, token counts, API visibility, and cleanup.
+
+`run_domain_memory_benchmark.py` runs 12 paired memory/no-memory questions across stable,
+update, temporal, multi-hop, isolation, and prompt-injection categories. It separately scores
+retrieval canaries and answer semantics, reports p50/p95 search latency and bounded context,
+and requires zero leaks/bypasses before passing.

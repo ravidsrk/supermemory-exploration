@@ -35,6 +35,12 @@ Delivered:
 - a three-case support benchmark scoring 3/3 with memory and 0/3 without it;
 - profile-versus-search read-after-write evidence and explicit polling barriers;
 - source-pinned SDK, plugin, MCP, SMFS, and MemoryBench inspection;
+- custom profile buckets, seven search-filter shapes, memory expiry/cancellation, inferred
+  review endpoint/empty queue, and queued container merge lifecycle;
+- a correction-aware conversation-plus-direct-fact agent and preview-gated erasure agent;
+- a 12-case matched domain smoke suite scoring 12/12 with memory versus 2/12 without;
+- a Router continuity matrix separating model history, direct memory pool, tenant isolation,
+  and Router-generated cross-session persistence;
 - practical wiki, production guardrails, evidence note, and benchmark plan.
 
 Before month 1, rotate any credential that was pasted into an untrusted/public surface. Keep
@@ -45,12 +51,13 @@ all project keys out of git and use provider-specific least privilege where avai
 ### Build
 
 - Create the 100-question domain suite from [Benchmarks](benchmarks.md).
+- Grow the completed 12-case executable smoke slice into that blinded 100-question suite.
 - Add a JSONL dataset schema with facts, updates, expected sources, forbidden tenants, and
   prompt-injection cases.
 - Add repeatable result capture for quality, latency distribution, context tokens, and cost.
 - Expand the passing scoped-key read/write/revoke probe with endpoint and rate-limit cases.
-- Exercise custom profile buckets, inference review, filter operators, rerank, rewrite, and
-  `dreaming=dynamic`.
+- Induce and review real inference candidates; custom profile buckets, filter operators,
+  rerank/rewrite, expiry, and merge now have executable coverage. Exercise `dreaming=dynamic`.
 
 ### Gate
 
@@ -196,15 +203,15 @@ On or near the 16th of each month:
 | Isolation | Zero negative-control leaks | Passed container, Router-user, and scoped-key read/write controls |
 | Exact fact lifecycle | Create/update/forget works | Passed |
 | Source retrieval | Correct chunk and citation | Passed synthetic text |
-| Profile usefulness | Stable/dynamic are relevant | Passed synthetic facts; buckets pending |
-| Cross-session Router | Recalls synthetic fact | Failed |
+| Profile usefulness | Stable/dynamic are relevant | Passed synthetic facts and custom bucket classification |
+| Cross-session Router | Recalls synthetic fact | Direct API pool passed; Router-generated new-conversation recall failed |
 | Connector lifecycle | Sync/update/delete | Blocked by plan; entitlement only verified |
 | Hosted retrieval p95 | Product-specific | Insufficient samples |
-| Domain accuracy | Product-specific | Dataset pending |
+| Domain accuracy | Product-specific | 12-case smoke: 12/12 memory vs 2/12 baseline; 100-case blinded suite pending |
 | Support continuity | Memory beats empty-tenant baseline | 3/3 vs 0/3 on small synthetic suite |
 | Verified lesson transfer | Memory improves related sandbox task | Memory passed; stateless failed on one hidden case |
 | Immediate direct-fact visibility | Next agent can retrieve safely | Exact canaries passed first read in all paths; natural-query miss requires tuning |
-| Prompt-injection resistance | No policy bypass | 5/5 synthetic retrieved-payload cases; larger adversarial suite pending |
+| Prompt-injection resistance | No policy bypass | Governance 5/5 plus domain 2/2; larger adversarial suite pending |
 | Retrieval policy | Domain precision/recall and latency gate | 120-search grid complete; winner 4/5 with zero false positives on synthetic corpus |
 | Self-host durability | Restore and upgrade | Fresh run passed; durability/upgrade pending |
 | SMFS maturity | Consistent read/search/profile | Read/search passed; profile/list quirks observed |

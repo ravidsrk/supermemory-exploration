@@ -23,7 +23,9 @@ Hands-on exploration of Supermemory product surface, APIs, SDKs, and integration
 ## Status
 
 The field lab includes hosted/self-hosted capability probes, nine authenticated provider
-adapters, fifteen reference patterns, 52 offline tests, and live memory/no-memory experiments.
+adapters, twenty reference patterns, 73 offline tests, and live memory/no-memory experiments.
+The latest 12-case domain smoke suite scored 12/12 with bounded memory versus 2/12 without it,
+with zero tenant leaks or prompt-injection bypasses.
 Start with the
 [practical wiki](docs/README.md), [multi-provider agents](docs/practical-agents.md), or the
 [verdict](docs/verdict.md).
@@ -77,6 +79,11 @@ PYTHONPATH=src:. python experiments/run_advanced_agents.py continuity
 PYTHONPATH=src python3 experiments/run_governance_scorecard.py
 PYTHONPATH=src python3 experiments/run_signal_radar.py
 PYTHONPATH=src python3 experiments/run_retrieval_policy_grid.py
+PYTHONPATH=src python3 experiments/run_evolving_preference_agent.py
+PYTHONPATH=src python3 experiments/run_filter_erasure_agent.py
+PYTHONPATH=src python3 experiments/run_lifecycle_agents.py
+PYTHONPATH=src python3 experiments/run_router_continuity_matrix.py
+PYTHONPATH=src python3 experiments/run_domain_memory_benchmark.py
 ```
 
 Live commands create synthetic, isolated `lab:` containers. Raw probe output is ignored under
@@ -85,3 +92,7 @@ Live commands create synthetic, isolated `lab:` containers. Raw probe output is 
 ## License
 
 [MIT](LICENSE) © 2026 Ravindra Kumar.
+
+The upstream [Supermemory repository](https://github.com/supermemoryai/supermemory) is also
+MIT-licensed. This field lab is an independent exploration; source-inspected behavior is
+attributed and kept distinct from code written in this repository.

@@ -162,3 +162,34 @@ A memory setup should not ship merely because average accuracy improved. Require
 
 The first field-lab probes establish the harness and several invariants, not a domain accuracy
 score. That is an honest baseline from which a six-month evaluation program can grow.
+
+## Implemented 12-case smoke baseline
+
+The first executable domain slice now lives in
+[`run_domain_memory_benchmark.py`](../experiments/run_domain_memory_benchmark.py). It uses two
+cases each for stable facts, updates, temporal reasoning, multi-hop reasoning, tenant
+isolation, and prompt-injection evidence. The same OpenRouter answer model receives each
+question once with bounded Supermemory context and once without memory or external context.
+
+Final hosted run `domain-20260716135220-628c9b`:
+
+| Metric | Result |
+|---|---:|
+| Retrieval evidence | 12/12 |
+| Memory-assisted answer | 12/12 (100%) |
+| No-memory answer | 2/12 (16.7%) |
+| Lift | +83.3 percentage points |
+| Search latency p50 / p95 | 659.3 / 1,143.3 ms |
+| Mean estimated context | 326.8 tokens |
+| Maximum rendered context | 1,310 characters |
+| Tenant leaks / prompt-injection bypasses | 0 / 0 |
+
+The two no-memory passes were expected `UNKNOWN` isolation answers; one no-memory multi-hop
+answer hallucinated a region. The memory condition passed both isolation cases because the
+forbidden tenant canaries were absent from retrieval and answer.
+
+This result is a smoke regression, not the 100-case suite, not blinded, and not an official
+MemoryBench score. It does establish a working matched baseline, separate retrieval/answer
+scoring, latency distribution, bounded context, cleanup, and deterministic safety controls.
+The first rehearsals exposed two evaluator defects—evidence IDs mixed into semantic answer
+scoring and an ISO-only date check—which were fixed before recording the final result.

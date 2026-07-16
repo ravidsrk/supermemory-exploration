@@ -159,6 +159,41 @@ the long HN query returned zero results, an untuned agent query missed at the wi
 and the first webhook patch accepted future timestamps. Each caused a code or query-policy
 change before the final passing trace.
 
+## Third-pass lifecycle, Router, and benchmark experiments
+
+```bash
+PYTHONPATH=src python3 experiments/run_evolving_preference_agent.py
+PYTHONPATH=src python3 experiments/run_filter_erasure_agent.py
+PYTHONPATH=src python3 experiments/run_lifecycle_agents.py
+PYTHONPATH=src python3 experiments/run_router_continuity_matrix.py
+PYTHONPATH=src python3 experiments/run_domain_memory_benchmark.py
+```
+
+These scripts add exact-canary consistency barriers, container settings/custom buckets,
+conversation-plus-normalized-fact personalization, preview-gated semantic erasure, seven
+filter shapes, memory expiry/cancellation, queued container merge, Router continuity modes,
+and a matched memory/no-memory domain QA gate.
+
+Final observed outcomes:
+
+- corrected preference versioning, custom bucket, replay idempotency, isolation, and cleanup
+  passed; the completed conversation did not automatically yield the expected preference in
+  the 30-second window;
+- all seven v4 search filter cases passed and one-target semantic erasure retained its control;
+  filtered memory listing and explicit-forget audit recovery did not behave as expected;
+- expiry hid a lease after about 15.4 seconds, cancellation preserved version 2, and the
+  expired memory was recoverable through the forgotten include path;
+- merge reached `completed`, moved source data, removed the source, and retained target data
+  and settings; target search worked earlier at `cleanup_pending`;
+- Router delta continuation passed 3/3 and direct API pool memory worked with/without a
+  conversation header, but Router-generated new-conversation recall failed;
+- the domain smoke suite scored 12/12 with memory and 2/12 without, with zero leaks/bypasses,
+  659.3 ms search p50, 1,143.3 ms p95, and about 327 estimated context tokens.
+
+See the curated
+[third-pass evidence](../evidence/2026-07-16-third-pass-lifecycle-and-benchmark.md) for run IDs,
+failed rehearsals, contradictions, and operating rules.
+
 ## Disposable self-hosted probe
 
 Follow the official [quickstart](https://supermemory.ai/docs/self-hosting/quickstart) in a
@@ -229,15 +264,13 @@ For each run, add a dated evidence note containing:
 
 ## Experiments still needed
 
-- profile custom buckets and suggestions;
-- inferred-memory creation/review/undo;
+- induce an inferred-memory review candidate, then exercise approve/decline/undo (the endpoint
+  and empty queue are covered, but no candidate was generated);
 - `dreaming=dynamic` across related documents;
-- filter operator truth table and negative cases;
 - repeat the retrieval grid on a domain corpus with at least 100 blinded queries;
 - batch upload and 50 MB boundary behavior;
 - connector sync/update/delete on an entitled plan;
 - expanded scoped-key endpoint/rate-limit matrix beyond the passing read/write/revoke probe;
-- container merge/delete lifecycle;
 - Router outage fail-open behavior and token headers;
 - self-hosted upgrade/backup/restore and large-file regressions;
 - SMFS mount concurrency and bidirectional 30-second sync;

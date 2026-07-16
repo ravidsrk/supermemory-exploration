@@ -19,6 +19,8 @@ SDKs, and live probes. “Maturity” is a lab judgment, not a vendor status lab
 | Versioned memory update | Correct a fact while preserving history | [Update](https://supermemory.ai/docs/api-reference/content-management/update-a-memory-creates-new-version); hosted probe | Core |
 | Forget one memory | Remove a fact from normal search | [Forget](https://supermemory.ai/docs/api-reference/content-management/forget-a-memory); hosted probe | Core |
 | Agentic mass-forget | Natural-language deletion with dry-run | [Forget matching](https://supermemory.ai/docs/api-reference/content-management/forget-memories-matching-a-promptquery); hosted probe | Slow/variable; background workflow only |
+| Memory expiry (`forgetAfter`) | Lease temporary context and cancel through versioned update | Current [OpenAPI](https://api.supermemory.ai/v3/openapi); hosted expiry/cancel probe | Core; explicit forget and expiry had different recovery behavior |
+| Memory history/list | Inspect versions and administrative inventory | Current OpenAPI; hosted unfiltered list probe | Core; metadata-filtered list discrepancy observed |
 | Document lifecycle | List, get, chunks, update, delete, processing state | [Document operations](https://supermemory.ai/docs/document-operations); hosted probe | Core |
 
 ## Recall and profile
@@ -29,13 +31,13 @@ SDKs, and live probes. “Maturity” is a lab judgment, not a vendor status lab
 | v4 memory search | Low-token distilled fact recall | [v4 search](https://supermemory.ai/docs/api-reference/recall-search/search-memory-entries); hosted probe | Make `searchMode="memories"` explicit. |
 | v4 hybrid search | Facts and raw chunks together | Same source; hosted probe | Best default for research/support questions. |
 | v4 document mode | Raw source retrieval through v4 | Same source | Use when extraction would discard wording. |
-| Metadata filters | AND/OR, scalar, string, numeric, array, negation | [Filtering](https://supermemory.ai/docs/concepts/filtering) | Put tenant in container; use metadata for subsets. |
+| Metadata filters | AND/OR, scalar, string, numeric, array, negation | [Filtering](https://supermemory.ai/docs/concepts/filtering); seven-shape hosted matrix | Put tenant in container; use metadata for subsets. Dotted search keys worked despite doc ambiguity. |
 | Reranking | Better result order for added latency | [Search](https://supermemory.ai/docs/search) | Enable selectively; benchmark quality gain. |
 | Query rewriting | Broader query understanding for added latency | Same source | Use for difficult natural-language queries, not every turn. |
 | Aggregate results | Compress multiple memories into query-specific context | Current SDK/changelog and HandoffBoard probe contract | Useful for multi-agent boards; verify citations are not lost. |
 | User profile | Stable, dynamic, bucketed, and query-specific context | [Profiles](https://supermemory.ai/docs/concepts/user-profiles); hosted probe | Excellent session-start primitive. |
-| Profile buckets | Built-in preferences plus custom org/container categories | [Buckets API](https://supermemory.ai/docs/api-reference/profiles/get-profile-buckets) | Custom buckets are add-only; design vocabulary early. |
-| Inferred-memory review | Approve, decline, or undo generated inferences | [Memory review](https://supermemory.ai/docs/memory-review) | Add human review for sensitive personalization. |
+| Profile buckets | Built-in preferences plus custom org/container categories | [Buckets API](https://supermemory.ai/docs/api-reference/profiles/get-profile-buckets); custom-bucket hosted probe | Custom buckets persisted and classified the corrected fact; definitions are add-only. |
+| Inferred-memory review | Approve, decline, or undo generated inferences | [Memory review](https://supermemory.ai/docs/memory-review); endpoint/empty-queue probe | Add human review for sensitive personalization; generated-candidate lifecycle still pending. |
 
 ## Organization, isolation, and customization
 
@@ -46,7 +48,7 @@ SDKs, and live probes. “Maturity” is a lab judgment, not a vendor status lab
 | Per-container entity context | Steers extraction for a domain or tenant. Treat it as processing configuration, not an authorization policy. |
 | Organization context/filter prompt | Shapes extraction and relevance for new content. Existing content is not retroactively rebuilt. |
 | Chunk size/settings | Organization-level ingestion tuning. Changing embedding dimension in self-hosting requires a new data directory. |
-| Container merge/delete | Administrative lifecycle. Delete is consequential and should require deterministic authorization. |
+| Container merge/delete | Hosted merge queued an ID, exposed data at `cleanup_pending`, completed, removed the source, and retained target data/settings. Delete is consequential; both require deterministic authorization. |
 | Metadata | Arbitrary source annotations and filters. Do not put secrets in metadata. |
 
 ## Integration surfaces
@@ -65,7 +67,7 @@ SDKs, and live probes. “Maturity” is a lab judgment, not a vendor status lab
 | n8n/Zapier/viaSocket | No/low-code automation | Good for ingest workflows, not a trust boundary. |
 | MCP | Portable `memory`, `recall`, identity/profile context | Current implementation lives in the monorepo; old standalone repo is deprecated. |
 | Coding plugins | Automatic project/user recall and periodic capture | Useful reference architectures; auto-capture and scope deserve review. |
-| Memory Router | Drop-in OpenAI-compatible proxy | Beta/prototype judgment after failed recall control. |
+| Memory Router | Drop-in OpenAI-compatible proxy | Delta/full-history and direct API pool controls passed; Router-generated cross-session recall failed. Keep prototype-only. |
 | Memory Graph UI | Explore documents, memories, relationships | Visualization, not evidence of a particular storage algorithm. |
 
 Official integration pages currently include Vercel AI SDK, Microsoft Agent Framework,

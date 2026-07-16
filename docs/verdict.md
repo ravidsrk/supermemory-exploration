@@ -17,9 +17,9 @@ state in the application database, send selected durable context to Supermemory,
 bounded context before a model call, and treat generated memories as untrusted evidence.
 This keeps authority, citations, isolation, and failure behavior under application control.
 
-That conclusion is supported by the current [API model](memory-model.md), two hosted core
-runs, a local-server run, an SMFS run, and a Memory Router control run. The detailed numbers
-are in [Experiments](experiments.md).
+That conclusion is supported by the current [API model](memory-model.md), hosted core and
+lifecycle runs, a 12-case matched domain benchmark, a local-server run, an SMFS run, and two
+Memory Router control passes. The detailed numbers are in [Experiments](experiments.md).
 
 ## What is genuinely compelling
 
@@ -61,6 +61,9 @@ long-lived agent than append-only embeddings.
 
 **Observed:** changing the synthetic launch date created version 2, linked it to version 1,
 and normal search returned the current date while preserving the old fact as parent context.
+The preference agent used the same pattern to replace a user preference without duplicate
+current facts. Server expiry hid a temporary fact, cancellation preserved another as version
+2, and an asynchronous container merge moved data while preserving target settings.
 
 ### 4. Isolation is simple and testable
 
@@ -79,10 +82,11 @@ operations against another container, and received `401` immediately after revoc
 
 The Router is a transparent OpenAI-compatible proxy that promises compression, retrieval,
 and fail-open forwarding. In this lab it successfully forwarded OpenRouter calls, stored a
-raw searchable chunk, modified context, and kept another user isolated. It did **not**
-recall the synthetic fact in a new conversation. Reusing the conversation ID returned the
-previous acknowledgement instead of answering the new question. Sending full history
-answered correctly, which only validates the model, not memory retrieval.
+raw searchable chunk, modified context, kept another user isolated, and continued delta-only
+conversations 3/3. Direct API memory in the same user pool influenced Router answers both with
+and without a conversation header. It did **not** recall the Router-generated synthetic token
+in a new conversation. Sending full history answered correctly, which validates the model
+history path rather than generated-memory persistence.
 
 This is one account and one model, but it is enough to reject an assumption of transparent
 correctness. Use the Router for prototypes only until a workload-specific continuation,
@@ -123,11 +127,28 @@ Two examples found in this pass:
 Use explicit parameters even when defaults look convenient. Treat generated SDK types plus
 a contract test as the effective API contract.
 
+### Lifecycle recovery is not one uniform contract
+
+In the same hosted account, `include.forgottenMemories=true` recovered a time-expired memory
+but did not recover a directly forgotten one. A metadata-filtered memory-list request also
+returned zero while unfiltered listing returned records, even though v4 search filters passed
+all seven tested shapes. Build user-facing deletion around preview, deterministic approval,
+negative verification, and a canonical audit ledger; do not promise restoration based only on
+an include flag.
+
+### The small domain result is encouraging, not dispositive
+
+The bounded 12-case smoke suite scored 12/12 with memory versus 2/12 without, at 659 ms search
+p50 and 1.14 s p95 with about 327 estimated context tokens. Tenant leaks and prompt-injection
+bypasses were zero. This establishes a useful regression harness, not production-scale quality:
+the next gate remains the blinded 100-case suite at realistic corpus volume.
+
 ## Adoption recommendation
 
 | Use case | Recommendation | Why |
 |---|---|---|
 | Per-user assistant profile | **Adopt with guardrails** | Strong profile/read model; keep consent and delete controls. |
+| Correction-aware preference agent | **Adopt with explicit promotion** | Conversation archival alone did not yield the fact promptly; normalized versioned writes did. |
 | Project/research notebook | **Adopt** | Hybrid retrieval, citations, metadata, and `superrag` fit well. |
 | Multi-agent handoff board | **Adopt for context, not locking** | Direct facts and aggregate recall work; use a DB/queue for coordination state. |
 | Decision journal | **Adopt** | Exact writes and version history match the domain. |
@@ -135,6 +156,9 @@ a contract test as the effective API contract.
 | Competitive-intelligence memory | **Pilot** | Five-provider live path worked; public-social claims need corroboration. |
 | Sandboxed coding/debug agent | **Pilot with strict sandbox policy** | Memory-backed transfer passed where stateless failed; template and egress must be explicit. |
 | Release-memory copilot | **Adopt read-only first** | Snapshot/history fit well; mutations remain approval-gated. |
+| Temporary incident context | **Pilot** | Expiry/cancel worked; keep canonical incident state and verify disappearance. |
+| Workspace consolidation | **Adopt as admin workflow** | Queued merge completed and retained target settings; source/target authorization stays deterministic. |
+| Semantic privacy erasure | **Pilot behind preview** | Candidate gate worked; audit-recovery behavior remains inconsistent. |
 | Autonomous action authorization | **Do not use as authority** | Retrieved text is probabilistic and prompt-injectable. |
 | Transparent Memory Router | **Prototype only** | Failed the lab's cross-session recall control. |
 | Plan-gated connector product | **Verify entitlement first** | Crawler was blocked on this account. |

@@ -1,11 +1,13 @@
 # Practical multi-provider agents
 
-This chapter is the executable part of the wiki. The implementations live in
-`src/supermemory_lab/advanced_agents.py`; live orchestration is in
-`experiments/run_advanced_agents.py`; curated results are in
-`evidence/2026-07-16-multi-provider-agents.md` and
-`evidence/2026-07-16-second-pass-agents.md`. Newer agents are split into focused modules so
-their safety boundary can be tested independently.
+This chapter is the executable part of the wiki. The foundational implementations live in
+[`advanced_agents.py`](../src/supermemory_lab/advanced_agents.py); live orchestration is in
+[`run_advanced_agents.py`](../experiments/run_advanced_agents.py). Curated results are in the
+[multi-provider](../evidence/2026-07-16-multi-provider-agents.md),
+[second-pass](../evidence/2026-07-16-second-pass-agents.md), and
+[lifecycle/Router/domain](../evidence/2026-07-16-third-pass-lifecycle-and-benchmark.md)
+evidence notes. Newer agents are split into focused modules so their safety boundary can be
+tested independently.
 
 ## Run them
 
@@ -25,6 +27,11 @@ python experiments/run_governance_scorecard.py
 python experiments/run_signal_radar.py
 python experiments/run_retrieval_policy_grid.py
 python experiments/run_release_triage_rehearsal.py
+python experiments/run_evolving_preference_agent.py
+python experiments/run_filter_erasure_agent.py
+python experiments/run_lifecycle_agents.py
+python experiments/run_router_continuity_matrix.py
+python experiments/run_domain_memory_benchmark.py
 ```
 
 Raw traces go to ignored `.runs/` files. They contain bounded experiment details but should
@@ -240,6 +247,93 @@ test-guided repair then passed all four tests. Only the passing result became a 
 an unverified result would remain RAG failure evidence. The sandbox was deleted and no Vercel
 write endpoint was called.
 
+## 11. Correction-aware personalization agent
+
+Providers: Supermemory + OpenRouter.
+
+This agent keeps the role-preserving conversation as a source document, but explicitly writes
+only confirmed, normalized preferences to direct memory. A correction updates the existing
+memory ID so the old value becomes history rather than a competing fact. It configures an
+entity context and custom profile buckets, answers from profile plus search, and checks replay
+idempotency and a second-container negative control.
+
+The final live run passed correction, custom-bucket classification, idempotency, isolation,
+and cleanup. Conversation processing completed without yielding the expected preference fact
+inside 30 seconds, so the production pattern is hybrid: archive conversations for provenance
+and explicitly promote facts the application has verified. Use an exact-canary readiness
+barrier; “some result exists” can be satisfied by an older memory.
+
+Good fits: personal assistants, adaptive coding copilots, account-preference layers, learning
+coaches, and support agents. Expose “what I remember,” edit, forget, and inference-review UX.
+
+## 12. Governed semantic-erasure agent
+
+Provider: Supermemory.
+
+Natural-language erasure is a search problem followed by a destructive operation. This agent
+first requests a dry-run candidate set, verifies required target canaries, rejects protected
+canaries or excessive cardinality, and only then applies the same prompt. It detects candidate
+drift and proves that a retained control still exists after deletion.
+
+The live matrix passed scalar, numeric, array, substring, negation, nested boolean, and dotted
+metadata-key filters. The one-target erasure core passed. Explicitly forgotten content did not
+reappear through the forgotten-memory include flag, even though expired content did in another
+run, so recovery is not assumed.
+
+Good fits: user privacy controls, stale campaign cleanup, revoked entitlement removal, and
+project archival. Require deterministic authorization outside memory and keep a deletion
+ledger in the canonical application store.
+
+## 13. Ephemeral incident-memory agent
+
+Provider: Supermemory.
+
+This agent attaches `forgetAfter` to operational context that should decay automatically:
+incident hypotheses, temporary mitigation state, campaign windows, travel state, or agent
+scratch knowledge. It can cancel expiry through a versioned update when the fact becomes
+durable.
+
+The live lease disappeared after roughly 15.4 seconds; the canceled lease reached version 2
+and stayed visible. The expired fact could be recovered only when forgotten memories were
+explicitly included. Treat expiry as retention hygiene, not a scheduler or a substitute for
+canonical incident state.
+
+## 14. Workspace-consolidation agent
+
+Provider: Supermemory.
+
+This administrative agent merges obsolete project/user/workspace containers into a chosen
+target. It records the returned merge ID, polls the state machine, routes new reads/writes to
+the target, and verifies memory movement, source removal, target retention, and settings.
+
+The live merge exposed data while status was still `cleanup_pending`, then reached
+`completed`; the target settings remained and the source was deleted. This is useful after
+account linking, duplicate-project cleanup, organization migration, or team consolidation.
+Never let a model choose source/target scopes, and keep an application-side migration ledger.
+
+## 15. Bounded domain-memory QA agent
+
+Providers: Supermemory + OpenRouter.
+
+This agent is both a practical read pattern and a release gate. It retrieves at most eight
+tenant-scoped memories, renders no more than 6,000 characters behind an untrusted-evidence
+boundary, asks the same model question with and without memory, and scores answer semantics
+separately from retrieval canaries.
+
+The 12-case live smoke suite covered stable facts, corrections, temporal reasoning, multi-hop
+reasoning, isolation, and prompt injection. It scored 12/12 with memory versus 2/12 without,
+at 659 ms search p50 and 1.14 s p95 with about 327 estimated context tokens. There were zero
+tenant leaks and zero requested attacker-token outputs. This is a synthetic regression gate,
+not an official MemoryBench result; grow it into the 100-case blinded domain suite.
+
+### Router continuity harness
+
+The companion Router matrix distinguishes model history from memory persistence. Delta-only
+continuation passed 3/3 and direct API memories influenced Router answers with or without a
+conversation ID. A Router-generated session token was not recalled in a new conversation,
+while another user remained isolated. Keep Router prototype-only until its generated-memory,
+outage, latency, and token controls pass for the pinned workload.
+
 ## Other high-value builds
 
 | Agent | Providers | Memory design |
@@ -255,12 +349,19 @@ write endpoint was called.
 | Developer-signal radar | Composio + Exa + public social + Supermemory | Source RAG, dated conclusions, stale fallback banner. |
 | Release-triage rehearsal | Vercel + SuperServe + OpenRouter + Supermemory | Read-only state, static runbook, test-verified lesson. |
 | Retrieval-policy tuner | Supermemory + OpenRouter | Dated policy benchmark; trusted query template. |
+| Preference evolution | Supermemory + OpenRouter | Conversation source plus explicitly versioned confirmed facts. |
+| Governed privacy erasure | Supermemory | Preview, protected canaries, approval, apply, and retained control. |
+| Incident memory lease | Supermemory | Direct dynamic fact with server expiry and cancellation. |
+| Workspace consolidation | Supermemory | Queued merge state machine plus deterministic source/target policy. |
+| Domain release gate | Supermemory + OpenRouter | Matched memory/no-memory QA with isolation and injection controls. |
 
 ## What not to build
 
 - A universal “remember everything” container shared by all users and agents.
 - A loop that writes its own generated answer as truth on every turn.
 - An immediate handoff that assumes write acknowledgement means search visibility.
+- A semantic deletion call that skips dry-run candidate review.
+- A container merge whose source and target are chosen by a prompt or model.
 - A tool agent that treats catalog ranking as a safety or quality score.
 - A social agent that promotes a single post into a durable fact.
 - A production debugger that runs generated code on the host or with unrestricted egress.

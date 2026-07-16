@@ -55,6 +55,12 @@ dialogue into prose because role and turn boundaries are retained.
 The application should own the full conversation log. Send a stable, bounded transcript or
 append policy to memory; do not rely on the memory provider as the only message store.
 
+In the correction-agent run, conversation processing reached a completed document but did not
+produce the expected preference memory inside 30 seconds. When a fact is explicitly confirmed
+and needed by the next turn, archive the conversation and separately create/update the
+normalized fact. Exact-canary polling prevents an unrelated older result from becoming a false
+readiness signal.
+
 ### Create direct memories
 
 Direct v4 creation bypasses extraction. Use it for confirmed, normalized facts:
@@ -79,6 +85,11 @@ reduce prompt engineering: stable traits and current activity already have diffe
 In the hosted probe, direct static memories appeared under `static`, a dated project event
 appeared under `dynamic`, and the built-in `preferences` bucket remained empty. Therefore,
 do not assume arbitrary metadata such as `kind=preference` populates a profile bucket.
+
+Container settings accepted an entity context plus three custom bucket definitions in the
+live preference run, and the corrected fact appeared in the intended custom bucket. Bucket
+vocabulary is effectively schema: keep names stable, avoid sensitive labels, and remember that
+organization bucket definitions are documented as add-only.
 
 ### Memory search
 
@@ -126,6 +137,21 @@ Document deletion and memory forgetting are different operations. Define whether
 request should remove source documents, extracted memories, connector state, cached local
 copies, or the whole container; test the result with negative-control searches.
 
+The hosted audit path differed by lifecycle in this pass. A time-expired memory became visible
+when `include.forgottenMemories=true`; a directly forgotten memory did not reappear through
+that flag or `/v4/memories/list` during repeated polling. Treat expiry and explicit erasure as
+separate contracts and do not advertise restoration until the deployed version passes it.
+
+### Server-enforced expiry
+
+Direct memory create/update accepts `forgetAfter`. This fits incident leases, temporary goals,
+campaign windows, and short-lived agent context. The synthetic lease disappeared from normal
+search after about 15.4 seconds. Clearing the expiry created version 2 and preserved the fact.
+
+Expiry is retention hygiene, not scheduling or authorization. Keep canonical deadlines in the
+application database, tolerate a bounded visibility delay, and verify both disappearance and
+the retained-control memory.
+
 ### Inference review
 
 Documented derived facts are flagged `isInference`, down-weighted, and can be reviewed.
@@ -151,6 +177,30 @@ the tenant tag. Use scoped API keys inside user-controlled sandboxes.
 
 Metadata is for filtering *inside* an isolation boundary. It should not be the primary tenant
 barrier.
+
+### Container merge lifecycle
+
+Container merge queues asynchronous work and returns a merge ID. In the live run, moved data
+was visible in the target while status was still `cleanup_pending`; the status later reached
+`completed`, the source disappeared, and the target's settings remained.
+
+Treat merge as a migration state machine:
+
+1. deterministically authorize the source and target outside the model;
+2. freeze or redirect new writes to the target;
+3. store the merge ID and poll with a deadline;
+4. verify source absence, target data, and target settings;
+5. retain an application-side audit record.
+
+Do not infer merge completion from target search visibility.
+
+### Metadata filters are subsets, not tenancy
+
+The live v4 search matrix passed scalar, numeric, array, substring, negation, nested boolean,
+and dotted-key filters. However, the same hosted account returned zero rows from a filtered
+`/v4/memories/list` request while unfiltered listing returned the records. Use container tags
+for hard isolation, contract-test filters on the exact endpoint used, and fail closed when a
+governance preview unexpectedly returns nothing.
 
 ## Prompt boundary
 
@@ -179,7 +229,12 @@ and limits the blast radius of a poisoned source. See
 - Conversation extraction: queued/extracting on immediate response.
 - SMFS profile: not immediately consistent after a write in the test.
 - Router memory: raw chunk became searchable, but no distilled memory was created in the
-  observed window and cross-session recall failed.
+  observed window and generated cross-session recall failed. Separately created direct API
+  memory in the same user pool did influence Router answers, with or without a conversation ID.
+- Memory expiry: normal search hid the short lease after about 15.4 seconds; the explicit
+  forgotten-memory include path recovered it.
+- Container merge: target reads succeeded at `cleanup_pending`; administrative completion came
+  later. Poll the merge ID rather than the data path.
 
 Build with explicit states (`queued`, `processing`, `done`, `failed`) and retry reads with a
 bounded deadline. Never translate eventual consistency into an infinite request wait.

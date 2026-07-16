@@ -41,6 +41,11 @@ The second pass on the same date adds safe live tool execution, a 15-case govern
 a six-provider signal radar, a 120-search retrieval-policy grid, and a test-guided release
 rehearsal. See the [curated evidence](../evidence/2026-07-16-second-pass-agents.md).
 
+The third pass adds correction-aware personalization, preview-gated erasure, seven filter
+shapes, expiry/cancellation, workspace merge, a Router continuity matrix, and a 12-case
+matched memory/no-memory benchmark. See the
+[lifecycle and benchmark evidence](../evidence/2026-07-16-third-pass-lifecycle-and-benchmark.md).
+
 ## Update discipline
 
 - Retest the core probe monthly and before a production launch.
@@ -53,3 +58,5 @@ The official machine-readable docs index is
 [docs/llms.txt](https://supermemory.ai/docs/llms.txt). The public monorepo and
 MemoryBench are on [GitHub](https://github.com/supermemoryai/supermemory) and
 [GitHub](https://github.com/supermemoryai/memorybench), respectively.
+The upstream monorepo and this independent field lab are MIT-licensed; source-inspected,
+hosted-observed, and lab-original claims remain explicitly distinguished.
