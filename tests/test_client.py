@@ -58,6 +58,52 @@ class SupermemoryClientTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             client.add_documents_batch([])
 
+    def test_document_portability_paths_quote_ids(self) -> None:
+        transport = RecordingTransport()
+        client = SupermemoryClient(transport)
+
+        client.get_document_chunks("document/id")
+        client.get_document_file_url("document/id")
+
+        self.assertEqual(
+            transport.calls[0][0:2],
+            ("GET", "/v3/documents/document%2Fid/chunks"),
+        )
+        self.assertEqual(
+            transport.calls[1][0:2],
+            ("GET", "/v3/documents/document%2Fid/file-url"),
+        )
+
+    def test_bulk_document_delete_exposes_only_exact_unique_ids(self) -> None:
+        transport = RecordingTransport()
+        client = SupermemoryClient(transport)
+
+        client.bulk_delete_documents(["doc-1", "doc-2"])
+
+        self.assertEqual(
+            transport.calls[0],
+            ("DELETE", "/v3/documents/bulk", {"ids": ["doc-1", "doc-2"]}),
+        )
+        with self.assertRaises(ValueError):
+            client.bulk_delete_documents([])
+        with self.assertRaises(ValueError):
+            client.bulk_delete_documents(["doc-1", "doc-1"])
+        with self.assertRaises(ValueError):
+            client.bulk_delete_documents([""])
+
+    def test_organization_settings_and_bucket_suggestions_are_reads(self) -> None:
+        transport = RecordingTransport()
+        client = SupermemoryClient(transport)
+
+        client.get_organization_settings()
+        client.suggest_profile_buckets()
+
+        self.assertEqual(transport.calls[0], ("GET", "/v3/settings", None))
+        self.assertEqual(
+            transport.calls[1],
+            ("POST", "/v3/settings/suggest-buckets", {}),
+        )
+
     def test_memory_search_always_sets_mode_and_tuning(self) -> None:
         transport = RecordingTransport()
         client = SupermemoryClient(transport)

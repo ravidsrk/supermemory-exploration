@@ -88,6 +88,20 @@ class SupermemoryClient:
             "GET", f"/v3/documents/{quote(document_id, safe='')}"
         )
 
+    def get_document_chunks(self, document_id: str) -> JsonObject:
+        """Return ordered source chunks for portability and citation audits."""
+
+        return self._transport.request(
+            "GET", f"/v3/documents/{quote(document_id, safe='')}/chunks"
+        )
+
+    def get_document_file_url(self, document_id: str) -> JsonObject:
+        """Return a short-lived file URL; callers must never persist the URL itself."""
+
+        return self._transport.request(
+            "GET", f"/v3/documents/{quote(document_id, safe='')}/file-url"
+        )
+
     def wait_for_document(
         self,
         document_id: str,
@@ -158,6 +172,28 @@ class SupermemoryClient:
         return self._transport.request(
             "DELETE", f"/v3/documents/{quote(document_id, safe='')}"
         )
+
+    def bulk_delete_documents(self, document_ids: Sequence[str]) -> JsonObject:
+        """Delete an exact bounded ID set.
+
+        The hosted endpoint can also erase whole containers or filepath prefixes. This lab
+        deliberately exposes only exact IDs so a model-generated tag/prefix cannot broaden
+        the mutation.
+        """
+
+        if not 1 <= len(document_ids) <= 100:
+            raise ValueError("bulk document deletion requires between 1 and 100 exact IDs")
+        normalized = [str(document_id).strip() for document_id in document_ids]
+        if any(not document_id for document_id in normalized):
+            raise ValueError("bulk document deletion IDs must be non-empty")
+        if len(set(normalized)) != len(normalized):
+            raise ValueError("bulk document deletion IDs must be unique")
+        return self._transport.request(
+            "DELETE", "/v3/documents/bulk", {"ids": normalized}
+        )
+
+    def get_organization_settings(self) -> JsonObject:
+        return self._transport.request("GET", "/v3/settings")
 
     def search_documents(
         self,
