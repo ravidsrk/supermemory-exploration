@@ -11,6 +11,7 @@ PYTHONPATH=src python3 -m supermemory_lab.probes --scoped-key-only
 PYTHONPATH=src python3 experiments/run_safe_tool_execution.py
 PYTHONPATH=src python3 experiments/run_governance_scorecard.py
 PYTHONPATH=src python3 experiments/run_signal_radar.py
+PYTHONPATH=src python3 experiments/run_retrieval_policy_grid.py
 ```
 
 The core probe exercises:
@@ -42,3 +43,9 @@ trusted application code and remains false regardless of model output.
 search, ScrapeCreators Reddit/X reads, OpenRouter synthesis, and Supermemory history. It
 then repeats the briefing with external refresh disabled to measure a cheaper memory-only
 continuity/degraded mode without claiming that remembered evidence is current.
+
+`run_retrieval_policy_grid.py` makes 120 live v4 searches across 24 combinations of
+search mode, threshold, reranking, and query rewriting. Five exact, semantic, unrelated,
+and deceptively similar queries score recall and false positives alongside p50/p95 latency
+and payload size. The winning policy is stored as a dated dynamic memory and immediately
+used by a recall agent; benchmark content is precisely forgotten after the run.
