@@ -171,7 +171,9 @@ and limits the blast radius of a poisoned source. See
 
 ## Consistency expectations
 
-- Direct memories: read-after-write was effectively immediate in this small test.
+- Direct memories: small facts were quickly available, but a long tool-selection decision was
+  profile-visible before either memories or hybrid search found it. Consistency depends on the
+  read path and payload; poll the path the next step will actually use.
 - Version update and single forget: visible on the next search in the test.
 - Document extraction: asynchronous, tens of seconds in the test.
 - Conversation extraction: queued/extracting on immediate response.

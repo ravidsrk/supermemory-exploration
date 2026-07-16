@@ -22,7 +22,7 @@ where a wrong recollection is visible and recoverable.
 
 ## Month 0: foundation — 2026-07-16 to 2026-07-31
 
-Status: first pass complete in this repository.
+Status: foundation and expanded multi-provider pass complete in this repository.
 
 Delivered:
 
@@ -30,6 +30,10 @@ Delivered:
 - redacted hosted probes for core v3/v4, Router, and connector entitlement;
 - fresh local-server and SMFS Bash tool validation;
 - four tested agent primitives and a complete live demo;
+- five additional multi-provider agents using every supplied provider credential;
+- a causal sandbox transfer test where memory passed and the stateless candidate failed;
+- a three-case support benchmark scoring 3/3 with memory and 0/3 without it;
+- profile-versus-search read-after-write evidence and explicit polling barriers;
 - source-pinned SDK, plugin, MCP, SMFS, and MemoryBench inspection;
 - practical wiki, production guardrails, evidence note, and benchmark plan.
 
@@ -197,6 +201,9 @@ On or near the 16th of each month:
 | Connector lifecycle | Sync/update/delete | Blocked by plan; entitlement only verified |
 | Hosted retrieval p95 | Product-specific | Insufficient samples |
 | Domain accuracy | Product-specific | Dataset pending |
+| Support continuity | Memory beats empty-tenant baseline | 3/3 vs 0/3 on small synthetic suite |
+| Verified lesson transfer | Memory improves related sandbox task | Memory passed; stateless failed on one hidden case |
+| Immediate direct-fact visibility | Next agent can retrieve safely | Profile first-poll passed; hybrid missed tool decision inside 10 s |
 | Prompt-injection resistance | No policy bypass | Renderer implemented; adversarial suite pending |
 | Self-host durability | Restore and upgrade | Fresh run passed; durability/upgrade pending |
 | SMFS maturity | Consistent read/search/profile | Read/search passed; profile/list quirks observed |

@@ -101,6 +101,35 @@ inspection. The 2026-07-16 live run produced:
 
 Run one pattern with `--pattern personalized`, `research`, `handoff`, or `decision`.
 
+## Multi-provider agent experiments
+
+```bash
+set -a
+source .env.local
+set +a
+export PYTHONPATH=src:.
+
+python experiments/run_advanced_agents.py intelligence
+python experiments/run_advanced_agents.py tools
+python experiments/run_advanced_agents.py release
+python experiments/run_advanced_agents.py debug
+python experiments/run_advanced_agents.py continuity
+```
+
+The live pass authenticated all supplied providers and ran five production-shaped agents.
+Notable controls:
+
+- competitive intelligence used Context.dev, Exa, public X/Reddit data, OpenRouter, and
+  Supermemory in one trace;
+- tool selection discovered and inspected without executing a mutation;
+- generated patches ran in an egress-blocked, disposable SuperServe Python sandbox;
+- the debugging transfer task used the same hidden test with and without remembered policy;
+- support questions used isolated synthetic tenants and paired empty-tenant baselines;
+- Vercel access stayed read-only and committed evidence omits project names.
+
+See [the practical agent chapter](practical-agents.md) and the curated
+[multi-provider evidence](../evidence/2026-07-16-multi-provider-agents.md).
+
 ## Disposable self-hosted probe
 
 Follow the official [quickstart](https://supermemory.ai/docs/self-hosting/quickstart) in a

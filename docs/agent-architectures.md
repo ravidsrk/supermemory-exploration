@@ -4,7 +4,7 @@ The central design choice is not “does the agent have memory?” It is **which
 memory, who can revise them, which representation is retrieved, and what happens when the
 memory path fails**.
 
-## Four reusable primitives
+## Reusable primitives and live multi-provider agents
 
 This repository implements four framework-independent patterns in
 [`agents.py`](../src/supermemory_lab/agents.py) and a live driver in
@@ -19,6 +19,11 @@ This repository implements four framework-independent patterns in
 
 These patterns intentionally avoid tying memory to an orchestration framework. Any agent
 runtime can call them.
+
+Five additional production-shaped implementations cover competitive intelligence, dynamic
+tool selection, sandboxed debugging, support continuity, and release memory. See
+[Practical multi-provider agents](practical-agents.md) and the
+[provider combination map](provider-combinations.md).
 
 ## Architecture 1: personalized chief of staff
 
@@ -232,7 +237,7 @@ Bash tool as arbitrary code execution, and account for sync/eventual-consistency
 | Explicit user preference saved in settings | Direct static memory | Confirmed and normalized. |
 | Casual conversation | Structured conversation | Extraction should decide salience. |
 | Research paper or policy PDF | `superrag` document | Preserve wording and citations; avoid traits. |
-| Approved project decision | Direct static memory | Must be exact and immediately searchable. |
+| Approved project decision | Direct static memory | Must be exact; use profile or an explicit search-visibility barrier for immediate handoff. |
 | Current task status | Direct dynamic memory or application DB | Exact, short-lived; DB remains authoritative. |
 | Agent hypothesis | Direct dynamic with `status=hypothesis`, or do not persist | Prevent it masquerading as truth. |
 | Correction to known fact | Versioned update | Preserve history and current truth. |

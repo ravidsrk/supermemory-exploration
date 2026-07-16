@@ -5,18 +5,21 @@ Supermemory over the next six months. It is not a copy of the product documentat
 
 ## Start here
 
-1. [Practical verdict](verdict.md) — where Supermemory is strong, weak, and fit for use.
-2. [Capability map](capability-map.md) — every material surface and its maturity.
-3. [Memory model](memory-model.md) — documents, chunks, memories, profiles, graph history,
+1. [Practical multi-provider agents](practical-agents.md) — live builds and runbooks.
+2. [Provider combination map](provider-combinations.md) — useful pairings and anti-patterns.
+3. [Practical verdict](verdict.md) — where Supermemory is strong, weak, and fit for use.
+4. [Capability map](capability-map.md) — every material surface and its maturity.
+5. [Memory model](memory-model.md) — documents, chunks, memories, profiles, graph history,
    containers, and the read/write lifecycle.
-4. [Agent architectures](agent-architectures.md) — build patterns and product ideas.
-5. [Production playbook](production-playbook.md) — isolation, safety, latency, lifecycle,
+6. [Agent architectures](agent-architectures.md) — build patterns and product ideas.
+7. [Production playbook](production-playbook.md) — isolation, safety, latency, lifecycle,
    and operational guidance.
-6. [Experiments](experiments.md) — what the lab actually observed.
-7. [Ecosystem and source notes](ecosystem.md) — SDKs, plugins, MCP, connectors, SMFS,
+8. [Experiments](experiments.md) — what the lab actually observed.
+9. [Current source inspection](source-internals.md) — agent SDK and MemoryBench internals.
+10. [Ecosystem and source notes](ecosystem.md) — SDKs, plugins, MCP, connectors, SMFS,
    self-hosting, and public repository findings.
-8. [Benchmarks](benchmarks.md) — MemoryBench, MemScore, benchmark caveats, and an eval plan.
-9. [Six-month roadmap](roadmap.md) — a staged adoption and retest schedule.
+11. [Benchmarks](benchmarks.md) — MemoryBench, MemScore, benchmark caveats, and eval plan.
+12. [Six-month roadmap](roadmap.md) — a staged adoption and retest schedule.
 
 ## Evidence language
 

@@ -34,19 +34,23 @@ marketing label “memory”: it is a unified context contract.
 **Observed:** direct stable and dynamic facts appeared in the expected profile sections,
 and hybrid search returned both exact memories and the supporting document chunk.
 
-### 2. Exact writes coexist with learned writes
+### 2. Exact writes coexist with learned writes, but visibility is mode-dependent
 
-Direct v4 creation makes a confirmed fact immediately searchable. Document and
-conversation ingestion asynchronously extract candidate facts. That supports an important
-separation:
+Direct v4 creation bypasses extraction and makes a confirmed fact available to the profile
+quickly in the observed runs. Search visibility can lag. Document and conversation ingestion
+asynchronously extract candidate facts. That supports an important separation:
 
 - write confirmed decisions, permissions, and handoffs directly;
 - ingest conversations and documents when extraction is the desired behavior;
 - use `taskType=superrag` for sources that should remain citable knowledge rather than
   become user traits.
 
-**Observed:** direct creation was available in about one second from the client; document
-extraction took roughly 18–33 seconds in the two hosted runs.
+**Observed:** direct facts became profile-visible on the first poll at roughly one second in
+the support and debugging runs. The tool-selection decision was profile-visible while hybrid
+search still returned nothing inside a separate ten-second window. Earlier small exact facts
+were searchable quickly; therefore a write acknowledgement is not a universal search barrier.
+Document extraction took roughly 18–33 seconds in the two hosted runs. Use the profile for
+immediate direct-fact context or poll the retrieval path required by the next step.
 
 ### 3. Knowledge evolution is a first-class operation
 
@@ -113,6 +117,8 @@ Two examples found in this pass:
   `memories`, while some overview language implies hybrid;
 - the memory-update prose omitted the required `containerTag`; the hosted endpoint rejected
   the request without it and the generated SDK includes it.
+- the inspected SuperServe OpenAPI described Python 3.12 in `superserve/base`, while live
+  `python3` execution returned command-not-found; the explicit Python 3.11 template worked.
 
 Use explicit parameters even when defaults look convenient. Treat generated SDK types plus
 a contract test as the effective API contract.
@@ -126,6 +132,9 @@ a contract test as the effective API contract.
 | Multi-agent handoff board | **Adopt for context, not locking** | Direct facts and aggregate recall work; use a DB/queue for coordination state. |
 | Decision journal | **Adopt** | Exact writes and version history match the domain. |
 | Customer-support copilot | **Pilot** | Valuable personalization; requires tenancy, PII, and deletion review. |
+| Competitive-intelligence memory | **Pilot** | Five-provider live path worked; public-social claims need corroboration. |
+| Sandboxed coding/debug agent | **Pilot with strict sandbox policy** | Memory-backed transfer passed where stateless failed; template and egress must be explicit. |
+| Release-memory copilot | **Adopt read-only first** | Snapshot/history fit well; mutations remain approval-gated. |
 | Autonomous action authorization | **Do not use as authority** | Retrieved text is probabilistic and prompt-injectable. |
 | Transparent Memory Router | **Prototype only** | Failed the lab's cross-session recall control. |
 | Plan-gated connector product | **Verify entitlement first** | Crawler was blocked on this account. |

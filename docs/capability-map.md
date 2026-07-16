@@ -15,7 +15,7 @@ SDKs, and live probes. “Maturity” is a lab judgment, not a vendor status lab
 | `dreaming=dynamic` | Group related content before memory creation | [Adding memories](https://supermemory.ai/docs/add-memories) | Core, not lab-tested |
 | `dreaming=instant` | Extract each document independently; extra documented operation | Same source; hosted probe | Core |
 | `taskType=superrag` | Index knowledge without generating personal memory facts | [SuperRAG](https://supermemory.ai/docs/concepts/super-rag) | Core |
-| Direct v4 memory creation | Exact, immediate facts; up to 100 per call | [Direct creation](https://supermemory.ai/docs/api-reference/content-management/create-memories-directly); hosted probe | Core |
+| Direct v4 memory creation | Exact facts without extraction; up to 100 per call | [Direct creation](https://supermemory.ai/docs/api-reference/content-management/create-memories-directly); hosted probes | Core; profile can precede search visibility |
 | Versioned memory update | Correct a fact while preserving history | [Update](https://supermemory.ai/docs/api-reference/content-management/update-a-memory-creates-new-version); hosted probe | Core |
 | Forget one memory | Remove a fact from normal search | [Forget](https://supermemory.ai/docs/api-reference/content-management/forget-a-memory); hosted probe | Core |
 | Agentic mass-forget | Natural-language deletion with dry-run | [Forget matching](https://supermemory.ai/docs/api-reference/content-management/forget-memories-matching-a-promptquery); hosted probe | Slow/variable; background workflow only |

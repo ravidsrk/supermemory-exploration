@@ -78,7 +78,7 @@ Classify operations by whether they belong in the synchronous request path.
 
 | Operation | Request path? | Lab signal |
 |---|---|---|
-| Direct memory create/update | Sometimes; prefer async if answer does not depend on it | ~1 s client wall in small run |
+| Direct memory create/update | Sometimes; prefer async if answer does not depend on it | Profile-visible near ~1 s in new runs; search visibility can lag |
 | Memory/profile search | Yes, with timeout/fallback | ~0.6–1.1 s median client wall across two tiny samples |
 | Document/conversation ingestion | No | Tens of seconds to extraction |
 | Mass-forget agent | No | ~5.8 s to >60 s |

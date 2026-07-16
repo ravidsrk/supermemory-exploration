@@ -22,8 +22,10 @@ Hands-on exploration of Supermemory product surface, APIs, SDKs, and integration
 
 ## Status
 
-The first practical research pass is complete. Start with the
-[practical wiki](docs/README.md) or the [verdict](docs/verdict.md).
+The field lab includes hosted/self-hosted capability probes, nine authenticated provider
+adapters, nine reference patterns, and live memory/no-memory experiments. Start with the
+[practical wiki](docs/README.md), [multi-provider agents](docs/practical-agents.md), or the
+[verdict](docs/verdict.md).
 
 ## Repository map
 
@@ -64,11 +66,13 @@ cp .env.example .env.local
 python -m unittest -v
 ```
 
-Run the redacted capability probe or one of the four agent patterns:
+Run the redacted capability probe, foundational patterns, or advanced agents:
 
 ```bash
 supermemory-probe --with-llm
 PYTHONPATH=src python examples/run_agent_patterns.py --pattern all
+PYTHONPATH=src:. python experiments/run_advanced_agents.py debug
+PYTHONPATH=src:. python experiments/run_advanced_agents.py continuity
 ```
 
 Live commands create synthetic, isolated `lab:` containers. Raw probe output is ignored under

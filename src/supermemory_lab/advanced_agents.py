@@ -6,7 +6,7 @@ import base64
 import hashlib
 import json
 import time
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Protocol
+from typing import Any, Dict, List, Mapping, Optional
 
 from .agents import MemoryBackend
 from .context import render_profile_context, render_search_context
