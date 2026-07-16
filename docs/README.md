@@ -62,6 +62,13 @@ resumable budgeted due diligence, live-state-aware change simulation, and legal-
 retention. It also exercises a real partial-provider outage rather than hiding it. See the
 [deep agent-systems evidence](../evidence/2026-07-16-sixth-pass-deep-agents.md).
 
+The seventh pass adds a larger instant/dynamic Dreaming and inferred-review comparison,
+subject-level export and exact erasure, OpenAPI/issue contract-drift holds, a signed
+long-horizon project state machine, genuine valid minority dissent, and resumable batch
+migration with exact reconciliation and rollback. It also restores a healthy six-provider
+research path after detecting stale process credentials. See the
+[deep operations evidence](../evidence/2026-07-16-seventh-pass-deep-operations.md).
+
 ## Update discipline
 
 - Retest the core probe monthly and before a production launch.

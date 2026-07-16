@@ -297,6 +297,47 @@ promote. See the
 [sixth-pass evidence](../evidence/2026-07-16-sixth-pass-deep-agents.md) for exact run IDs,
 provider degradation, source contracts, caveats, and cleanup.
 
+## Seventh-pass deep operations
+
+```bash
+PYTHONPATH=src python3 experiments/run_dreaming_review_matrix.py
+PYTHONPATH=src python3 experiments/run_memory_transparency_agent.py
+PYTHONPATH=src python3 experiments/run_contract_drift_sentinel.py
+PYTHONPATH=src python3 experiments/run_project_memory_os.py
+PYTHONPATH=src python3 experiments/run_adversarial_dissent_council.py
+PYTHONPATH=src python3 experiments/run_migration_reconciler.py
+```
+
+Final observed outcomes:
+
+- matched eight-document instant/dynamic corpora produced two inferred candidates on the
+  first instant run and zero on the repeat; dynamic Dreaming remained pending for all eight
+  documents in both runs, so no review action was taken;
+- a signed subject export enumerated four actual documents, including provider backing records
+  for direct memory writes, plus two current memories and lineage; drift, wrong approval, and
+  replay were denied before one exact document/memory erasure passed;
+- a 32-path OpenAPI snapshot plus 26 current issue reports produced a non-authoritative
+  `HOLD-FOR-CONTRACT-TESTS`; unchanged evidence survived restart and a changed contract digest
+  became stale;
+- all six acquisition channels were healthy after sourcing the intended local secret file,
+  but the research gate still labeled the evidence insufficient rather than conflating API
+  health with source quality;
+- the project OS recovered a signed four-state chain, required a sandbox-verified artifact for
+  review/completion, ignored a forged checkpoint, and excluded another tenant and poison;
+- three valid model votes produced `HOLD`, `PILOT`, `HOLD`; the evidence-bound minority dissent
+  persisted through restart while any evidence change invalidated the proposal;
+- a ten-record migration replayed to the same IDs after simulated acknowledgement loss,
+  reconciled exactly in a fresh process, rolled back only the approved IDs, and retained a
+  pre-existing target record;
+- all final cleanup checks passed and the complete offline suite passed 173 tests.
+
+Failed attempts remained fail-closed. An export parser initially missed the observed
+document-list field name; an assertion omitted direct-memory backing documents; stale inherited
+provider credentials produced 401s until the intended ignored environment file was sourced;
+and malformed project proposals created no checkpoints. See the
+[seventh-pass evidence](../evidence/2026-07-16-seventh-pass-deep-operations.md) for exact run
+IDs, source contracts, implementation boundaries, and unresolved gaps.
+
 ## Disposable self-hosted probe
 
 Follow the official [quickstart](https://supermemory.ai/docs/self-hosting/quickstart) in a
@@ -367,17 +408,17 @@ For each run, add a dated evidence note containing:
 
 ## Experiments still needed
 
-- induce an inferred-memory review candidate, then exercise approve/decline/undo (the endpoint
-  and ordinary-memory 409 control are covered; instant-Dreaming seed still generated none);
-- refresh/re-authorize Exa, Monid, and Composio, then repeat the full and intentionally degraded
-  due-diligence paths;
-- create genuine valid minority dissent in the three-model council and measure calibration,
-  model/order effects, and abstention;
+- exercise approve/decline/undo on a generated inference with at least two independent parents;
+  a larger instant corpus produced two one-parent candidates once and zero on repeat;
+- deliberately expire or revoke one provider credential and repeat the healthy six-channel
+  acquisition run to retain both full and typed-degradation regressions;
+- measure council calibration, model/order effects, correlated errors, and abstention beyond
+  the passing genuine-minority-dissent case;
 - replace the tutor's toy grade with a validated domain assessment and measure false mastery;
 - exercise retention across connectors, backups, caches, export, and self-hosted restore;
-- repeat both Dreaming modes across larger related batches, longer windows, and
-  queue/readiness instrumentation;
-- batch file upload and 600-document/cardinality boundaries;
+- repeat both Dreaming modes across larger related batches, longer windows, and queue/readiness
+  instrumentation; instant candidate generation was non-deterministic and dynamic stayed pending;
+- batch file upload, 600-document ingest, and 100-ID bulk-delete/cardinality boundaries;
 - repeat the retrieval grid on a domain corpus with at least 100 blinded queries;
 - file upload and 50 MB boundary behavior;
 - connector sync/update/delete on an entitled plan;

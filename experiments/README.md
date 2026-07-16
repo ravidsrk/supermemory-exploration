@@ -34,6 +34,12 @@ PYTHONPATH=src python3 experiments/run_adaptive_tutor.py
 PYTHONPATH=src python3 experiments/run_due_diligence_campaign.py
 PYTHONPATH=src python3 experiments/run_change_risk_board.py
 PYTHONPATH=src python3 experiments/run_retention_controller.py
+PYTHONPATH=src python3 experiments/run_dreaming_review_matrix.py
+PYTHONPATH=src python3 experiments/run_memory_transparency_agent.py
+PYTHONPATH=src python3 experiments/run_contract_drift_sentinel.py
+PYTHONPATH=src python3 experiments/run_project_memory_os.py
+PYTHONPATH=src python3 experiments/run_adversarial_dissent_council.py
+PYTHONPATH=src python3 experiments/run_migration_reconciler.py
 ```
 
 The core probe exercises:
@@ -162,3 +168,28 @@ stores signed non-authoritative advice that becomes stale with the snapshot.
 `run_retention_controller.py` partitions exact latest inventory by retention class, expiry,
 legal hold, and review state; binds hold and deletion approvals to exact snapshots/plans;
 rejects drift and replay; verifies absence; and emits canonical external audit events.
+
+`run_dreaming_review_matrix.py` sends matched eight-document corpora through instant and
+dynamic Dreaming, polls both document and Dreaming states, inspects inferred candidates, and
+keeps every review transition behind an exact candidate/content authorization.
+
+`run_memory_transparency_agent.py` enumerates the actual subject inventory, source chunks, and
+memory lineage into a signed export; exact erasure is bound to that snapshot, denies replay,
+verifies absence and retained controls, and emits audit events outside memory.
+
+`run_contract_drift_sentinel.py` snapshots OpenAPI operations and request schemas, combines
+current official changelog and reported issue signals, requires targeted contract tests for
+risky upgrades, and makes persisted advice stale when the contract digest changes.
+
+`run_project_memory_os.py` composes organization/project/user reads while maintaining a signed
+`planned → active → review → done` chain. Review and completion require an independently
+verified artifact; the model proposes but cannot transition state.
+
+`run_adversarial_dissent_council.py` uses the council implementation with evidence designed to
+produce genuine valid disagreement. It proves the minority position remains cited, signed,
+persisted, and stale on evidence change without becoming action authority.
+
+`run_migration_reconciler.py` batch-imports a signed manifest with stable IDs and hashes,
+simulates acknowledgement loss, resumes from a separate checkpoint, reconciles exact
+inventory, and performs approval-bound exact-ID rollback while retaining a pre-existing
+control document.

@@ -55,6 +55,8 @@ covers combinations with distinct production value and calls out invalid ones.
 | OpenRouter + SuperServe | Adaptive tutor | Personalized teaching plus isolated deterministic assessment; model never grades |
 | Context.dev + Exa + ScrapeCreators + Monid + Composio + OpenRouter | Budgeted due diligence | Structured/web/social/tool evidence, publisher diversity, resumable partial-state research |
 | Vercel + Context.dev + SuperServe + OpenRouter | Change-risk board | Minimized live health, official rollout guidance, isolated rehearsal, deterministic hold |
+| All six acquisition channels + OpenRouter | Contract-drift sentinel | Current API/changelog/issues, provider health, explanation; deterministic schema and release-test gate |
+| OpenRouter + SuperServe | Project Memory OS | Brief/proposal generation and independent artifact verification over signed scoped state |
 
 Add Supermemory to each row for longitudinal state, provenance, tenant isolation, and future
 retrieval.
@@ -81,6 +83,10 @@ retrieval.
 | Due diligence | Resume signed ledger → acquire within budget → normalize publisher/source → cite → label degradation → promote only if complete | Fluent partial research must not masquerade as a complete decision. |
 | Change risk | Minimize live state → obtain current guidance → rehearse in isolation → apply deterministic health gate → human review | A passing rehearsal cannot override unhealthy production state. |
 | Retention | Inventory exact IDs → partition policy → place/verify holds → regenerate drifted plan → exact approve → forget → verify → external audit | A model must never select deletion IDs or own the only audit record. |
+| Transparency | Authorize subject → enumerate provider inventory → sign export → exact plan/approve → erase → verify → external audit | Application write logs omit provider-created backing records. |
+| Contract upgrade | Snapshot exact schema → collect current official/reported signals → map contract tests → test → explicit release review | API health and issue titles are evidence, not release authority. |
+| Project state | Retrieve valid chain/scopes → propose → authorize exact transition → verify artifact → checkpoint → brief | Semantic recall cannot provide locking or completion proof. |
+| Migration | Sign manifest → batch/import → checkpoint → enumerate/reconcile → approve exact IDs → rollback/verify | Acknowledgement is not exactly-once completion. |
 
 ## Permutation coverage lattice
 
@@ -108,6 +114,10 @@ of providers.
 | Resumable research | Official/web/social/tool sources | OpenRouter | Read-only acquisition | Due-diligence campaign | Call/cost budget, publisher diversity, checkpoint integrity, degraded-state refusal |
 | Change simulation | Vercel + official guidance | OpenRouter | Egress-blocked rehearsal | Change-risk board | Minimized state, evidence classes, live health override, stale advice |
 | Retention governance | Exact latest inventory | OpenRouter explanation only | Exact forget | Retention controller | Legal hold, plan digest, drift/replay denial, absence check, external audit |
+| Subject transparency | Documents/chunks/memories/history | OpenRouter explanation only | Exact document/memory erase | Transparency agent | Subject auth, inventory digest, exact plan, replay denial, external audit |
+| Contract governance | OpenAPI/changelog/issues/provider signals | OpenRouter | Proposal only | Upgrade sentinel | Canonical schema diff, report labels, targeted tests, snapshot freshness |
+| Project recovery | Signed scoped checkpoints + verified artifact | OpenRouter | Sandbox assessment only | Project Memory OS | State machine, signatures, external authorization, artifact digest |
+| Batch portability | Signed source manifest + target inventory | OpenRouter explanation only | Exact bulk delete | Migration reconciler | Stable IDs/hashes, fresh resume, one-to-one reconcile, approval-bound rollback |
 
 ## Invalid or risky combinations
 
@@ -129,6 +139,9 @@ of providers.
 | Teaching model → mastery score | Same model can reward its own explanation | Grade from independently verified evidence and sign the result. |
 | Passing rehearsal → deploy | Synthetic mechanism does not establish live safety | Apply current health/SLO gates and require explicit change approval. |
 | Semantic deletion → legal retention execution | Probabilistic selection can miss or over-delete | Resolve exact IDs, legal holds, plan digest, replay ledger, and external audit. |
+| Application write log → complete subject export | Provider-created backing records are missed | Enumerate and paginate provider documents, chunks, memories, and history. |
+| Open issue/schema change → automatic hold/deploy | Reports may be irrelevant; diffs need interpretation | Generate exact contract tests and require a release owner. |
+| Batch acknowledgement → migration completion | Response loss, retries, and partial writes confuse state | Stable IDs, signed checkpoint, target reconciliation, exact rollback. |
 
 ## Coverage achieved
 
@@ -144,15 +157,18 @@ of providers.
 | SuperServe | Yes | Sandboxed debugging; release triage; dependency guardian; incident forensics |
 | Vercel | Yes, read-only | Release memory; release-triage rehearsal; incident forensics |
 
-The sixth due-diligence run also exercised current credential degradation: Exa, Monid, and
-Composio returned 401 after authenticating in earlier passes. The agent retained their failures,
-continued with three healthy publisher channels, labeled the report partial, and withheld
-promotion. “Yes” in the table records successful live use in this lab, not current credential
-health or an availability guarantee.
+The sixth due-diligence run exercised credential degradation: Exa, Monid, and Composio
+returned 401, the agent retained their failures, continued with three healthy publisher
+channels, labeled the report partial, and withheld promotion. The seventh sentinel found that
+the subprocess had inherited older credentials; after sourcing the intended ignored local
+environment, all six acquisition channels returned successfully. The independent evidence
+gate still refused promotion when relevance/citation support was insufficient. “Yes” records
+dated successful live use, not current availability, entitlement, or evidence quality.
 
 Repeated runs, failure injection, lifecycle controls, a 120-search policy grid, multi-scope
 credentials, natural-time queries, learned model fallbacks, signed restart recovery, batch
 readiness fallback, abstaining incident analysis, and cross-tool economics are now in the lab.
-The next valuable coverage is a reviewed reversible-write approval test, connector
-sync/update/delete on an entitled plan, refreshed-provider full/degraded campaigns, larger
-blinded datasets, and sustained cost/latency tracking—not arbitrary provider subsets.
+The next valuable coverage is a qualifying generated-inference review transition, connector
+sync/update/delete on an entitled plan, deliberate healthy/degraded provider campaigns, batch
+and bulk-delete boundaries, larger blinded datasets, and sustained cost/latency tracking—not
+arbitrary provider subsets.

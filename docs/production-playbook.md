@@ -197,6 +197,13 @@ requirement rather than theoretical caution.
 The official [authentication guide](https://supermemory.ai/docs/authentication) documents
 scoped keys and endpoint restrictions.
 
+For local and CI live runs, make credential provenance explicit. A subprocess can inherit an
+older shell/runner value that correctly takes precedence over a local file yet authenticates
+as the wrong or expired principal. Load the intended ignored secret source before launching,
+record only provider/key-version metadata, and run a non-mutating health contract. Never print,
+serialize, or commit the credential. Authentication success does not establish entitlement,
+evidence quality, or permission for a write.
+
 ## Prompt-injection and tool safety
 
 All connected sources are attacker-controlled from the model's perspective. Email, web pages,
@@ -231,6 +238,12 @@ Before first production ingest, implement:
 - backup/cache deletion for self-hosted deployments;
 - post-delete negative-control searches.
 
+Build the remembered-data view from the provider's paginated inventory, not only application
+write logs. Direct memory writes can contribute backing/administrative documents. Export
+documents, ordered source chunks where appropriate, current memories, nested history, and the
+settings needed to interpret them; keep documents and memories typed separately even when a
+wire response uses a surprising field name. Sign the inventory digest and record its time.
+
 Natural-language mass deletion is useful for discovery, not proof of erasure. Preview, review,
 execute, and then verify with IDs and container/document lists.
 
@@ -244,6 +257,18 @@ restores. Product code does not determine whether this satisfies law; obtain qua
 Current list responses can expose prior versions as nested `history` on the latest entry. That
 is useful for correction UX and lineage audits, but it does not replace an immutable approval,
 hold, access, or erasure ledger.
+
+## Import, migration, and rollback
+
+For every source record, derive a stable custom ID and source-content hash, then sign a manifest
+before import. Keep resumable checkpoints in a separate control scope. After any timeout,
+process restart, or lost acknowledgement, enumerate the target and reconcile expected ID/hash
+to actual ID/hash; do not infer completion from request success or search hits.
+
+Rollback must contain explicit provider document IDs, an inventory/manifest digest, expiry,
+and one-time external approval. Use bounded exact bulk deletion, verify every imported ID is
+absent, verify pre-existing controls remain, and emit audit outside the target. Chunk imports
+and checkpoint each confirmed batch before attempting documented cardinality limits.
 
 ## Observability
 

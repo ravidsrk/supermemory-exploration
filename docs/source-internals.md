@@ -75,6 +75,38 @@ entry. The lab's three-version chain reconstructed `[1, 2, 3]`. These are useful
 lineage primitives; neither the public client code nor hosted result proves an immutable audit
 or authorization system.
 
+### Current API surface and portability contracts
+
+The hosted OpenAPI snapshot exposed 32 paths during this pass. Its document surface includes
+batch/file ingestion, ordered chunks, a temporary file URL, listing/processing state, and bulk
+deletion. The lab wraps bulk deletion as exact IDs only (1–100) even though the wire schema also
+advertises broad selectors; prompt- or model-selected container deletion is too consequential
+for the client abstraction.
+
+The observed document-list response placed document records under a `memories` key, and direct
+v4 memory writes contributed backing/administrative documents. Both are reasons to contract-test
+the wire parser while keeping document and memory domain models separate. The ten-record
+migration run used stable custom IDs/source hashes, fresh-process reconciliation, and exact-ID
+rollback; it did not exercise file or cardinality boundaries.
+
+The upstream tree contains migration guidance and a Mem0 migration script. Treat scripts as
+starting points: add signed manifests, checkpoints, target reconciliation, and exact rollback
+before moving real data.
+
+- [Zep migration guide](https://github.com/supermemoryai/supermemory/blob/8d926332ab23aa5785def636aca9d0a52fea4a65/apps/docs/migration/from-zep.mdx)
+- [Mem0 migration script](https://github.com/supermemoryai/supermemory/blob/8d926332ab23aa5785def636aca9d0a52fea4a65/apps/docs/migration/mem0-migration-script.py)
+
+### Open issues are upgrade signals, not reproduced facts
+
+The current issue queue includes reports of middleware crashing when Supermemory is
+unreachable and Python SDK dedup parsing failures. The lab did not reproduce those reports.
+It snapshots their exact issue identity and uses them to require targeted wrapper outage and
+malformed/deduplicated-result tests before upgrade, rather than converting a title into a
+product-wide verdict.
+
+- [Reported middleware outage behavior](https://github.com/supermemoryai/supermemory/issues/1287)
+- [Reported Python SDK dedup parsing failure](https://github.com/supermemoryai/supermemory/issues/1266)
+
 ## MemoryBench internals and caveats
 
 MemoryBench has a clean checkpointed pipeline: ingest, await indexing, search, answer, evaluate,

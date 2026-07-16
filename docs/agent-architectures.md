@@ -20,7 +20,7 @@ This repository implements four framework-independent patterns in
 These patterns intentionally avoid tying memory to an orchestration framework. Any agent
 runtime can call them.
 
-Thirty-two additional production-shaped implementations now cover intelligence, dynamic
+Thirty-seven additional production-shaped implementations now cover intelligence, dynamic
 tool selection, sandboxed execution, governance, lifecycle, enterprise hierarchy,
 corroboration, temporal recall, adaptive model routing, dependency risk, governed correction,
 restart recovery, relationship briefing, incident forensics, tool economics, graph review,
@@ -68,6 +68,21 @@ The sixth live pass added six more:
    mechanism, not authority to change unhealthy production state.
 6. **Put retention authority and audit outside retained data.** Exact IDs, legal holds,
    plan digests, replay denial, and post-delete checks are deterministic control-plane work.
+
+The seventh live pass added six more:
+
+1. **Export the provider inventory, not an application reconstruction.** Direct-memory writes
+   can contribute backing documents; enumerate documents, memories, chunks, and lineage.
+2. **Treat contract drift as release evidence.** Diff exact operations/request schemas and
+   current reported regressions, then require targeted contract tests before an upgrade.
+3. **Use memory as a signed project recovery log.** State transitions require predecessor,
+   artifact, signature, and external authorization checks; semantic recall is not a lock.
+4. **Preserve valid dissent as a first-class artifact.** Require exact citations and
+   falsifiers, store minority positions, and invalidate the whole proposal on evidence drift.
+5. **Make migration idempotence observable.** Stable custom IDs and source hashes, a separate
+   checkpoint, exact reconciliation, and approval-bound rollback handle acknowledgement loss.
+6. **Do not schedule on Dreaming or inferred-review readiness.** Identical instant corpora
+   produced two candidates and then zero; dynamic jobs remained pending in both bounded runs.
 
 ## Architecture 1: personalized chief of staff
 

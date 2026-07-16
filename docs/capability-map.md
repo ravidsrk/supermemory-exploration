@@ -22,6 +22,9 @@ SDKs, and live probes. “Maturity” is a lab judgment, not a vendor status lab
 | Memory expiry (`forgetAfter`) | Lease temporary context and cancel through versioned update | Current [OpenAPI](https://api.supermemory.ai/v3/openapi); hosted expiry/cancel probe | Core; explicit forget and expiry had different recovery behavior |
 | Memory history/list | Inspect current administrative inventory and mutation lineage | [Current OpenAPI](https://api.supermemory.ai/v3/openapi); hosted unfiltered three-version correction probe | Top-level entries represent current truth; the observed latest v3 entry nested history `[1, 2, 3]` with valid parent/root continuity. This corrects the earlier latest-only interpretation; test pagination/export and do not treat it as a compliance signature. |
 | Document lifecycle | List, get, chunks, update, delete, processing state | [Document operations](https://supermemory.ai/docs/document-operations); hosted probe | Core |
+| Exact document chunks/file URL | Export ordered source chunks or obtain a temporary original-file URL | [Current OpenAPI](https://api.supermemory.ai/v3/openapi); chunk client contract tests | Useful for transparent export and citation inspection; file URL was wrapped but not live-tested. |
+| Bulk exact document delete | Roll back a known import set without semantic selection | [Current OpenAPI](https://api.supermemory.ai/v3/openapi); hosted ten-ID rollback | Core for migration recovery; wrapper accepts 1–100 unique exact IDs only. Do not expose container-wide selectors to a model. |
+| Organization settings/bucket suggestion | Inspect processing configuration and propose profile organization | [Current OpenAPI](https://api.supermemory.ai/v3/openapi) | Settings read is wrapped; account-wide model/settings mutation and generated bucket application were deliberately not exercised in isolated runs. |
 
 ## Recall and profile
 
@@ -38,7 +41,7 @@ SDKs, and live probes. “Maturity” is a lab judgment, not a vendor status lab
 | Aggregate results | Compress multiple memories into query-specific context | Current SDK/changelog and HandoffBoard probe contract | Useful for multi-agent boards; verify citations are not lost. |
 | User profile | Stable, dynamic, bucketed, and query-specific context | [Profiles](https://supermemory.ai/docs/concepts/user-profiles); hosted probe | Excellent session-start primitive. |
 | Profile buckets | Built-in preferences plus custom org/container categories | [Buckets API](https://supermemory.ai/docs/api-reference/profiles/get-profile-buckets); custom-bucket hosted probe | Custom buckets persisted and classified the corrected fact; definitions are add-only. |
-| Inferred-memory review | Approve, decline, or undo generated inferences | [Memory review](https://supermemory.ai/docs/memory-review); endpoint/queue/negative-control probe | Add exact external authorization for sensitive personalization. Instant-Dreaming seed produced no candidate in 90 s; reviewing an ordinary memory returned 409. Generated-candidate approve/decline/undo remains pending. |
+| Inferred-memory review | Approve, decline, or undo generated inferences | [Memory review](https://supermemory.ai/docs/memory-review); endpoint/queue/negative-control and larger matrix | Add exact external authorization for sensitive personalization. Matched eight-document instant runs produced two one-parent candidates and then zero; dynamic produced none and remained pending. Ordinary-memory review returned 409. Generated-candidate approve/decline/undo remains pending. |
 
 ## Organization, isolation, and customization
 
@@ -51,6 +54,12 @@ SDKs, and live probes. “Maturity” is a lab judgment, not a vendor status lab
 | Chunk size/settings | Organization-level ingestion tuning. Changing embedding dimension in self-hosting requires a new data directory. |
 | Container merge/delete | Hosted merge queued an ID, exposed data at `cleanup_pending`, completed, removed the source, and retained target data/settings. Delete is consequential; both require deterministic authorization. |
 | Metadata | Arbitrary source annotations and filters. Do not put secrets in metadata. |
+
+The hosted document-list response used the key `memories` for document records in this pass.
+The client handles that observed wire shape, but applications should keep document and memory
+domain types distinct and contract-test upgrades. Direct v4 memory writes also appeared as
+backing/administrative documents, so subject exports and deletion inventories must enumerate
+the provider rather than count only explicit source-document writes.
 
 ## Integration surfaces
 

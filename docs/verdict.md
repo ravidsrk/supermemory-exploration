@@ -191,6 +191,11 @@ accepted batch, a `done` document, and a required extracted-memory read are diff
 Use batch Dreaming for background grouping/enrichment; use an exact read barrier and direct
 fallback for synchronous agent state.
 
+The larger matched matrix strengthened this conclusion. Eight instant jobs completed and
+produced two inferred-review candidates once but zero on repeat; all eight dynamic Dreaming
+jobs remained pending in both bounded runs. Candidate generation and Dreaming completion are
+operator/background signals, not scheduling primitives.
+
 ### Tool economics and incident certainty need explicit unknown states
 
 One tool portfolio exposed comparable costs for Exa and Monid but not Composio. Treating the
@@ -200,21 +205,52 @@ isolated synthetic rehearsal supported a mitigation pattern. `UNKNOWN` is a corr
 output, not an error to be filled with model confidence.
 
 The sixth due-diligence run extended this rule to provider health. Exa, Monid, and Composio
-returned 401 after succeeding in earlier passes; Context.dev and public social channels still
-worked. The correct result was `degraded-partial`, not a silent retry loop or a confident
-recommendation. Credential validity and provider availability are external state, so preserve
-failures and make complete evidence a promotion precondition.
+returned 401 while Context.dev and public social channels still worked. The correct result was
+`degraded-partial`. The seventh pass traced those 401s to older process-environment credentials;
+after sourcing the intended ignored local environment, all six acquisition channels worked.
+Even then, the separate evidence gate refused promotion when relevance/citation support was
+insufficient. Credential health, provider health, and evidence quality are three different
+states.
 
 ### Retention and review need an external control plane
 
 The list API exposed useful nested version history, and inferred review rejected an ordinary
-memory with 409. But no inferred candidate appeared in the bounded run, and history is not an
-immutable signature ledger. A legal-hold rehearsal succeeded only because exact snapshot,
+memory with 409. A later instant run exposed two one-parent candidates, followed by zero on a
+matched repeat; no qualifying candidate was transitioned. History and the review queue are not
+immutable signature or workflow ledgers. A legal-hold rehearsal succeeded only because exact snapshot,
 plan, approval, replay, and audit state lived outside the model and governed memory.
 
 Use Supermemory for correction UX, current inventory, exact forgetting, and verification.
 Keep legal interpretation, connector/back-up coverage, approval, immutable audit, and access
 control elsewhere.
+
+### Portability requires provider inventory and reconciliation
+
+A subject export found provider-created backing documents in addition to explicit source
+writes. A complete transparency workflow therefore enumerates and paginates documents,
+chunks, memories, and history, signs the inventory, binds exact erasure IDs, and verifies both
+absence and retained controls. Application logs alone are insufficient.
+
+The same principle made batch migration recoverable. Stable custom IDs and source hashes,
+a separately signed checkpoint, target-side reconciliation, and exact-ID bulk rollback
+survived simulated acknowledgement loss at ten records while retaining a pre-existing control.
+This is a strong small-case pattern; file uploads and documented cardinality boundaries remain
+open.
+
+### Memory can recover project state and dissent, not authorize either
+
+A four-version project chain recovered `planned → active → review → done`, but review and
+completion were valid only after an independently verified artifact digest and exact external
+authorization. A three-model council also preserved a valid minority `PILOT` against two
+`HOLD` votes. Both artifacts became stale on digest change. These are valuable memory-native
+decision records, not locks, schedulers, graders, or action permissions.
+
+### Treat contract changes as test generators
+
+The current 32-path OpenAPI plus reported wrapper regressions produced a targeted
+`HOLD-FOR-CONTRACT-TESTS`. This is the right granularity: issue titles are reports rather than
+reproduced failures, and a schema diff is evidence for exact upgrade tests rather than an
+automatic deploy or permanent block.
 
 ### The small domain result is encouraging, not dispositive
 
@@ -248,6 +284,11 @@ the next gate remains the blinded 100-case suite at realistic corpus volume.
 | Resumable due diligence | **Adopt the degraded-state pattern** | Signed resume and citations worked; partial provider failure was visible and could not promote. |
 | Operational change-risk board | **Adopt read-only/HOLD-first** | Live health overrode a passing rehearsal; no deploy authority exists. |
 | Legal-hold retention controller | **Prototype with legal review** | Exact drift/replay/absence controls passed; broader storage and jurisdiction remain outside this API test. |
+| Memory transparency/DSAR | **Pilot as an engineering control** | Actual-inventory export and exact erasure passed; connector/cache/backup and legal coverage remain open. |
+| Contract-drift sentinel | **Adopt as an upgrade test gate** | Exact snapshot/staleness passed; reports and model advice remain non-authoritative. |
+| Project Memory OS | **Pilot as recovery/briefing state** | Signed chain and verified artifact passed; keep workflow coordination transactional. |
+| Valid-dissent council | **Adopt the dissent-preservation invariant** | Minority evidence/falsifier survived restart; calibration and independence remain unproven. |
+| Batch migration reconciler | **Pilot before large migration** | Idempotent replay, exact reconcile, and rollback passed at ten records; boundaries remain open. |
 | Sandboxed coding/debug agent | **Pilot with strict sandbox policy** | Memory-backed transfer passed where stateless failed; template and egress must be explicit. |
 | Release-memory copilot | **Adopt read-only first** | Snapshot/history fit well; mutations remain approval-gated. |
 | Temporary incident context | **Pilot** | Expiry/cancel worked; keep canonical incident state and verify disappearance. |

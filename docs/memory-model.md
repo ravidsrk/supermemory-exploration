@@ -165,10 +165,24 @@ candidate. Sensitive products should expose this queue rather than silently allo
 generated guesses to become profile truth. See
 [memory review](https://supermemory.ai/docs/memory-review).
 
-In the hosted negative control, reviewing an ordinary memory returned 409. A 90-second
-instant-Dreaming seed produced no candidate, so the documented transition contract is covered
-but approve/decline/undo still need a generated-inference live run. Bind every review action
-to an exact candidate/content hash and reviewer in application-owned state.
+In the hosted negative control, reviewing an ordinary memory returned 409. A later matched
+eight-document matrix produced two one-parent instant candidates on its first run and zero on
+repeat; dynamic Dreaming stayed pending and produced none. This establishes that candidates
+can appear but not that generation is deterministic or synchronous. Approve/decline/undo still
+need a qualifying generated-inference live run. Bind every review action to an exact
+candidate/content hash, reviewer, evidence, and one-time authorization in application state.
+
+### Subject inventory and backing documents
+
+A hosted transparency export found four documents after two explicit document ingests plus
+direct v4 memory writes. The additional records were backing/administrative documents created
+by the memory path. Therefore “what do you remember?” and erasure workflows must enumerate the
+actual document and memory inventories, paginate them, preserve their different types, and map
+source chunks/history. Reconstructing an export from application write logs alone is incomplete.
+
+The observed v3 document-list payload also names its document array `memories`. Treat this as
+a wire-contract quirk, not as a domain-model collapse. Pin the client parser and add a contract
+test around the deployed API version.
 
 ## Container design
 

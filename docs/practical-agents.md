@@ -12,7 +12,9 @@ operational systems are in the
 [fifth-pass evidence](../evidence/2026-07-16-fifth-pass-operational-agents.md). Newer agents are
 split into focused modules so their safety boundary can be tested independently. The newest
 six are covered by the
-[sixth-pass deep-agent evidence](../evidence/2026-07-16-sixth-pass-deep-agents.md).
+[sixth-pass deep-agent evidence](../evidence/2026-07-16-sixth-pass-deep-agents.md). The
+Dreaming matrix and five newest operational implementations are covered by the
+[seventh-pass evidence](../evidence/2026-07-16-seventh-pass-deep-operations.md).
 
 ## Run them
 
@@ -53,6 +55,12 @@ python experiments/run_adaptive_tutor.py
 python experiments/run_due_diligence_campaign.py
 python experiments/run_change_risk_board.py
 python experiments/run_retention_controller.py
+python experiments/run_dreaming_review_matrix.py
+python experiments/run_memory_transparency_agent.py
+python experiments/run_contract_drift_sentinel.py
+python experiments/run_project_memory_os.py
+python experiments/run_adversarial_dissent_council.py
+python experiments/run_migration_reconciler.py
 ```
 
 Raw traces go to ignored `.runs/` files. They contain bounded experiment details but should
@@ -512,8 +520,9 @@ only. A separate application ledger binds inferred-memory approve, decline, or u
 exact candidate, content hash, reviewer, and action.
 
 The live three-version chain returned history `[1, 2, 3]`; ordinary non-inferred review failed
-closed with 409. No inferred candidate appeared after a bounded instant-Dreaming seed, so the
-endpoint and negative case are proven but live approve/decline/undo remain a next gate. Use it
+closed with 409. A later larger instant-Dreaming matrix produced two one-parent candidates and
+then zero on repeat, so generation remains asynchronous/non-deterministic and live
+approve/decline/undo remains a next gate. Use it
 for preference corrections, knowledge curation, and operator review—not as a compliance
 signature system.
 
@@ -589,6 +598,98 @@ forgot one exact expired record, verified absence, retained all held/active/ambi
 and emitted hold/forget audit events. Use this only as an engineering pattern: real legal
 retention also covers connectors, backups, caches, exports, jurisdiction, and counsel.
 
+## 32. Dreaming and inferred-review matrix
+
+Provider: Supermemory.
+
+The matrix sends matched related corpora through instant and dynamic Dreaming, polls document
+and Dreaming status separately, and inspects the inferred-review queue. Review candidates are
+untrusted proposals: an application ledger requires the exact candidate, content hash,
+reviewer, and one-time action before approve, decline, or undo.
+
+In two eight-document comparisons, instant Dreaming completed but produced two candidates and
+then zero on an equivalent repeat. Dynamic document processing completed while all Dreaming
+jobs remained pending and both queues stayed empty. The two observed candidates had one parent,
+below this lab's normal two-parent review threshold, so no transition was applied. Use this as
+an asynchronous operator queue, never as a synchronous workflow dependency.
+
+## 33. Memory transparency and DSAR agent
+
+Provider: Supermemory.
+
+The agent builds a signed subject export by enumerating documents, current memories, nested
+history, source chunks, and relevant settings from the actual provider inventory. An erasure
+plan binds the inventory digest and exact IDs; wrong authorization, drift, and replay fail
+before mutation. Post-delete reads prove absence and retained controls, while the canonical
+audit sink lives outside the data being erased.
+
+The live export found four documents although only two source documents were explicitly
+ingested: direct v4 memory creation also contributed backing/administrative documents. One
+exact source document and memory were erased, current truth and a safe source remained, and
+another tenant never entered the export. This is an engineering reference for transparency,
+not a claim of regulatory sufficiency across connectors, caches, backups, or jurisdictions.
+
+## 34. Contract-drift upgrade sentinel
+
+Providers: Supermemory + Context.dev + Exa + Monid + Composio + public social + OpenRouter.
+
+The sentinel canonicalizes every OpenAPI operation and request schema, adds current official
+changelog and reported issue evidence, and signs non-authoritative release advice to the exact
+snapshot. Added/removed operations, changed request contracts, or relevant critical issue
+reports produce targeted contract-test requirements. A fresh process may reuse advice only
+when the digest matches.
+
+The live snapshot contained 32 paths. Current reported wrapper regressions produced
+`HOLD-FOR-CONTRACT-TESTS`; a changed snapshot became stale. All six acquisition channels were
+healthy after loading the intended local credentials, yet the separate relevance/citation
+gate still refused evidence promotion. Use it in dependency bots and SDK upgrades, but verify
+reported issues and never let the model approve a release.
+
+## 35. Long-horizon project Memory OS
+
+Providers: Supermemory + OpenRouter + SuperServe.
+
+Organization, project, and user containers provide separately scoped policy, state, and
+working preferences. A signed checkpoint chain enforces predecessor and legal transition;
+`review` and `done` require an egress-blocked verified artifact digest. The model has proposal
+and briefing authority only, and exact external authorization applies each state transition.
+
+The live chain recovered `planned → active → review → done` across four signed versions. It
+denied premature review, ignored a forged checkpoint, bound the verified 4/4 artifact, and
+reconstructed completion in a fresh process without leaking another tenant or poison. Use it
+for long projects and multi-session coding work, while keeping locks, assignments, due-date
+scheduling, and commits in transactional application state.
+
+## 36. Valid-dissent decision council
+
+Providers: Supermemory + three OpenRouter model families.
+
+This adversarial form of the decision council deliberately supplies evidence that can support
+more than one defensible position. Every vote still needs strict schema, exact evidence IDs,
+and a falsifier. Trusted code signs the complete vote set—including minority positions—and
+invalidates it when any evidence changes.
+
+The live council produced `HOLD`, `PILOT`, `HOLD`; the valid minority position persisted in a
+fresh process. Retrieved poison appeared in none of the valid votes, and a changed digest made
+the proposal stale. This tests preservation of disagreement, not independence or calibration:
+model families may share training data and majority remains advice, never action authority.
+
+## 37. Batch migration reconciler
+
+Provider: Supermemory.
+
+The reconciler signs a source manifest with stable custom IDs and content hashes, imports in
+batch, and records progress in a separate control container. After interruption or lost
+acknowledgement, a fresh process verifies the checkpoint, enumerates target documents, and
+requires an exact one-to-one reconciliation before completion. Rollback binds a one-time
+approval to explicit IDs and uses exact bulk deletion, never a semantic selector.
+
+The live ten-record import accepted all rows. An identical replay returned the same IDs,
+reconciliation found no missing, duplicate, or hash-mismatched records, and rollback removed
+only the ten imports while retaining a pre-existing target document. Extend this with chunked
+checkpoints and backpressure before testing the documented 600-document ingest and 100-ID
+delete boundaries.
+
 ## Other high-value builds
 
 | Agent | Providers | Memory design |
@@ -625,6 +726,12 @@ retention also covers connectors, backups, caches, exports, jurisdiction, and co
 | Budgeted due diligence | Context.dev + Exa + public social + Monid + Composio + OpenRouter + Supermemory | Resumable acquisition, provider/publisher diversity, explicit degradation, exact citations. |
 | Change-risk board | Vercel + Context.dev + SuperServe + OpenRouter + Supermemory | Minimized live health, separated rehearsal, deterministic hold, snapshot-bound advice. |
 | Retention controller | Supermemory + OpenRouter | Exact policy partition, legal-hold versioning, drift/replay denial, external audit. |
+| Dreaming/review matrix | Supermemory | Mode/readiness comparison, queue inspection, exact review-action ledger. |
+| Memory transparency | Supermemory + OpenRouter | Actual inventory export, source chunks/history, snapshot-bound exact erasure. |
+| Contract-drift sentinel | Six acquisition channels + OpenRouter + Supermemory | OpenAPI/issue snapshot, targeted contract tests, stale upgrade advice. |
+| Project Memory OS | Supermemory + OpenRouter + SuperServe | Scoped context, signed state chain, verified artifact gate, restart recovery. |
+| Valid-dissent council | Three OpenRouter families + Supermemory | Evidence-bound minority preservation, falsifiers, whole-proposal staleness. |
+| Migration reconciler | Supermemory | Signed manifest, stable IDs/hashes, fresh resume, exact rollback. |
 
 ## What not to build
 
@@ -649,3 +756,9 @@ retention also covers connectors, backups, caches, exports, jurisdiction, and co
 - A research campaign that hides provider failure or counts API diversity as publisher diversity.
 - A change board that treats a passing sandbox as permission to deploy into unhealthy live state.
 - A retention agent that lets a model choose deletion IDs or stores its only audit log beside the data it erases.
+- A transparency export reconstructed only from application writes instead of provider inventory.
+- An upgrade bot that treats an issue title as a reproduced failure or a schema diff as deploy authority.
+- A project agent that treats semantic recall as a lock or accepts completion without an artifact digest.
+- A council that summarizes away valid minority dissent.
+- A migration job that assumes acknowledgement means exactly-once import or rolls back by query.
+- A workflow that blocks on Dreaming or inferred-review candidate generation.
