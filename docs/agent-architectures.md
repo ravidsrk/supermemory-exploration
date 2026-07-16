@@ -20,9 +20,10 @@ This repository implements four framework-independent patterns in
 These patterns intentionally avoid tying memory to an orchestration framework. Any agent
 runtime can call them.
 
-Twenty-one additional production-shaped implementations now cover intelligence, dynamic
+Twenty-six additional production-shaped implementations now cover intelligence, dynamic
 tool selection, sandboxed execution, governance, lifecycle, enterprise hierarchy,
-corroboration, temporal recall, adaptive model routing, and dependency risk. See
+corroboration, temporal recall, adaptive model routing, dependency risk, governed correction,
+restart recovery, relationship briefing, incident forensics, and tool economics. See
 [Practical multi-provider agents](practical-agents.md) and the
 [provider combination map](provider-combinations.md).
 
@@ -38,6 +39,19 @@ The fourth live pass added five architecture rules:
    timezone, recurrence, and canonical event state remain deterministic inputs.
 5. **Require exact versions before dependency reasoning.** Discover evidence and rehearse in
    isolation, but keep change approval outside memory and the model.
+
+The fifth live pass added five more:
+
+1. **Bind correction authority to exact bytes.** Candidate evidence and model explanation may
+   inform a proposal; a canonical ledger approves one target/replacement hash and denies replay.
+2. **Use signed memory as a recovery log, not coordination state.** Verify sequence,
+   predecessor, transition, and output contract; keep locks and completion transactional.
+3. **Distinguish ingestion completion from fact readiness.** Poll the exact next read and use a
+   canonical direct-fact fallback for synchronous work.
+4. **Preserve evidence class and the unknown state.** Live observations, public guidance, and
+   synthetic rehearsals cannot be silently merged into a production root-cause claim.
+5. **Make unknown economics ineligible, not free.** Expire and revalidate route policies, and
+   account for quality, retries, fallbacks, and provider charge semantics.
 
 ## Architecture 1: personalized chief of staff
 

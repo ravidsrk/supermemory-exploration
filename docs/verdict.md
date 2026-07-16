@@ -89,6 +89,17 @@ This is a strong general pattern for model routes, retrieval settings, tool choi
 workflow recipes: memory can carry a learned policy forward, while deterministic checks and
 new outcomes revise it. Never interpret durable policy memory as permanent correctness.
 
+### 6. It is useful as an operational recovery and evidence plane
+
+A signed planner/researcher/reviewer chain survived fresh processes, deduplicated an exact retry,
+and ignored forged state. A governed curator applied a hash-bound correction once and preserved
+the update's parent/root lineage. An incident agent retained a verified synthetic lesson while
+still saying the production cause was unknown.
+
+These are stronger patterns than generic chat recall: memory helps another process reconstruct
+what was learned, which evidence supported it, and which policy was last successful. It still
+cannot replace workflow locks, an approval ledger, incident logs, or canonical state.
+
 ## Where caution is required
 
 ### Memory Router is not yet the default recommendation
@@ -154,6 +165,26 @@ all seven tested shapes. Build user-facing deletion around preview, deterministi
 negative verification, and a canonical audit ledger; do not promise restoration based only on
 an include flag.
 
+### Batch processing is not a synchronous fact-readiness contract
+
+The three-document batch endpoint accepted every item, but repeated small
+`dreaming=dynamic` runs remained in background Dreaming beyond 60–90 seconds and did not expose
+the exact relationship fact during an additional bounded check. Writing the already-confirmed,
+normalized CRM facts directly made the required next read pass.
+
+This does not establish general Dynamic Dreaming latency or failure. It establishes that an
+accepted batch, a `done` document, and a required extracted-memory read are different barriers.
+Use batch Dreaming for background grouping/enrichment; use an exact read barrier and direct
+fallback for synchronous agent state.
+
+### Tool economics and incident certainty need explicit unknown states
+
+One tool portfolio exposed comparable costs for Exa and Monid but not Composio. Treating the
+missing number as unknown and shadow-only prevented a false cheapest-route decision. Likewise,
+read-only Vercel state without logs could not support a production root cause even though an
+isolated synthetic rehearsal supported a mitigation pattern. `UNKNOWN` is a correct agent
+output, not an error to be filled with model confidence.
+
 ### The small domain result is encouraging, not dispositive
 
 The bounded 12-case smoke suite scored 12/12 with memory versus 2/12 without, at 659 ms search
@@ -168,8 +199,9 @@ the next gate remains the blinded 100-case suite at realistic corpus volume.
 | Per-user assistant profile | **Adopt with guardrails** | Strong profile/read model; keep consent and delete controls. |
 | Correction-aware preference agent | **Adopt with explicit promotion** | Conversation archival alone did not yield the fact promptly; normalized versioned writes did. |
 | Project/research notebook | **Adopt** | Hybrid retrieval, citations, metadata, and `superrag` fit well. |
-| Multi-agent handoff board | **Adopt for context, not locking** | Direct facts and aggregate recall work; use a DB/queue for coordination state. |
+| Multi-agent handoff board | **Adopt for signed recovery, not locking** | Signed restart recovery and retry dedup passed; use a DB/queue for coordination state. |
 | Decision journal | **Adopt** | Exact writes and version history match the domain. |
+| Governed memory curator | **Pilot with external approval ledger** | Poison/hash/replay controls and versioned correction passed; graph context is not an audit signature. |
 | Customer-support copilot | **Pilot** | Valuable personalization; requires tenancy, PII, and deletion review. |
 | Competitive-intelligence memory | **Pilot** | Five-provider live path worked; public-social claims need corroboration. |
 | Corroboration-gated research | **Pilot with publisher tracking** | Fresh/official/conflict gate resisted poisoned memory; provider diversity alone is not source independence. |
@@ -177,6 +209,9 @@ the next gate remains the blinded 100-case suite at realistic corpus volume.
 | Adaptive model router | **Pilot with runtime contracts** | Cross-process policy repair worked, but the calibration winner failed a related task. |
 | Temporal agenda | **Pilot** | Natural-date matrix passed; canonical clock and event state remain outside memory. |
 | Dependency-risk guardian | **Pilot as decision support** | Exact-version evidence and isolated test passed; CVE feeds are incomplete and human approval remains required. |
+| Relationship/account brief | **Pilot with consent and readiness fallback** | Four fresh channels and cited brief passed; Dynamic Dreaming was not a synchronous barrier. |
+| Incident hypothesis forensics | **Adopt as read-only decision support** | Safely separated live observations from rehearsal and retained unknown root cause. |
+| Tool-economics portfolio | **Pilot with dated costs** | Cross-process route worked; unknown cost, retries, and quality need continued calibration. |
 | Sandboxed coding/debug agent | **Pilot with strict sandbox policy** | Memory-backed transfer passed where stateless failed; template and egress must be explicit. |
 | Release-memory copilot | **Adopt read-only first** | Snapshot/history fit well; mutations remain approval-gated. |
 | Temporary incident context | **Pilot** | Expiry/cancel worked; keep canonical incident state and verify disappearance. |

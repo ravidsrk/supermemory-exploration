@@ -33,6 +33,8 @@ Delivered:
 - five additional multi-provider agents using every supplied provider credential;
 - five memory-native systems for enterprise hierarchy, corroboration, adaptive model routing,
   temporal recall, and dependency risk;
+- five operational systems for governed correction, signed restart recovery, consent-aware
+  account briefing, incident-hypothesis falsification, and read-tool economics;
 - a causal sandbox transfer test where memory passed and the stateless candidate failed;
 - a three-case support benchmark scoring 3/3 with memory and 0/3 without it;
 - profile-versus-search read-after-write evidence and explicit polling barriers;
@@ -60,7 +62,8 @@ all project keys out of git and use provider-specific least privilege where avai
 - Expand the passing single- and multi-container scoped-key probes with endpoint and rate-limit
   cases.
 - Induce and review real inference candidates; custom profile buckets, filter operators,
-  rerank/rewrite, expiry, and merge now have executable coverage. Exercise `dreaming=dynamic`.
+  rerank/rewrite, expiry, merge, batch ingestion, and `dreaming=dynamic` now have executable
+  coverage. Repeat Dynamic Dreaming at larger scale and instrument the queue/readiness gap.
 
 ### Gate
 
@@ -221,6 +224,11 @@ On or near the 16th of each month:
 | Adaptive routing | Learned policy repairs after runtime failure | Calibration persisted; contract fallback passed; next process avoided failed route |
 | Temporal recall | Natural dates retrieve correct event window | 10/10 exact, relative, future, and negative controls |
 | Dependency risk | Exact-version evidence/test without autonomous change | Monid/Exa/Composio/SuperServe path passed; authorization stayed false |
+| Governed correction | Only fresh/authorized evidence can revise truth | Poison quarantined; wrong hash/replay denied; exact versioned update passed |
+| Multi-agent recovery | Fresh process reconstructs one valid chain | Signed three-stage restart, invalid-output denial, and retry dedup passed |
+| Batch relationship readiness | Required account facts available before briefing | Batch accepted 3/3; Dynamic Dreaming timed out; normalized direct fallback passed |
+| Incident certainty | No root-cause claim without evidence | Synthetic hypothesis gate passed; production cause stayed unknown and action unauthorized |
+| Tool economics | Cheapest eligible route uses comparable dated cost | Exa/Monid ranked; unknown Composio cost stayed shadow; new process revalidated |
 | Self-host durability | Restore and upgrade | Fresh run passed; durability/upgrade pending |
 | SMFS maturity | Consistent read/search/profile | Read/search passed; profile/list quirks observed |
 

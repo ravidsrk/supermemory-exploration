@@ -222,6 +222,40 @@ Final observed outcomes:
 See the [fourth-pass evidence](../evidence/2026-07-16-fourth-pass-agent-systems.md) for exact run
 IDs, model calibration numbers, first failures, caveats, and cleanup.
 
+## Fifth-pass operational agent systems
+
+```bash
+PYTHONPATH=src python3 experiments/run_governed_memory_curator.py
+PYTHONPATH=src python3 experiments/run_resumable_agent_workcell.py
+PYTHONPATH=src python3 experiments/run_relationship_account_briefing.py
+PYTHONPATH=src python3 experiments/run_incident_forensics_agent.py
+PYTHONPATH=src python3 experiments/run_tool_economics_portfolio.py
+```
+
+Final observed outcomes:
+
+- the curator quarantined retrieved poison, denied a wrong approval hash and replay, applied one
+  versioned correction, and verified latest truth plus response parent/root lineage;
+- the signed workcell ignored a forged checkpoint, rejected invalid output, resumed three stages
+  across fresh processes, deduplicated an acknowledgement-loss retry, and denied a backward
+  transition;
+- batch ingestion accepted 3/3 relationship documents, but repeated Dynamic Dreaming checks did
+  not reach exact fact readiness in the bounded 60–90 second windows; confirmed direct-fact
+  fallback enabled the four-provider cited brief while outreach stayed false;
+- incident forensics observed only bounded Vercel counts, falsified retry hypotheses in an
+  egress-blocked sandbox, persisted a verified lesson, and kept production root cause unknown;
+- all Monid, Composio, and Exa read routes returned valid Hacker News results; Exa and Monid had
+  comparable dated costs, while unknown Composio cost stayed shadow-only;
+- every final evaluation passed, cleanup succeeded or found the empty control already absent,
+  and the complete offline suite passed 110 tests.
+
+The failed rehearsals were useful: normal inventory did not expose superseded v1; a scorer
+initially conflated semantic discovery with an exact serialized barrier; Dynamic Dreaming
+remained pending despite completed documents; and opaque citation IDs were not reliable until
+the prompt required them. See the
+[fifth-pass evidence](../evidence/2026-07-16-fifth-pass-operational-agents.md) for run IDs,
+timings, implementation boundaries, and primary sources.
+
 ## Disposable self-hosted probe
 
 Follow the official [quickstart](https://supermemory.ai/docs/self-hosting/quickstart) in a
@@ -294,9 +328,11 @@ For each run, add a dated evidence note containing:
 
 - induce an inferred-memory review candidate, then exercise approve/decline/undo (the endpoint
   and empty queue are covered, but no candidate was generated);
-- `dreaming=dynamic` across related documents;
+- repeat both Dreaming modes across larger related batches, longer windows, and
+  queue/readiness instrumentation;
+- batch file upload and 600-document/cardinality boundaries;
 - repeat the retrieval grid on a domain corpus with at least 100 blinded queries;
-- batch upload and 50 MB boundary behavior;
+- file upload and 50 MB boundary behavior;
 - connector sync/update/delete on an entitled plan;
 - expanded scoped-key endpoint/rate-limit matrix beyond the passing read/write/revoke probe;
 - model-router holdouts, exploration/expiry, and repeated end-to-end economics;

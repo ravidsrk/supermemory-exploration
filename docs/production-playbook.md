@@ -86,6 +86,11 @@ catalog/version, cost, latency, expiry, and invalidation condition. Validate the
 contract, use a bounded fallback, and record failed outcomes so the next process can repair the
 route.
 
+For multi-agent recovery, publish compact checkpoints with workflow/task ID, sequence,
+predecessor, output contract, stable idempotency ID, and an application-verifiable signature.
+Reject invalid or ambiguous branches. Keep signing keys, locks, assignments, approval/replay
+state, and completion in a transactional system; a signed memory proves integrity, not truth.
+
 ## Consistency and latency
 
 Classify operations by whether they belong in the synchronous request path.
@@ -95,6 +100,7 @@ Classify operations by whether they belong in the synchronous request path.
 | Direct memory create/update | Sometimes; prefer async if answer does not depend on it | Profile-visible near ~1 s in new runs; search visibility can lag |
 | Memory/profile search | Yes, with timeout/fallback | ~0.6–1.1 s median client wall across two tiny samples |
 | Document/conversation ingestion | No | Tens of seconds to extraction |
+| Batch + Dynamic Dreaming | No | Three-document batches accepted, but exact memory readiness remained pending beyond 60–90 s in repeated small runs |
 | Mass-forget agent | No | ~5.8 s to >60 s |
 | Connector sync | No | Background and plan/provider-dependent |
 | SMFS semantic search | Tool path, not token-stream hot path | ~10.3 s in one tiny run |
@@ -133,6 +139,10 @@ Keep source content and processing status outside the model prompt. Alert on doc
 in queued/processing state. Sample extracted memories after product, extraction-model, entity
 context, or chunk-setting changes.
 
+If a downstream step requires a specific normalized fact, poll that exact read separately from
+document processing. On timeout, either pause visibly or write a confirmed fact directly from
+the canonical source. Never let a model invent a readiness fallback.
+
 ### Contradictory memories
 
 If the current fact is known, use versioned update. If two sources genuinely disagree, keep
@@ -145,6 +155,17 @@ Calibration, tool choice, and retrieval settings drift. Before applying a rememb
 check its scope, age, model/tool version, and task family. Runtime validation owns the decision;
 the policy only proposes a default. Record total latency and cost including search, failed
 attempts, fallbacks, and outcome writes.
+
+Unknown price is not zero. Keep routes with non-comparable cost in shadow evaluation until the
+provider charge semantics can be normalized. Re-inspect the exact tool and validate its current
+output before using a remembered route.
+
+### Incomplete incident evidence
+
+Separate live observations, retrieved prior lessons, public guidance, and synthetic rehearsals
+in both storage metadata and prompts. A sandbox can support or refute a mechanism, but it cannot
+establish the live root cause. Without authorized logs and correlation, return `UNKNOWN`; keep
+rollback, redeploy, and configuration mutation behind current human/application policy.
 
 ### Wrapper failure
 
@@ -190,6 +211,8 @@ documents, GitHub files, old conversations, and other agents can contain instruc
 - Store tool results as evidence only after validating success.
 - Never count acquisition providers as independent corroboration without tracking the upstream
   publisher and claim each one supports.
+- Never let public relationship signals authorize outreach, or let remembered incident text
+  authorize mitigation.
 
 Coding-agent memories are especially hazardous because a remembered command looks executable.
 Preserve it as a quoted prior attempt and re-derive the action from current repo state.
@@ -262,6 +285,8 @@ Measure, because current pricing and provider behavior can change.
 - Put source documents in `superrag` when profile extraction is unnecessary.
 - Cache a bounded session profile with a tenant-safe key and short TTL.
 - Track extraction LLM and embedding costs when self-hosting.
+- Store cost observation date, currency/unit, provider-reported charge semantics, quality, and
+  retry/fallback cost. Keep unknown-cost routes out of cheapest-route selection.
 
 ## Production release checklist
 
@@ -279,4 +304,9 @@ Measure, because current pricing and provider behavior can change.
 - [ ] Changelog and current open issues reviewed.
 - [ ] Learned routes/tools carry expiry, runtime contract, and bounded fallback.
 - [ ] Multi-scope precedence and fresh-claim promotion are deterministic and tested.
+- [ ] Correction approval is bound to exact content and protected by an external replay ledger.
+- [ ] Multi-agent checkpoints are signed, idempotent, and reconciled with canonical workflow state.
+- [ ] Batch/document completion is not used as a substitute for exact downstream readiness.
+- [ ] Incident conclusions preserve evidence class and explicit unknown state.
+- [ ] Tool policies expire, revalidate, and never treat missing price as zero.
 - [ ] Self-hosted backup/restore and version-upgrade drill passes, if applicable.

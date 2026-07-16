@@ -23,6 +23,11 @@ PYTHONPATH=src python3 experiments/run_corroborated_research_swarm.py
 PYTHONPATH=src python3 experiments/run_adaptive_model_router.py
 PYTHONPATH=src python3 experiments/run_temporal_agenda_agent.py
 PYTHONPATH=src python3 experiments/run_dependency_risk_guardian.py
+PYTHONPATH=src python3 experiments/run_governed_memory_curator.py
+PYTHONPATH=src python3 experiments/run_resumable_agent_workcell.py
+PYTHONPATH=src python3 experiments/run_relationship_account_briefing.py
+PYTHONPATH=src python3 experiments/run_incident_forensics_agent.py
+PYTHONPATH=src python3 experiments/run_tool_economics_portfolio.py
 ```
 
 The core probe exercises:
@@ -107,3 +112,23 @@ off/on, an unrelated negative, a bounded answer window, and complete cleanup.
 `run_dependency_risk_guardian.py` discovers a price-capped exact-version CVE tool, reads official
 and public evidence, tests the actual installed package in an egress-blocked sandbox, and writes
 a verified lesson without authorizing production change.
+
+`run_governed_memory_curator.py` retrieves correction evidence as untrusted data, quarantines
+an unauthorized candidate, binds human approval to the exact replacement hash, rejects replay,
+applies a versioned correction, and verifies current truth plus parent/root lineage.
+
+`run_resumable_agent_workcell.py` signs planner/researcher/reviewer checkpoints, reconstructs
+them in fresh processes, deduplicates an acknowledgement-loss retry, and rejects forged,
+invalid-output, and backward-transition handoffs.
+
+`run_relationship_account_briefing.py` batch-ingests consented CRM history with Dynamic
+Dreaming, falls back to normalized direct facts if exact readiness times out, combines four
+fresh public channels into a cited brief, and denies automated outreach in trusted code.
+
+`run_incident_forensics_agent.py` keeps bounded read-only Vercel state separate from an
+egress-blocked synthetic hypothesis rehearsal, persists only the passing lesson, and reports
+production root cause as unknown when no logs exist.
+
+`run_tool_economics_portfolio.py` executes the same public read task through Monid, Composio,
+and Exa, treats non-comparable price as unknown rather than free, persists an expiring route
+policy, and makes a new process revalidate the selected route.

@@ -7,7 +7,9 @@ This chapter is the executable part of the wiki. The foundational implementation
 [second-pass](../evidence/2026-07-16-second-pass-agents.md), and
 [lifecycle/Router/domain](../evidence/2026-07-16-third-pass-lifecycle-and-benchmark.md)
 evidence notes. The latest five systems are in the
-[fourth-pass evidence](../evidence/2026-07-16-fourth-pass-agent-systems.md). Newer agents are
+[fourth-pass evidence](../evidence/2026-07-16-fourth-pass-agent-systems.md) and the five
+operational systems are in the
+[fifth-pass evidence](../evidence/2026-07-16-fifth-pass-operational-agents.md). Newer agents are
 split into focused modules so their safety boundary can be tested independently.
 
 ## Run them
@@ -38,6 +40,11 @@ python experiments/run_corroborated_research_swarm.py
 python experiments/run_adaptive_model_router.py
 python experiments/run_temporal_agenda_agent.py
 python experiments/run_dependency_risk_guardian.py
+python experiments/run_governed_memory_curator.py
+python experiments/run_resumable_agent_workcell.py
+python experiments/run_relationship_account_briefing.py
+python experiments/run_incident_forensics_agent.py
+python experiments/run_tool_economics_portfolio.py
 ```
 
 Raw traces go to ignored `.runs/` files. They contain bounded experiment details but should
@@ -411,6 +418,81 @@ Use it for dependency baselines and upgrade proposals, never as an autonomous pa
 loop; vulnerability feeds can be incomplete and compatibility smoke tests are necessarily
 bounded.
 
+## 21. Governed memory-curation agent
+
+Providers: Supermemory + OpenRouter.
+
+This agent turns a proposed correction into a governed state transition. Source evidence stays
+in SuperRAG; deterministic code evaluates source class, freshness, scope, and poison markers;
+the model may explain but cannot approve. A proposal binds the target memory and replacement
+hash, an application ledger binds the human approval, and replay is rejected before the v4
+versioned update.
+
+The live run quarantined a retrieved poisoned candidate, denied a wrong hash, applied the exact
+approval once, and produced version 2 with the expected parent/root lineage. Normal inventory
+showed latest truth rather than old version 1. Use this for customer records, decisions,
+preferences, and policy facts whose correction matters. Keep signatures, approval history,
+and canonical truth outside Supermemory.
+
+## 22. Signed resumable multi-agent workcell
+
+Providers: Supermemory + OpenRouter.
+
+Planner, researcher, and reviewer publish compact signed checkpoints to a task container. Each
+fresh process verifies workflow/task identity, sequence, predecessor, output contract, stable
+checkpoint ID, and HMAC before resuming. Exact retries deduplicate; forged records, ambiguous
+branches, invalid output, and backward transitions fail closed.
+
+The live chain resumed across process boundaries and reconstructed sequences 1–3 after a
+simulated acknowledgement loss. Memory is the recovery log, not the queue or lock manager.
+Signatures prove integrity, not factual correctness, so production still needs a transactional
+workflow ledger and current artifact verification.
+
+## 23. Relationship/account-briefing agent
+
+Providers: Supermemory + Context.dev + Exa + ScrapeCreators + OpenRouter.
+
+Consented CRM notes enter a private account container; public company/web/X/Reddit material is
+kept as dated source evidence. The brief requires exact evidence citations and a deterministic
+outreach decision. Public evidence can change preparation but cannot create contact consent.
+
+In repeated small hosted runs, three batch documents reached `done` while Dynamic Dreaming
+remained background work beyond 60–90 seconds and no exact relationship memory appeared in the
+additional check. The passing design wrote confirmed normalized relationship facts directly
+after the exact barrier timed out. Use batch Dreaming for provenance/enrichment and a direct
+readiness path for facts required synchronously; do not generalize this small timing sample to
+all corpora.
+
+## 24. Incident-hypothesis forensics agent
+
+Providers: Supermemory + Vercel + Exa + SuperServe + OpenRouter.
+
+This agent separates three evidence classes: read-only live state, official guidance, and a
+synthetic rehearsal. It uses an egress-blocked sandbox to falsify candidate mechanisms, stores
+raw evidence as SuperRAG, and promotes only a test-backed general lesson. Production mitigation
+stays unauthorized.
+
+The live run observed deployment counts but had no logs, so it correctly reported production
+root cause as unknown. Its synthetic retry harness refuted backoff-only handling and supported
+idempotency keys in rehearsal. This is the correct use of memory during incidents: recall
+verified patterns while preserving uncertainty, never convert correlation or a lab repro into
+a claim about the live system.
+
+## 25. Tool-economics portfolio agent
+
+Providers: Supermemory + Monid + Composio + Exa + OpenRouter.
+
+The agent calibrates interchangeable read routes on one task, validates exact schemas and
+allowlists, normalizes quality/latency/known cost, and persists a 24-hour policy with fallback
+order and invalidation conditions. A new process may use the remembered policy only after the
+route is re-inspected and its current output passes the contract.
+
+The live Hacker News comparison found valid results from all three routes. Exa's dated cost was
+$0.007, Monid's inspected quote was $0.011, and Composio did not expose a comparable direct
+per-call cost in this flow. Composio therefore stayed shadow-only instead of being mislabeled
+free. Use this pattern for search, enrichment, crawling, and model/tool routing; include failed
+attempts, retries, memory operations, and quality labels in end-to-end economics.
+
 ## Other high-value builds
 
 | Agent | Providers | Memory design |
@@ -436,6 +518,11 @@ bounded.
 | Adaptive model router | OpenRouter + Supermemory | Calibrated route policy, runtime contracts, failure memory, bounded fallback. |
 | Temporal agenda | Supermemory + OpenRouter | Dated direct memories, natural-time retrieval, bounded answer window. |
 | Dependency-risk guardian | Monid + Exa + Composio + SuperServe + OpenRouter + Supermemory | Exact risk, official evidence, public signals, isolated compatibility, human gate. |
+| Governed memory curator | Supermemory + OpenRouter | Evidence quarantine, exact approval binding, replay denial, versioned correction. |
+| Resumable agent workcell | Supermemory + OpenRouter | Signed checkpoint chain, restart recovery, output contracts, transactional workflow authority. |
+| Relationship account brief | Context.dev + Exa + public social + OpenRouter + Supermemory | Consented CRM facts, batch source archive, freshness banner, cited preparation, no outreach authority. |
+| Incident hypothesis forensics | Vercel + Exa + SuperServe + OpenRouter + Supermemory | Read-only state, isolated falsification, explicit unknown, human mitigation gate. |
+| Tool-economics portfolio | Monid + Composio + Exa + OpenRouter + Supermemory | Comparable read routes, unknown-cost shadow mode, expiring policy, runtime revalidation. |
 
 ## What not to build
 
@@ -450,3 +537,8 @@ bounded.
 - A routing loop that trusts calibration memory without validating the current output.
 - A research swarm that counts provider APIs without tracking the original publisher.
 - An enterprise agent that lets the model decide scope precedence or action authority.
+- A curator that stores its only approval/replay ledger inside the memory it governs.
+- A workcell that treats semantic recall as a lock, queue, or exactly-once commit protocol.
+- An account agent that turns public interest signals into contact consent.
+- An incident agent that labels a sandbox rehearsal as the live root cause.
+- A cost router that sorts missing price as zero or trusts yesterday's route without revalidation.

@@ -51,6 +51,11 @@ promotion council, a self-repairing model router, natural-language temporal reca
 exact-version dependency guardian. See the
 [memory-native agent-systems evidence](../evidence/2026-07-16-fourth-pass-agent-systems.md).
 
+The fifth pass adds governed graph corrections, signed/restartable multi-agent checkpoints,
+batch-backed account briefings with a synchronous readiness fallback, incident-hypothesis
+falsification, and cost-aware read-tool portfolios. See the
+[operational agent-systems evidence](../evidence/2026-07-16-fifth-pass-operational-agents.md).
+
 ## Update discipline
 
 - Retest the core probe monthly and before a production launch.

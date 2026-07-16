@@ -9,10 +9,10 @@ SDKs, and live probes. “Maturity” is a lab judgment, not a vendor status lab
 | Capability | Practical use | Evidence | Maturity judgment |
 |---|---|---|---|
 | Add text, URL, or file | Knowledge ingestion and extraction | [Add document](https://supermemory.ai/docs/api-reference/ingest/add-document); hosted text probe | Core |
-| Batch/file upload | Bulk knowledge loading; up to documented content limits | [Content types](https://supermemory.ai/docs/concepts/content-types) | Core, not lab-tested |
+| Batch/file upload | Bulk knowledge loading; current OpenAPI accepts 1–600 documents | [Current OpenAPI](https://api.supermemory.ai/v3/openapi); hosted three-document batch | Core; 3/3 accepted live, file/boundary behavior pending |
 | Structured conversation upsert | Preserve roles and append a conversation by ID | [Conversation endpoint](https://supermemory.ai/docs/api-reference/ingest/ingest-or-update-conversation); hosted probe | Core |
 | `customId` upsert | Stable application identity for a document | Hosted probe; same document ID returned | Core, extraction semantics need regression tests |
-| `dreaming=dynamic` | Group related content before memory creation | [Adding memories](https://supermemory.ai/docs/add-memories) | Core, not lab-tested |
+| `dreaming=dynamic` | Group related content before memory creation | [Adding memories](https://supermemory.ai/docs/add-memories); repeated hosted batch probe | Asynchronous enrichment: small batches remained `dreaming` beyond 60–90 s and lacked the exact extracted fact in the extra check; use a direct confirmed-fact readiness fallback |
 | `dreaming=instant` | Extract each document independently; extra documented operation | Same source; hosted probe | Core |
 | `taskType=superrag` | Index knowledge without generating personal memory facts | [SuperRAG](https://supermemory.ai/docs/concepts/super-rag) | Core |
 | Direct v4 memory creation | Exact facts without extraction; up to 100 per call | [Direct creation](https://supermemory.ai/docs/api-reference/content-management/create-memories-directly); hosted probes | Core; profile can precede search visibility |
@@ -20,7 +20,7 @@ SDKs, and live probes. “Maturity” is a lab judgment, not a vendor status lab
 | Forget one memory | Remove a fact from normal search | [Forget](https://supermemory.ai/docs/api-reference/content-management/forget-a-memory); hosted probe | Core |
 | Agentic mass-forget | Natural-language deletion with dry-run | [Forget matching](https://supermemory.ai/docs/api-reference/content-management/forget-memories-matching-a-promptquery); hosted probe | Slow/variable; background workflow only |
 | Memory expiry (`forgetAfter`) | Lease temporary context and cancel through versioned update | Current [OpenAPI](https://api.supermemory.ai/v3/openapi); hosted expiry/cancel probe | Core; explicit forget and expiry had different recovery behavior |
-| Memory history/list | Inspect versions and administrative inventory | Current OpenAPI; hosted unfiltered list probe | Core; metadata-filtered list discrepancy observed |
+| Memory history/list | Inspect current administrative inventory and mutation lineage | Current OpenAPI; hosted unfiltered list and correction probe | Ordinary inventory showed latest v2, not old v1; parent/root lineage was in the update response. No dedicated history path appears in the current OpenAPI; metadata-filtered list discrepancy also observed. |
 | Document lifecycle | List, get, chunks, update, delete, processing state | [Document operations](https://supermemory.ai/docs/document-operations); hosted probe | Core |
 
 ## Recall and profile

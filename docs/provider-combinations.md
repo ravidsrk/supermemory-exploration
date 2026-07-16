@@ -48,6 +48,9 @@ covers combinations with distinct production value and calls out invalid ones.
 | Composio + Exa + ScrapeCreators + OpenRouter | Developer-signal radar | HN, open web, Reddit/X, synthesis and fallback history |
 | Context.dev + Exa + ScrapeCreators + OpenRouter | Corroboration council | Official scrape, web discovery, public signals, claim synthesis |
 | Monid + Exa + Composio + SuperServe + OpenRouter | Dependency-risk guardian | Exact-version CVE lookup, official evidence, HN, isolated smoke test, synthesis |
+| Context.dev + Exa + ScrapeCreators + OpenRouter | Relationship account brief | Company baseline, open-web change, public signals, cited synthesis; CRM consent remains separate |
+| Vercel + Exa + SuperServe + OpenRouter | Incident forensics | Read-only state, official guidance, isolated falsification, uncertainty-aware synthesis |
+| Monid + Composio + Exa + OpenRouter | Tool-economics portfolio | Priced catalog route, integration route, direct-search route, comparable decision |
 
 Add Supermemory to each row for longitudinal state, provenance, tenant isolation, and future
 retrieval.
@@ -64,6 +67,11 @@ retrieval.
 | Enterprise context | Resolve allowed scopes → retrieve separately → apply precedence → answer → authorize in code | Context composition must not weaken policy. |
 | Model routing | Recall policy → validate freshness/task family → call → contract-check → fallback → persist outcome | Old benchmark memory is not a runtime guarantee. |
 | Dependency risk | Read exact version → inspect tool → fetch evidence → isolate test → human approval → persist lesson | A zero-CVE response cannot authorize production change. |
+| Memory correction | Retrieve evidence → quarantine/gate → propose exact hash → human approve → update once → verify latest | Model explanation and graph context are not approval authority. |
+| Multi-agent recovery | Read candidates → verify signature/chain → resume one transition → contract-check → checkpoint → reconcile | Semantic memory is a recovery log, not a transactional workflow engine. |
+| Account briefing | Authorize private scope → recall CRM → verify readiness → fetch public evidence → cite → deny outreach by default | Public interest and relationship history do not create contact consent. |
+| Incident forensics | Read live state → retrieve prior lessons → acquire logs/evidence → falsify in isolation → state unknown or supported → approve separately | A rehearsal is not a production diagnosis. |
+| Tool economics | Recall unexpired policy → rediscover/reinspect → execute comparable reads → validate → rank known costs → persist outcome | Unknown price cannot be treated as free. |
 
 ## Permutation coverage lattice
 
@@ -81,6 +89,11 @@ of providers.
 | Adaptive control policy | OpenRouter catalog and outcomes | Candidate models | Model call + bounded fallback | Self-repairing model router | Holdout contract, expiry, fallback, total economics |
 | Temporal retrieval | Dated direct facts | OpenRouter | None | Temporal agenda | Trusted clock/timezone and answer window |
 | Risk recommendation | Monid + Exa + Composio | OpenRouter | Sandbox only | Dependency-risk guardian | Exact installed version, evidence diversity, human change owner |
+| Governed correction | Canonical + untrusted candidate sources | OpenRouter explanation only | Versioned memory update | Memory curator | Source/freshness gate, exact hash approval, replay ledger |
+| Recovery checkpoint | Signed prior agent output | OpenRouter | Direct checkpoint write | Resumable workcell | Signature, predecessor, state machine, output contract, DB reconciliation |
+| Relationship intelligence | CRM + Context.dev + Exa + social | OpenRouter | Brief only | Account briefing | Consent, exact readiness, citations, stale banner, outreach denial |
+| Incident learning | Vercel + official web + sandbox | OpenRouter | Sandbox only | Hypothesis forensics | Provenance class, logs-or-unknown, hypothesis falsification, human mitigation |
+| Tool portfolio | Monid + Composio + Exa | OpenRouter optional | Read-only tools | Economics router | Comparable task, unknown-cost shadow, expiry, route revalidation |
 
 ## Invalid or risky combinations
 
@@ -95,6 +108,9 @@ of providers.
 | Calibration winner → unconditional route | Task drift creates silent failures | Validate output, fall back, record outcome, expire policy. |
 | Several APIs → “independent corroboration” | Providers may repeat one publisher | Store upstream publisher and claim-level support graph. |
 | Multi-scope retrieval → model authorization | Lower-precedence memory can override policy | Resolve hierarchy and action permission in trusted code. |
+| Dynamic batch completion → synchronous readiness | Document completion can precede distilled-memory visibility | Poll the exact next read; directly write confirmed normalized facts on timeout. |
+| Signed checkpoint → trusted truth | Integrity does not establish correctness | Verify artifacts/evidence and keep transitions in a workflow ledger. |
+| Unknown catalog cost → zero-cost route | Missing economics wins falsely | Shadow until costs are comparable; record date and charge semantics. |
 
 ## Coverage achieved
 
@@ -102,16 +118,17 @@ of providers.
 |---|---:|---|
 | Supermemory | Yes | All agents |
 | OpenRouter | Yes | All reasoning paths |
-| Exa | Yes | Intelligence; signal radar; corroboration; dependency guardian |
-| Context.dev | Yes, including current GET scrape | Intelligence; monitor; corroboration |
-| ScrapeCreators | Yes | Intelligence; signal radar; corroboration |
-| Monid | Yes, including priced GET execution | Tool selection; safe public runner; dependency guardian |
-| Composio | Yes, including no-auth execution | Tool selection; safe public runner; signal radar; dependency guardian |
-| SuperServe | Yes | Sandboxed debugging; release triage; dependency guardian |
-| Vercel | Yes, read-only | Release memory; release-triage rehearsal |
+| Exa | Yes | Intelligence; signal radar; corroboration; dependency guardian; account brief; incident forensics; tool portfolio |
+| Context.dev | Yes, including current GET scrape | Intelligence; monitor; corroboration; account brief |
+| ScrapeCreators | Yes | Intelligence; signal radar; corroboration; account brief |
+| Monid | Yes, including priced GET execution | Tool selection; safe public runner; dependency guardian; tool portfolio |
+| Composio | Yes, including no-auth execution | Tool selection; safe public runner; signal radar; dependency guardian; tool portfolio |
+| SuperServe | Yes | Sandboxed debugging; release triage; dependency guardian; incident forensics |
+| Vercel | Yes, read-only | Release memory; release-triage rehearsal; incident forensics |
 
 Repeated runs, failure injection, lifecycle controls, a 120-search policy grid, multi-scope
-credentials, natural-time queries, and learned model fallbacks are now in the lab. The next
-valuable coverage is a reviewed reversible-write approval test, connector sync/update/delete
-on an entitled plan, larger blinded datasets, and sustained cost/latency tracking—not arbitrary
-provider subsets.
+credentials, natural-time queries, learned model fallbacks, signed restart recovery, batch
+readiness fallback, abstaining incident analysis, and cross-tool economics are now in the lab.
+The next valuable coverage is a reviewed reversible-write approval test, connector
+sync/update/delete on an entitled plan, larger blinded datasets, and sustained cost/latency
+tracking—not arbitrary provider subsets.
