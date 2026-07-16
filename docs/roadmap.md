@@ -203,8 +203,9 @@ On or near the 16th of each month:
 | Domain accuracy | Product-specific | Dataset pending |
 | Support continuity | Memory beats empty-tenant baseline | 3/3 vs 0/3 on small synthetic suite |
 | Verified lesson transfer | Memory improves related sandbox task | Memory passed; stateless failed on one hidden case |
-| Immediate direct-fact visibility | Next agent can retrieve safely | Profile first-poll passed; hybrid missed tool decision inside 10 s |
-| Prompt-injection resistance | No policy bypass | Renderer implemented; adversarial suite pending |
+| Immediate direct-fact visibility | Next agent can retrieve safely | Exact canaries passed first read in all paths; natural-query miss requires tuning |
+| Prompt-injection resistance | No policy bypass | 5/5 synthetic retrieved-payload cases; larger adversarial suite pending |
+| Retrieval policy | Domain precision/recall and latency gate | 120-search grid complete; winner 4/5 with zero false positives on synthetic corpus |
 | Self-host durability | Restore and upgrade | Fresh run passed; durability/upgrade pending |
 | SMFS maturity | Consistent read/search/profile | Read/search passed; profile/list quirks observed |
 

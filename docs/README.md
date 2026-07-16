@@ -37,6 +37,10 @@ Every important conclusion uses one of these labels:
 date, and small synthetic workload. Product behavior, entitlements, and latency can
 change. All observations in the first research pass are dated **2026-07-16**.
 
+The second pass on the same date adds safe live tool execution, a 15-case governance suite,
+a six-provider signal radar, a 120-search retrieval-policy grid, and a test-guided release
+rehearsal. See the [curated evidence](../evidence/2026-07-16-second-pass-agents.md).
+
 ## Update discipline
 
 - Retest the core probe monthly and before a production launch.

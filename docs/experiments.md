@@ -130,6 +130,35 @@ Notable controls:
 See [the practical agent chapter](practical-agents.md) and the curated
 [multi-provider evidence](../evidence/2026-07-16-multi-provider-agents.md).
 
+## Second-pass practical agents and evaluations
+
+```bash
+PYTHONPATH=src python3 experiments/run_consistency_matrix.py
+PYTHONPATH=src python3 experiments/run_query_sensitivity.py
+PYTHONPATH=src python3 experiments/run_change_monitor.py
+PYTHONPATH=src python3 experiments/run_safe_tool_execution.py
+PYTHONPATH=src python3 experiments/run_governance_scorecard.py
+PYTHONPATH=src python3 experiments/run_signal_radar.py
+PYTHONPATH=src python3 experiments/run_retrieval_policy_grid.py
+PYTHONPATH=src python3 experiments/run_release_triage_rehearsal.py
+```
+
+These are live, synthetic, and scoped to unique `lab:` containers. Together they add:
+
+- exact-canary visibility separated from natural-query relevance;
+- a reversible Context.dev monitor lifecycle with quota returning to zero;
+- one price-capped Monid GET and one no-auth Composio read;
+- 15 update/forget/isolation/injection cases;
+- fresh multi-source radar plus a memory-only fallback;
+- 120 retrieval-policy combinations and an agent-level verification;
+- Vercel observation plus a test-guided, egress-blocked repair loop.
+
+The corrected results and failed first attempts are in
+[second-pass evidence](../evidence/2026-07-16-second-pass-agents.md). Do not skip the failures:
+the long HN query returned zero results, an untuned agent query missed at the winning threshold,
+and the first webhook patch accepted future timestamps. Each caused a code or query-policy
+change before the final passing trace.
+
 ## Disposable self-hosted probe
 
 Follow the official [quickstart](https://supermemory.ai/docs/self-hosting/quickstart) in a
@@ -204,7 +233,7 @@ For each run, add a dated evidence note containing:
 - inferred-memory creation/review/undo;
 - `dreaming=dynamic` across related documents;
 - filter operator truth table and negative cases;
-- rerank/rewrite quality versus latency;
+- repeat the retrieval grid on a domain corpus with at least 100 blinded queries;
 - batch upload and 50 MB boundary behavior;
 - connector sync/update/delete on an entitled plan;
 - expanded scoped-key endpoint/rate-limit matrix beyond the passing read/write/revoke probe;

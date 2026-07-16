@@ -23,7 +23,8 @@ Hands-on exploration of Supermemory product surface, APIs, SDKs, and integration
 ## Status
 
 The field lab includes hosted/self-hosted capability probes, nine authenticated provider
-adapters, nine reference patterns, and live memory/no-memory experiments. Start with the
+adapters, fifteen reference patterns, 52 offline tests, and live memory/no-memory experiments.
+Start with the
 [practical wiki](docs/README.md), [multi-provider agents](docs/practical-agents.md), or the
 [verdict](docs/verdict.md).
 
@@ -73,6 +74,9 @@ supermemory-probe --with-llm
 PYTHONPATH=src python examples/run_agent_patterns.py --pattern all
 PYTHONPATH=src:. python experiments/run_advanced_agents.py debug
 PYTHONPATH=src:. python experiments/run_advanced_agents.py continuity
+PYTHONPATH=src python3 experiments/run_governance_scorecard.py
+PYTHONPATH=src python3 experiments/run_signal_radar.py
+PYTHONPATH=src python3 experiments/run_retrieval_policy_grid.py
 ```
 
 Live commands create synthetic, isolated `lab:` containers. Raw probe output is ignored under

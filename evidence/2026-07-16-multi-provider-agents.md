@@ -30,16 +30,18 @@ not as executable instructions.
 | Step | Observed result |
 |---|---|
 | Monid discovery | 5 candidates. |
-| Monid inspection | Top 2 candidates inspected; prices were returned, but the adapter did not find `inputSchema` at the expected top-level field. |
+| Monid inspection | Top 2 candidates inspected; later inspection confirmed the schema is under top-level `input`, not `inputSchema`, and price is nested under `price.amount.value`. |
 | Composio natural-language query | 0 tools. |
 | Composio toolkit fallback | 12 GitHub tools. Early catalog order was dominated by mutation tools, so mutation-risk filtering is mandatory. |
 | Immediate profile visibility | 1 dynamic decision appeared on the first poll, ~1.1 seconds client wall. |
 | Immediate hybrid search | Still returned no result inside a separate 10-second window. |
 | Memory-only follow-up | Profile context was available without another Monid or Composio call. |
 
-This reproduced a key architecture distinction: a successful direct memory write can become
-profile-visible before it becomes search-visible. Immediate handoffs should use the profile
-endpoint or an explicit indexing barrier, not an arbitrary sleep.
+Correction from the second pass: this did **not** prove indexing lag. Exact canaries in short,
+medium, and long direct memories were visible through profile, memories, and hybrid on the
+first read. The long natural-language request still missed while shorter/exact queries hit,
+which points to query sensitivity. Immediate handoffs should use a canary barrier and evaluate
+the production query separately.
 
 ## Sandboxed debugging agent
 
@@ -88,6 +90,6 @@ advantage that the stateless model did not have.
 - These are contract and causal probes, not load tests or statistically powered benchmarks.
 - Public social data is a noisy signal and must never be promoted to a stable fact without
   corroboration.
-- No Composio or Monid mutation tool was executed. Discovery and inspection were sufficient
-  to expose selection and safety behavior.
+- No Composio or Monid mutation tool was executed. A later pass executed one exact-allowlisted
+  read-only tool from each provider after method/auth/price checks.
 - The support result needs a larger, blinded dataset before it can support a production KPI.

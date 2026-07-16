@@ -38,11 +38,13 @@ covers combinations with distinct production value and calls out invalid ones.
 | Exa + Context.dev + OpenRouter | Company analyst | Structured baseline, broad evidence, synthesis |
 | Exa + ScrapeCreators + OpenRouter | Narrative radar | Web corroboration, public conversation, analysis |
 | Monid + Composio + OpenRouter | Tool architect | Paid marketplace, integration catalog, risk/cost comparison |
+| Monid + Composio | Safe public-tool runner | Price/schema inspection, no-auth read execution, outcome evidence |
 | SuperServe + OpenRouter + Vercel | Deployment debugger | Isolated reproduction, patch generation, live release state |
 | Context.dev + Exa + ScrapeCreators + OpenRouter | Competitive intelligence | First-party, open-web, public-social, synthesis |
 | Composio + SuperServe + OpenRouter | Action verifier | Authenticated tool, isolated validation, reasoning |
 | Vercel + SuperServe + OpenRouter | Incident repair | Observe, reproduce, patch |
 | Monid + Exa + OpenRouter | Research-tool optimizer | Compare direct search with marketplace alternatives and cost |
+| Composio + Exa + ScrapeCreators + OpenRouter | Developer-signal radar | HN, open web, Reddit/X, synthesis and fallback history |
 
 Add Supermemory to each row for longitudinal state, provenance, tenant isolation, and future
 retrieval.
@@ -65,7 +67,7 @@ retrieval.
 | Tool catalog → automatic execution | Ranking ignores auth and mutation risk | Inspect schema and classify side effects. |
 | Generated code → unrestricted sandbox | Exfiltration and supply-chain risk | Block egress, use scoped secrets, delete sandbox. |
 | Vercel state → inferred root cause | Status lacks build evidence | Fetch logs or state that cause is unknown. |
-| Memory write → immediate search handoff | Eventual visibility | Use profile for direct facts or poll an indexing barrier. |
+| Memory write → unchecked immediate handoff | Query miss can look like indexing lag | Poll an exact canary, then separately evaluate the real query. |
 | Raw provider response → model prompt | Cost, privacy, prompt injection | Normalize, bound, mark untrusted. |
 
 ## Coverage achieved
@@ -77,10 +79,12 @@ retrieval.
 | Exa | Yes | Competitive intelligence |
 | Context.dev | Yes | Competitive intelligence |
 | ScrapeCreators | Yes | Competitive intelligence |
-| Monid | Yes | Tool selection |
-| Composio | Yes | Tool selection |
-| SuperServe | Yes | Sandboxed debugging |
-| Vercel | Yes | Release memory |
+| Monid | Yes, including priced GET execution | Tool selection; safe public-tool runner |
+| Composio | Yes, including no-auth execution | Tool selection; safe public-tool runner; signal radar |
+| SuperServe | Yes | Sandboxed debugging; release-triage repair loop |
+| Vercel | Yes, read-only | Release memory; release-triage rehearsal |
 
-The next valuable coverage is repeated runs, failure injection, larger eval sets, mutation
-approval tests, and cost/latency tracking—not arbitrary provider subsets.
+Repeated runs, failure injection, lifecycle controls, and a 120-search policy grid are now in
+the lab. The next valuable coverage is a reviewed reversible-write approval test, connector
+sync/update/delete on an entitled plan, larger blinded datasets, and sustained cost/latency
+tracking—not arbitrary provider subsets.
