@@ -6,6 +6,7 @@ from supermemory_lab.advanced_agents import (
     CompetitiveIntelligenceAgent,
     ReleaseMemoryAgent,
     SandboxedDebuggingAgent,
+    SupportContinuityAgent,
     ToolSelectionAgent,
 )
 from supermemory_lab.trace import RunTrace, redact
@@ -217,6 +218,33 @@ class AdvancedAgentTests(unittest.TestCase):
         self.assertTrue(report.memory_transfer_passed)
         self.assertEqual(sandbox.network["deny_out"], ["0.0.0.0/0"])
         self.assertTrue(sandbox.deleted)
+
+    def test_support_agent_scopes_verified_facts_to_one_account(self) -> None:
+        memory = FakeMemory()
+        memory.profile_response = {
+            "profile": {
+                "static": ["Maintenance window is 02:00-04:00 UTC"],
+                "dynamic": [],
+                "buckets": {},
+            }
+        }
+        llm = FakeLLM()
+        agent = SupportContinuityAgent(memory, llm)
+
+        agent.record_fact(
+            account_id="account:one",
+            fact="Maintenance window is 02:00-04:00 UTC",
+            kind="maintenance-policy",
+            stable=True,
+        )
+        report = agent.answer(
+            account_id="account:one", question="When can we schedule the upgrade?"
+        )
+
+        created = memory.calls[0]
+        self.assertEqual(created[1], "account:one")
+        self.assertTrue(created[2][0]["isStatic"])
+        self.assertIn("02:00-04:00 UTC", report.recalled_context)
 
 
 if __name__ == "__main__":
