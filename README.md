@@ -76,4 +76,4 @@ Live commands create synthetic, isolated `lab:` containers. Raw probe output is 
 
 ## License
 
-Private exploration. Not for distribution.
+[MIT](LICENSE) © 2026 Ravindra Kumar.

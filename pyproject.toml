@@ -7,6 +7,7 @@ name = "supermemory-field-lab"
 version = "0.1.0"
 description = "Reproducible experiments and agent patterns for Supermemory"
 requires-python = ">=3.9"
+license = { text = "MIT" }
 dependencies = []
 
 [project.scripts]
