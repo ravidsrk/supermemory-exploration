@@ -22,7 +22,8 @@ Hands-on exploration of Supermemory product surface, APIs, SDKs, and integration
 
 ## Status
 
-Active research. The initial harness and evidence catalog are being built now.
+The first practical research pass is complete. Start with the
+[practical wiki](docs/README.md) or the [verdict](docs/verdict.md).
 
 ## Repository map
 
@@ -33,6 +34,7 @@ Active research. The initial harness and evidence catalog are being built now.
 | `experiments/` | Reproducible live probes and evaluations |
 | `tests/` | Offline contract and architecture tests |
 | `evidence/` | Curated, secret-free observations from live runs |
+| `examples/` | Runnable live agent patterns |
 
 ## Primary sources
 
@@ -51,7 +53,25 @@ If a credential has ever been pasted into a public issue, committed file, termin
 
 ## Setup
 
-The first runnable Python setup will land with the experiment harness. No credentials are required for unit tests.
+Python 3.9+ is sufficient; the field lab deliberately has no third-party Python dependency.
+
+```bash
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install -e .
+cp .env.example .env.local
+python -m unittest -v
+```
+
+Run the redacted capability probe or one of the four agent patterns:
+
+```bash
+supermemory-probe --with-llm
+PYTHONPATH=src python examples/run_agent_patterns.py --pattern all
+```
+
+Live commands create synthetic, isolated `lab:` containers. Raw probe output is ignored under
+`.runs/`; the agent demo deliberately leaves its containers available for dashboard inspection.
 
 ## License
 
