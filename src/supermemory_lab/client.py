@@ -52,6 +52,37 @@ class SupermemoryClient:
             ),
         )
 
+    def add_documents_batch(
+        self,
+        documents: Sequence[Mapping[str, Any]],
+        *,
+        container_tag: Optional[str] = None,
+        metadata: Optional[Mapping[str, Any]] = None,
+        task_type: Optional[str] = None,
+        filter_by_metadata: Optional[Mapping[str, Any]] = None,
+        entity_context: Optional[str] = None,
+        dreaming: Optional[str] = None,
+    ) -> JsonObject:
+        if not 1 <= len(documents) <= 600:
+            raise ValueError("batch documents must contain between 1 and 600 items")
+        return self._transport.request(
+            "POST",
+            "/v3/documents/batch",
+            _without_none(
+                {
+                    "documents": [dict(document) for document in documents],
+                    "containerTag": container_tag,
+                    "metadata": dict(metadata) if metadata is not None else None,
+                    "taskType": task_type,
+                    "filterByMetadata": dict(filter_by_metadata)
+                    if filter_by_metadata is not None
+                    else None,
+                    "entityContext": entity_context,
+                    "dreaming": dreaming,
+                }
+            ),
+        )
+
     def get_document(self, document_id: str) -> JsonObject:
         return self._transport.request(
             "GET", f"/v3/documents/{quote(document_id, safe='')}"

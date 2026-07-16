@@ -28,6 +28,36 @@ class SupermemoryClientTests(unittest.TestCase):
             },
         )
 
+    def test_batch_documents_forwards_dynamic_dreaming_and_scope(self) -> None:
+        transport = RecordingTransport()
+        client = SupermemoryClient(transport)
+
+        client.add_documents_batch(
+            [
+                {"content": "meeting one", "customId": "meeting-1"},
+                {"content": "meeting two", "customId": "meeting-2"},
+            ],
+            container_tag="account:1",
+            metadata={"source": "crm"},
+            task_type="memory",
+            filter_by_metadata={"account": "one"},
+            entity_context="Synthetic account relationship history.",
+            dreaming="dynamic",
+        )
+
+        method, path, body = transport.calls[0]
+        self.assertEqual((method, path), ("POST", "/v3/documents/batch"))
+        self.assertEqual(body["containerTag"], "account:1")
+        self.assertEqual(len(body["documents"]), 2)
+        self.assertEqual(body["dreaming"], "dynamic")
+        self.assertEqual(body["filterByMetadata"], {"account": "one"})
+
+    def test_batch_documents_enforces_openapi_cardinality(self) -> None:
+        client = SupermemoryClient(RecordingTransport())
+
+        with self.assertRaises(ValueError):
+            client.add_documents_batch([])
+
     def test_memory_search_always_sets_mode_and_tuning(self) -> None:
         transport = RecordingTransport()
         client = SupermemoryClient(transport)
