@@ -1,29 +1,24 @@
-# Env / secrets
+# Secrets
 .env
 .env.*
 !.env.example
-*.pem
 
-# OS / editor
-.DS_Store
-.idea/
-.vscode/
-*.swp
-*~
-
-# Dependencies / build
-node_modules/
-dist/
-build/
-.next/
-.turbo/
-coverage/
+# Python
 .venv/
 __pycache__/
-*.pyc
+*.py[cod]
 .pytest_cache/
 .ruff_cache/
 
-# Logs
+# Node / Bun
+node_modules/
+.turbo/
+
+# Local experiment output (curated, redacted results belong in evidence/)
+.runs/
 *.log
-npm-debug.log*
+
+# Editors and operating systems
+.DS_Store
+.idea/
+.vscode/
