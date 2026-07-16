@@ -42,6 +42,24 @@ class ProviderAdapterTests(unittest.TestCase):
         self.assertIn("domain=supermemory.ai", transport.calls[1][1])
         self.assertIn("maxSpeed=true", transport.calls[1][1])
 
+    def test_context_monitor_lifecycle_uses_exact_page_schema(self) -> None:
+        transport = RecordingTransport()
+        client = ContextDevClient(transport)
+        client.create_page_monitor(
+            name="pricing", url="https://example.com/pricing", tags=["lab"]
+        )
+        client.run_monitor("mon/one")
+        client.list_monitor_runs("mon/one", status="completed")
+        client.delete_monitor("mon/one")
+
+        body = transport.calls[0][2]
+        self.assertEqual(body["target"]["type"], "page")
+        self.assertEqual(body["change_detection"], {"type": "exact"})
+        self.assertEqual(body["schedule"]["unit"], "days")
+        self.assertEqual(transport.calls[1][1], "/monitors/mon%2Fone/run")
+        self.assertIn("status=completed", transport.calls[2][1])
+        self.assertEqual(transport.calls[3][0], "DELETE")
+
     def test_social_endpoints_encode_parameters(self) -> None:
         transport = RecordingTransport()
         client = ScrapeCreatorsClient(transport)
