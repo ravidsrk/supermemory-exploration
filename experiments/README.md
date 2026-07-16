@@ -8,6 +8,7 @@ PYTHONPATH=src python3 -m supermemory_lab.probes --with-llm
 PYTHONPATH=src python3 -m supermemory_lab.probes --connector-only
 PYTHONPATH=src python3 -m supermemory_lab.probes --router-only
 PYTHONPATH=src python3 -m supermemory_lab.probes --scoped-key-only
+PYTHONPATH=src python3 experiments/run_safe_tool_execution.py
 ```
 
 The core probe exercises:
@@ -22,3 +23,9 @@ The core probe exercises:
 - optional scoped-key read/write isolation, revocation, and cleanup checks
 
 Do not paste raw run files into bug reports without reviewing them first. They contain synthetic experiment content and hosted resource IDs, but the redactor intentionally errs on the side of preserving useful response evidence.
+
+`run_safe_tool_execution.py` performs real calls, but only after fail-closed checks:
+the Monid tool must be explicitly allowlisted, inspect as `GET`, and cost no more than
+the configured cap; the Composio tool must be explicitly allowlisted, report `no_auth`,
+and contain no mutation verb token. Public results are stored as untrusted SuperRAG
+documents, while the verified execution policy is stored as a direct dynamic memory.

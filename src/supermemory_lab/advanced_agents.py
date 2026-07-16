@@ -363,7 +363,7 @@ class ToolSelectionAgent:
                             provider, endpoint
                         ),
                         lambda value: {
-                            "hasInputSchema": isinstance(value.get("inputSchema"), Mapping),
+                            "hasInput": isinstance(value.get("input"), Mapping),
                             "price": value.get("price"),
                         },
                     )

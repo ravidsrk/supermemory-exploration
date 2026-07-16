@@ -1,6 +1,6 @@
-"""Composio catalog adapter; execution is intentionally a separate decision."""
+"""Composio catalog and explicit tool-execution adapter."""
 
-from typing import Optional
+from typing import Any, Mapping, Optional
 
 from ..http import JsonObject, JsonTransport
 from .query import with_query
@@ -33,4 +33,32 @@ class ComposioClient:
                     "limit": limit,
                 },
             ),
+        )
+
+    def get_tool(self, tool_slug: str) -> JsonObject:
+        return self._transport.request(
+            "GET",
+            with_query(
+                f"/api/v3/tools/{tool_slug}", {"toolkit_versions": "latest"}
+            ),
+        )
+
+    def execute_tool(
+        self,
+        tool_slug: str,
+        *,
+        user_id: str,
+        arguments: Mapping[str, Any],
+        version: str = "latest",
+    ) -> JsonObject:
+        """Execute after the caller has made an explicit authorization decision."""
+
+        return self._transport.request(
+            "POST",
+            f"/api/v3/tools/execute/{tool_slug}",
+            {
+                "user_id": user_id,
+                "version": version,
+                "arguments": dict(arguments),
+            },
         )

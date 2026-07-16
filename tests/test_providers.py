@@ -82,6 +82,25 @@ class ProviderAdapterTests(unittest.TestCase):
         self.assertTrue(composio_transport.calls[0][1].startswith("/api/v3/tools?"))
         self.assertNotIn("execute", composio_transport.calls[0][1])
 
+    def test_composio_execution_uses_explicit_user_arguments_and_version(self) -> None:
+        transport = RecordingTransport()
+        client = ComposioClient(transport)
+
+        client.get_tool("HACKERNEWS_GET_LATEST_POSTS")
+        client.execute_tool(
+            "HACKERNEWS_GET_LATEST_POSTS",
+            user_id="field-lab",
+            arguments={"page": 0, "size": 3},
+        )
+
+        self.assertIn("toolkit_versions=latest", transport.calls[0][1])
+        self.assertEqual(
+            transport.calls[1][1],
+            "/api/v3/tools/execute/HACKERNEWS_GET_LATEST_POSTS",
+        )
+        self.assertEqual(transport.calls[1][2]["version"], "latest")
+        self.assertEqual(transport.calls[1][2]["user_id"], "field-lab")
+
     def test_operational_adapters_are_read_only_by_default(self) -> None:
         transport = RecordingTransport()
         VercelClient(transport).list_deployments(project_id="prj_1")
