@@ -15,6 +15,8 @@ _SAFE_TOKEN_COUNT_KEYS = {
     "completiontokens",
     "totaltokens",
     "tokensprocessed",
+    "estimatedcontexttokens",
+    "meanestimatedcontexttokens",
 }
 _SECRET_VALUE = re.compile(
     r"(?:sk-or-v1|sm|ss_live|monid_live|ctxt_secret|vcp|ak)_[A-Za-z0-9_-]{8,}"

@@ -193,6 +193,7 @@ class AdvancedAgentTests(unittest.TestCase):
         self.assertEqual(token_counts["promptTokens"], 120)
         self.assertEqual(token_counts["completion_tokens"], 8)
         self.assertEqual(token_counts["accessToken"], "[REDACTED]")
+        self.assertEqual(redact({"meanEstimatedContextTokens": 327.5})["meanEstimatedContextTokens"], 327.5)
 
         with tempfile.TemporaryDirectory() as directory:
             trace = RunTrace("test-run", experiment="unit")
