@@ -59,6 +59,22 @@ Validate these in the exact package version you pin:
 - The forget helper calls v4 directly because the package's pinned SDK lacks that method.
   Pin SDK and integration-package versions together.
 
+### Review and graph clients expose more than latest-only search
+
+The current review client calls the inferred queue per container and sends exact
+approve/decline/undo actions per memory. Its UI hooks invalidate both review and memory views
+after a transition. The memory entry schema includes `memoryRelations` for update, extension,
+and derivation, while the graph UI treats those relations as primary and parent lineage as a
+fallback.
+
+- [Memory-review documentation source](https://github.com/supermemoryai/supermemory/blob/8d926332ab23aa5785def636aca9d0a52fea4a65/apps/docs/memory-review.mdx)
+- [Public monorepo search](https://github.com/supermemoryai/supermemory/search?q=memoryRelations&type=code)
+
+The hosted OpenAPI additionally exposes a nested `history` array on the latest memory-list
+entry. The lab's three-version chain reconstructed `[1, 2, 3]`. These are useful operator and
+lineage primitives; neither the public client code nor hosted result proves an immutable audit
+or authorization system.
+
 ## MemoryBench internals and caveats
 
 MemoryBench has a clean checkpointed pipeline: ingest, await indexing, search, answer, evaluate,

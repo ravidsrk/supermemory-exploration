@@ -20,10 +20,11 @@ This repository implements four framework-independent patterns in
 These patterns intentionally avoid tying memory to an orchestration framework. Any agent
 runtime can call them.
 
-Twenty-six additional production-shaped implementations now cover intelligence, dynamic
+Thirty-two additional production-shaped implementations now cover intelligence, dynamic
 tool selection, sandboxed execution, governance, lifecycle, enterprise hierarchy,
 corroboration, temporal recall, adaptive model routing, dependency risk, governed correction,
-restart recovery, relationship briefing, incident forensics, and tool economics. See
+restart recovery, relationship briefing, incident forensics, tool economics, graph review,
+model councils, adaptive tutoring, resumable due diligence, change risk, and retention. See
 [Practical multi-provider agents](practical-agents.md) and the
 [provider combination map](provider-combinations.md).
 
@@ -52,6 +53,21 @@ The fifth live pass added five more:
    synthetic rehearsals cannot be silently merged into a production root-cause claim.
 5. **Make unknown economics ineligible, not free.** Expire and revalidate route policies, and
    account for quality, retries, fallbacks, and provider charge semantics.
+
+The sixth live pass added six more:
+
+1. **Reconstruct lineage from current entries without confusing history with current truth.**
+   Audit nested history plus parent/root continuity; keep approvals in a separate ledger.
+2. **Bind deliberation to immutable evidence.** Validate every model vote's schema, citation,
+   and falsifier; preserve dissent and invalidate the proposal when evidence changes.
+3. **Separate teaching from assessment.** Signed mastery, deterministic decay, and independently
+   verified grades prevent a teaching model from awarding its own success.
+4. **Make research resumable and degradation typed.** Checkpoint provider/publisher evidence,
+   call/cost budgets, and failures; partial or memory-only work must not silently promote.
+5. **Let live health override a successful rehearsal.** Simulation is evidence about a
+   mechanism, not authority to change unhealthy production state.
+6. **Put retention authority and audit outside retained data.** Exact IDs, legal holds,
+   plan digests, replay denial, and post-delete checks are deterministic control-plane work.
 
 ## Architecture 1: personalized chief of staff
 

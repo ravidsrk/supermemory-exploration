@@ -56,6 +56,12 @@ batch-backed account briefings with a synchronous readiness fallback, incident-h
 falsification, and cost-aware read-tool portfolios. See the
 [operational agent-systems evidence](../evidence/2026-07-16-fifth-pass-operational-agents.md).
 
+The sixth pass adds full three-version lineage reconstruction, inferred-review stewardship,
+an evidence-bound three-model decision council, assessment-verified adaptive teaching,
+resumable budgeted due diligence, live-state-aware change simulation, and legal-hold-aware
+retention. It also exercises a real partial-provider outage rather than hiding it. See the
+[deep agent-systems evidence](../evidence/2026-07-16-sixth-pass-deep-agents.md).
+
 ## Update discipline
 
 - Retest the core probe monthly and before a production launch.

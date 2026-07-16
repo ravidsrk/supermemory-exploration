@@ -234,6 +234,17 @@ Before first production ingest, implement:
 Natural-language mass deletion is useful for discovery, not proof of erasure. Preview, review,
 execute, and then verify with IDs and container/document lists.
 
+For retention and legal hold, snapshot the complete latest inventory and partition exact IDs
+in trusted code. Bind a hold to the snapshot; regenerate any deletion plan after a hold or
+record version changes. Bind deletion approval to the final plan digest and exact IDs, reject
+replay, verify absence and retained controls, and write the canonical audit event outside the
+memory being governed. Cover connector copies, caches, backups, exports, and self-hosted
+restores. Product code does not determine whether this satisfies law; obtain qualified review.
+
+Current list responses can expose prior versions as nested `history` on the latest entry. That
+is useful for correction UX and lineage audits, but it does not replace an immutable approval,
+hold, access, or erasure ledger.
+
 ## Observability
 
 Record safe metadata for every read:
@@ -287,6 +298,12 @@ Measure, because current pricing and provider behavior can change.
 - Track extraction LLM and embedding costs when self-hosting.
 - Store cost observation date, currency/unit, provider-reported charge semantics, quality, and
   retry/fallback cost. Keep unknown-cost routes out of cheapest-route selection.
+- Give long research both call and monetary budgets. Persist a signed progress/evidence ledger,
+  count original publishers separately from acquisition APIs, and make `ready`,
+  `degraded-partial`, and `memory-only-stale` explicit result types.
+- Reserve model councils for proposals. Freeze one evidence manifest, validate each vote's
+  citations and falsifier, preserve minority dissent, and invalidate the proposal when its
+  evidence digest changes.
 
 ## Production release checklist
 
@@ -309,4 +326,9 @@ Measure, because current pricing and provider behavior can change.
 - [ ] Batch/document completion is not used as a substitute for exact downstream readiness.
 - [ ] Incident conclusions preserve evidence class and explicit unknown state.
 - [ ] Tool policies expire, revalidate, and never treat missing price as zero.
+- [ ] Multi-model votes cite an immutable manifest; invalid votes, dissent, and abstention are retained.
+- [ ] Long research exposes provider failures, publisher diversity, budget, checkpoint integrity, and stale mode.
+- [ ] Mastery or user scoring changes only from independently verified evidence, never the teaching model.
+- [ ] Change advice is bound to current health and cannot execute deployment or override live gates.
+- [ ] Legal holds invalidate prior deletion plans; exact approval, replay denial, absence verification, and external audit pass.
 - [ ] Self-hosted backup/restore and version-upgrade drill passes, if applicable.

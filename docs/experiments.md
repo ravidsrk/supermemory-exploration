@@ -249,12 +249,53 @@ Final observed outcomes:
 - every final evaluation passed, cleanup succeeded or found the empty control already absent,
   and the complete offline suite passed 110 tests.
 
-The failed rehearsals were useful: normal inventory did not expose superseded v1; a scorer
+The failed rehearsals were useful: superseded v1 was not a separate top-level current entry
+(the sixth pass later found it in nested history); a scorer
 initially conflated semantic discovery with an exact serialized barrier; Dynamic Dreaming
 remained pending despite completed documents; and opaque citation IDs were not reliable until
 the prompt required them. See the
 [fifth-pass evidence](../evidence/2026-07-16-fifth-pass-operational-agents.md) for run IDs,
 timings, implementation boundaries, and primary sources.
+
+## Sixth-pass deep agent systems
+
+```bash
+PYTHONPATH=src python3 experiments/run_graph_review_steward.py
+PYTHONPATH=src python3 experiments/run_decision_council.py
+PYTHONPATH=src python3 experiments/run_adaptive_tutor.py
+PYTHONPATH=src python3 experiments/run_due_diligence_campaign.py
+PYTHONPATH=src python3 experiments/run_change_risk_board.py
+PYTHONPATH=src python3 experiments/run_retention_controller.py
+```
+
+Final observed outcomes:
+
+- the latest v3 lineage entry contained nested history `[1, 2, 3]` with a valid parent/root
+  chain; ordinary-memory inferred review returned 409, while the bounded seed produced no real
+  candidate;
+- three model families returned evidence-bound `STAGED` votes, retrieved poison was excluded,
+  the result remained a non-authoritative proposal, and a changed evidence digest made it
+  stale;
+- the tutor ignored unsigned mastery poison, selected a decayed lesson, accepted only an
+  egress-blocked verified 4/4 grade, created mastery version 2, and recovered it in a fresh
+  process;
+- due diligence resumed from a signed checkpoint, cited three publishers, represented known
+  and unknown costs, exposed Exa/Monid/Composio 401s, labeled the report `degraded-partial`,
+  and withheld conclusion promotion and purchase authority;
+- a 5/5 staged-rollout rehearsal could not override unhealthy live counts; the board returned
+  `HOLD`, persisted no project names, and kept deployment authority false;
+- legal-hold versioning invalidated an old deletion plan; wrong hold/plan approvals and replay
+  were denied; one exact expired record was forgotten and all held/active/review records
+  remained;
+- all six final live evaluations and cleanup checks passed, and the complete offline suite
+  passed 146 tests.
+
+Two failed paths were retained as evidence. The first council run had two fenced-JSON format
+failures and safely produced no consensus; the fix normalized only the fence before strict
+validation. The first due-diligence run lacked a complete fresh portfolio and refused to
+promote. See the
+[sixth-pass evidence](../evidence/2026-07-16-sixth-pass-deep-agents.md) for exact run IDs,
+provider degradation, source contracts, caveats, and cleanup.
 
 ## Disposable self-hosted probe
 
@@ -327,7 +368,13 @@ For each run, add a dated evidence note containing:
 ## Experiments still needed
 
 - induce an inferred-memory review candidate, then exercise approve/decline/undo (the endpoint
-  and empty queue are covered, but no candidate was generated);
+  and ordinary-memory 409 control are covered; instant-Dreaming seed still generated none);
+- refresh/re-authorize Exa, Monid, and Composio, then repeat the full and intentionally degraded
+  due-diligence paths;
+- create genuine valid minority dissent in the three-model council and measure calibration,
+  model/order effects, and abstention;
+- replace the tutor's toy grade with a validated domain assessment and measure false mastery;
+- exercise retention across connectors, backups, caches, export, and self-hosted restore;
 - repeat both Dreaming modes across larger related batches, longer windows, and
   queue/readiness instrumentation;
 - batch file upload and 600-document/cardinality boundaries;

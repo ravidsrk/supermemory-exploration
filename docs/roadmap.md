@@ -35,12 +35,16 @@ Delivered:
   temporal recall, and dependency risk;
 - five operational systems for governed correction, signed restart recovery, consent-aware
   account briefing, incident-hypothesis falsification, and read-tool economics;
+- six deep systems for graph/review stewardship, multi-model evidence deliberation,
+  assessment-verified tutoring, budgeted resumable due diligence, change-risk simulation, and
+  legal-hold-aware retention;
 - a causal sandbox transfer test where memory passed and the stateless candidate failed;
 - a three-case support benchmark scoring 3/3 with memory and 0/3 without it;
 - profile-versus-search read-after-write evidence and explicit polling barriers;
 - source-pinned SDK, plugin, MCP, SMFS, and MemoryBench inspection;
 - custom profile buckets, seven search-filter shapes, memory expiry/cancellation, inferred
-  review endpoint/empty queue, and queued container merge lifecycle;
+  review endpoint/empty queue/ordinary-memory 409, three-version nested history, and queued
+  container merge lifecycle;
 - a correction-aware conversation-plus-direct-fact agent and preview-gated erasure agent;
 - a 12-case matched domain smoke suite scoring 12/12 with memory versus 2/12 without;
 - a Router continuity matrix separating model history, direct memory pool, tenant isolation,
@@ -201,6 +205,8 @@ On or near the 16th of each month:
 5. Test one correction, precise deletion, and cross-tenant negative control.
 6. Update the evidence note without erasing historical results.
 7. Decide whether to upgrade, hold, or roll back.
+8. Exercise one degraded dependency/provider path and verify the agent labels partial state,
+   preserves failures, and withholds promotion or action.
 
 ## Scorecard
 
@@ -229,6 +235,12 @@ On or near the 16th of each month:
 | Batch relationship readiness | Required account facts available before briefing | Batch accepted 3/3; Dynamic Dreaming timed out; normalized direct fallback passed |
 | Incident certainty | No root-cause claim without evidence | Synthetic hypothesis gate passed; production cause stayed unknown and action unauthorized |
 | Tool economics | Cheapest eligible route uses comparable dated cost | Exa/Monid ranked; unknown Composio cost stayed shadow; new process revalidated |
+| Graph lineage/review | Current truth reconstructs correction history; review is exact-authorized | Nested `[1,2,3]` chain passed; ordinary review returned 409; inferred candidate still pending |
+| Multi-model deliberation | Every valid vote cites evidence; dissent/staleness preserved | Three evidence-bound votes passed; fenced-JSON failure abstained; changed digest became stale |
+| Adaptive tutoring | Only verified assessment changes signed mastery | Unsigned poison ignored; isolated 4/4 grade created v2; fresh process recovered it |
+| Resumable due diligence | Budget/provider failures remain explicit and cannot promote partial work | Signed resume passed; three healthy publishers plus three provider 401s produced non-promoted degraded report |
+| Change-risk advice | Passing rehearsal cannot override unhealthy current state | 5/5 sandbox plus unhealthy live counts correctly yielded HOLD; no deploy authority |
+| Legal-hold retention | Exact policy/hold/approval, drift/replay denial, post-delete proof | Wrong authorization/drift/replay denied; one exact forget passed; external audit emitted |
 | Self-host durability | Restore and upgrade | Fresh run passed; durability/upgrade pending |
 | SMFS maturity | Consistent read/search/profile | Read/search passed; profile/list quirks observed |
 

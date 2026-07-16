@@ -28,6 +28,12 @@ PYTHONPATH=src python3 experiments/run_resumable_agent_workcell.py
 PYTHONPATH=src python3 experiments/run_relationship_account_briefing.py
 PYTHONPATH=src python3 experiments/run_incident_forensics_agent.py
 PYTHONPATH=src python3 experiments/run_tool_economics_portfolio.py
+PYTHONPATH=src python3 experiments/run_graph_review_steward.py
+PYTHONPATH=src python3 experiments/run_decision_council.py
+PYTHONPATH=src python3 experiments/run_adaptive_tutor.py
+PYTHONPATH=src python3 experiments/run_due_diligence_campaign.py
+PYTHONPATH=src python3 experiments/run_change_risk_board.py
+PYTHONPATH=src python3 experiments/run_retention_controller.py
 ```
 
 The core probe exercises:
@@ -132,3 +138,27 @@ production root cause as unknown when no logs exist.
 `run_tool_economics_portfolio.py` executes the same public read task through Monid, Composio,
 and Exa, treats non-comparable price as unknown rather than free, persists an expiring route
 policy, and makes a new process revalidate the selected route.
+
+`run_graph_review_steward.py` builds a three-version correction chain, audits the latest
+entry's nested history and parent/root continuity, polls the inferred-review queue, rejects an
+ordinary-memory review, and keeps approve/decline/undo behind exact external authorization.
+
+`run_decision_council.py` asks three model families for independent schema-bound votes over an
+immutable evidence manifest, requires exact citations and falsifiers, preserves invalid votes
+and dissent, persists only a proposal, and rejects it when the evidence digest changes.
+
+`run_adaptive_tutor.py` loads only signed mastery, applies deterministic decay and lesson-mode
+selection, uses the model only to teach, verifies an assessment in an egress-blocked sandbox,
+and versions mastery only from the verified grade.
+
+`run_due_diligence_campaign.py` acquires a bounded public-source portfolio under call and cost
+budgets, checkpoints it for fresh-process resume, tracks provider and publisher diversity,
+requires exact citations, and withholds promotion in degraded or memory-only modes.
+
+`run_change_risk_board.py` minimizes read-only deployment state, separates official guidance
+from a synthetic staged-rollout rehearsal, lets current health override a passing sandbox, and
+stores signed non-authoritative advice that becomes stale with the snapshot.
+
+`run_retention_controller.py` partitions exact latest inventory by retention class, expiry,
+legal hold, and review state; binds hold and deletion approvals to exact snapshots/plans;
+rejects drift and replay; verifies absence; and emits canonical external audit events.

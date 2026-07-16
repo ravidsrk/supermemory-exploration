@@ -20,7 +20,7 @@ SDKs, and live probes. “Maturity” is a lab judgment, not a vendor status lab
 | Forget one memory | Remove a fact from normal search | [Forget](https://supermemory.ai/docs/api-reference/content-management/forget-a-memory); hosted probe | Core |
 | Agentic mass-forget | Natural-language deletion with dry-run | [Forget matching](https://supermemory.ai/docs/api-reference/content-management/forget-memories-matching-a-promptquery); hosted probe | Slow/variable; background workflow only |
 | Memory expiry (`forgetAfter`) | Lease temporary context and cancel through versioned update | Current [OpenAPI](https://api.supermemory.ai/v3/openapi); hosted expiry/cancel probe | Core; explicit forget and expiry had different recovery behavior |
-| Memory history/list | Inspect current administrative inventory and mutation lineage | Current OpenAPI; hosted unfiltered list and correction probe | Ordinary inventory showed latest v2, not old v1; parent/root lineage was in the update response. No dedicated history path appears in the current OpenAPI; metadata-filtered list discrepancy also observed. |
+| Memory history/list | Inspect current administrative inventory and mutation lineage | [Current OpenAPI](https://api.supermemory.ai/v3/openapi); hosted unfiltered three-version correction probe | Top-level entries represent current truth; the observed latest v3 entry nested history `[1, 2, 3]` with valid parent/root continuity. This corrects the earlier latest-only interpretation; test pagination/export and do not treat it as a compliance signature. |
 | Document lifecycle | List, get, chunks, update, delete, processing state | [Document operations](https://supermemory.ai/docs/document-operations); hosted probe | Core |
 
 ## Recall and profile
@@ -38,7 +38,7 @@ SDKs, and live probes. “Maturity” is a lab judgment, not a vendor status lab
 | Aggregate results | Compress multiple memories into query-specific context | Current SDK/changelog and HandoffBoard probe contract | Useful for multi-agent boards; verify citations are not lost. |
 | User profile | Stable, dynamic, bucketed, and query-specific context | [Profiles](https://supermemory.ai/docs/concepts/user-profiles); hosted probe | Excellent session-start primitive. |
 | Profile buckets | Built-in preferences plus custom org/container categories | [Buckets API](https://supermemory.ai/docs/api-reference/profiles/get-profile-buckets); custom-bucket hosted probe | Custom buckets persisted and classified the corrected fact; definitions are add-only. |
-| Inferred-memory review | Approve, decline, or undo generated inferences | [Memory review](https://supermemory.ai/docs/memory-review); endpoint/empty-queue probe | Add human review for sensitive personalization; generated-candidate lifecycle still pending. |
+| Inferred-memory review | Approve, decline, or undo generated inferences | [Memory review](https://supermemory.ai/docs/memory-review); endpoint/queue/negative-control probe | Add exact external authorization for sensitive personalization. Instant-Dreaming seed produced no candidate in 90 s; reviewing an ordinary memory returned 409. Generated-candidate approve/decline/undo remains pending. |
 
 ## Organization, isolation, and customization
 

@@ -63,7 +63,9 @@ long-lived agent than append-only embeddings.
 and normal search returned the current date while preserving the old fact as parent context.
 The preference agent used the same pattern to replace a user preference without duplicate
 current facts. Server expiry hid a temporary fact, cancellation preserved another as version
-2, and an asynchronous container merge moved data while preserving target settings.
+2, and an asynchronous container merge moved data while preserving target settings. A later
+three-version run found current version 3 as the top-level entry and reconstructed versions
+`[1, 2, 3]` from its nested `history`, resolving the earlier latest-only interpretation.
 
 ### 4. Isolation is simple and testable
 
@@ -99,6 +101,18 @@ still saying the production cause was unknown.
 These are stronger patterns than generic chat recall: memory helps another process reconstruct
 what was learned, which evidence supported it, and which policy was last successful. It still
 cannot replace workflow locks, an approval ledger, incident logs, or canonical state.
+
+### 7. It supports governed deliberation and long-running research
+
+A three-model council bound each vote to exact evidence and falsifiers, retained failure and
+dissent paths, and made its proposal stale when evidence changed. A budgeted due-diligence
+campaign resumed from a signed checkpoint and exposed three provider authentication failures
+without presenting partial research as complete. An adaptive tutor recovered signed mastery
+but accepted only an independently verified assessment update.
+
+These are high-leverage uses: memory preserves evidence manifests, progress, proposals, and
+learned state across processes. The application must still own budget enforcement, source
+diversity, validation, grading, action authority, and current-state checks.
 
 ## Where caution is required
 
@@ -185,6 +199,23 @@ read-only Vercel state without logs could not support a production root cause ev
 isolated synthetic rehearsal supported a mitigation pattern. `UNKNOWN` is a correct agent
 output, not an error to be filled with model confidence.
 
+The sixth due-diligence run extended this rule to provider health. Exa, Monid, and Composio
+returned 401 after succeeding in earlier passes; Context.dev and public social channels still
+worked. The correct result was `degraded-partial`, not a silent retry loop or a confident
+recommendation. Credential validity and provider availability are external state, so preserve
+failures and make complete evidence a promotion precondition.
+
+### Retention and review need an external control plane
+
+The list API exposed useful nested version history, and inferred review rejected an ordinary
+memory with 409. But no inferred candidate appeared in the bounded run, and history is not an
+immutable signature ledger. A legal-hold rehearsal succeeded only because exact snapshot,
+plan, approval, replay, and audit state lived outside the model and governed memory.
+
+Use Supermemory for correction UX, current inventory, exact forgetting, and verification.
+Keep legal interpretation, connector/back-up coverage, approval, immutable audit, and access
+control elsewhere.
+
 ### The small domain result is encouraging, not dispositive
 
 The bounded 12-case smoke suite scored 12/12 with memory versus 2/12 without, at 659 ms search
@@ -212,6 +243,11 @@ the next gate remains the blinded 100-case suite at realistic corpus volume.
 | Relationship/account brief | **Pilot with consent and readiness fallback** | Four fresh channels and cited brief passed; Dynamic Dreaming was not a synchronous barrier. |
 | Incident hypothesis forensics | **Adopt as read-only decision support** | Safely separated live observations from rehearsal and retained unknown root cause. |
 | Tool-economics portfolio | **Pilot with dated costs** | Cross-process route worked; unknown cost, retries, and quality need continued calibration. |
+| Multi-model decision council | **Pilot as proposal support** | Three evidence-bound votes and stale-digest control passed; majority remains non-authoritative. |
+| Assessment-verified tutor | **Pilot with a validated grader** | Signed mastery and isolated update passed; the synthetic task is not a learning-validity study. |
+| Resumable due diligence | **Adopt the degraded-state pattern** | Signed resume and citations worked; partial provider failure was visible and could not promote. |
+| Operational change-risk board | **Adopt read-only/HOLD-first** | Live health overrode a passing rehearsal; no deploy authority exists. |
+| Legal-hold retention controller | **Prototype with legal review** | Exact drift/replay/absence controls passed; broader storage and jurisdiction remain outside this API test. |
 | Sandboxed coding/debug agent | **Pilot with strict sandbox policy** | Memory-backed transfer passed where stateless failed; template and egress must be explicit. |
 | Release-memory copilot | **Adopt read-only first** | Snapshot/history fit well; mutations remain approval-gated. |
 | Temporary incident context | **Pilot** | Expiry/cancel worked; keep canonical incident state and verify disappearance. |

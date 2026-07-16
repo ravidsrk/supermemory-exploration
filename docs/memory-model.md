@@ -126,6 +126,11 @@ memory ID and `containerTag`. The new memory becomes latest and retains a parent
 Appending “the date is now September” as an unrelated memory asks retrieval to solve a
 deterministic lifecycle problem.
 
+The current list response keeps latest truth at the top level and can nest prior versions in
+the entry's `history`. One hosted three-version chain returned `[1, 2, 3]` with valid parent and
+root continuity. Use this for lineage and correction UX; use an external immutable ledger for
+approval, legal hold, access, and erasure audit.
+
 ### Soft forgetting
 
 Single-memory forget is precise and suitable for a user-facing “forget this” control. The
@@ -158,7 +163,12 @@ Documented derived facts are flagged `isInference`, down-weighted, and can be re
 Approve clears the inference flag; decline forgets the memory; undo restores the review
 candidate. Sensitive products should expose this queue rather than silently allowing
 generated guesses to become profile truth. See
-[Memory review](https://supermemory.ai/docs/memory-review).
+[memory review](https://supermemory.ai/docs/memory-review).
+
+In the hosted negative control, reviewing an ordinary memory returned 409. A 90-second
+instant-Dreaming seed produced no candidate, so the documented transition contract is covered
+but approve/decline/undo still need a generated-inference live run. Bind every review action
+to an exact candidate/content hash and reviewer in application-owned state.
 
 ## Container design
 

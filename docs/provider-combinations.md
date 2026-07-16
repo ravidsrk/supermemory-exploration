@@ -51,6 +51,10 @@ covers combinations with distinct production value and calls out invalid ones.
 | Context.dev + Exa + ScrapeCreators + OpenRouter | Relationship account brief | Company baseline, open-web change, public signals, cited synthesis; CRM consent remains separate |
 | Vercel + Exa + SuperServe + OpenRouter | Incident forensics | Read-only state, official guidance, isolated falsification, uncertainty-aware synthesis |
 | Monid + Composio + Exa + OpenRouter | Tool-economics portfolio | Priced catalog route, integration route, direct-search route, comparable decision |
+| Three OpenRouter model families | Evidence-bound decision council | Independent votes, strict citations, falsifiers, dissent, stale-evidence proposal |
+| OpenRouter + SuperServe | Adaptive tutor | Personalized teaching plus isolated deterministic assessment; model never grades |
+| Context.dev + Exa + ScrapeCreators + Monid + Composio + OpenRouter | Budgeted due diligence | Structured/web/social/tool evidence, publisher diversity, resumable partial-state research |
+| Vercel + Context.dev + SuperServe + OpenRouter | Change-risk board | Minimized live health, official rollout guidance, isolated rehearsal, deterministic hold |
 
 Add Supermemory to each row for longitudinal state, provenance, tenant isolation, and future
 retrieval.
@@ -72,6 +76,11 @@ retrieval.
 | Account briefing | Authorize private scope → recall CRM → verify readiness → fetch public evidence → cite → deny outreach by default | Public interest and relationship history do not create contact consent. |
 | Incident forensics | Read live state → retrieve prior lessons → acquire logs/evidence → falsify in isolation → state unknown or supported → approve separately | A rehearsal is not a production diagnosis. |
 | Tool economics | Recall unexpired policy → rediscover/reinspect → execute comparable reads → validate → rank known costs → persist outcome | Unknown price cannot be treated as free. |
+| Decision council | Freeze evidence manifest → independent blind votes → schema/citation/falsifier validation → preserve dissent → propose → recheck digest | Model majority is neither truth nor action authority. |
+| Adaptive tutoring | Verify signed mastery → decay/schedule → teach → assess outside model → verify → version mastery | A persuasive lesson is not evidence of learning. |
+| Due diligence | Resume signed ledger → acquire within budget → normalize publisher/source → cite → label degradation → promote only if complete | Fluent partial research must not masquerade as a complete decision. |
+| Change risk | Minimize live state → obtain current guidance → rehearse in isolation → apply deterministic health gate → human review | A passing rehearsal cannot override unhealthy production state. |
+| Retention | Inventory exact IDs → partition policy → place/verify holds → regenerate drifted plan → exact approve → forget → verify → external audit | A model must never select deletion IDs or own the only audit record. |
 
 ## Permutation coverage lattice
 
@@ -94,6 +103,11 @@ of providers.
 | Relationship intelligence | CRM + Context.dev + Exa + social | OpenRouter | Brief only | Account briefing | Consent, exact readiness, citations, stale banner, outreach denial |
 | Incident learning | Vercel + official web + sandbox | OpenRouter | Sandbox only | Hypothesis forensics | Provenance class, logs-or-unknown, hypothesis falsification, human mitigation |
 | Tool portfolio | Monid + Composio + Exa | OpenRouter optional | Read-only tools | Economics router | Comparable task, unknown-cost shadow, expiry, route revalidation |
+| Evidence deliberation | Immutable source manifest | Multiple model families | Proposal only | Decision council | Strict citations/falsifiers, quorum, dissent, digest freshness, external authority |
+| Verified mastery | Signed assessment history | OpenRouter | Egress-blocked grader | Adaptive tutor | Signature, deterministic decay, verified grade, versioned update |
+| Resumable research | Official/web/social/tool sources | OpenRouter | Read-only acquisition | Due-diligence campaign | Call/cost budget, publisher diversity, checkpoint integrity, degraded-state refusal |
+| Change simulation | Vercel + official guidance | OpenRouter | Egress-blocked rehearsal | Change-risk board | Minimized state, evidence classes, live health override, stale advice |
+| Retention governance | Exact latest inventory | OpenRouter explanation only | Exact forget | Retention controller | Legal hold, plan digest, drift/replay denial, absence check, external audit |
 
 ## Invalid or risky combinations
 
@@ -111,6 +125,10 @@ of providers.
 | Dynamic batch completion → synchronous readiness | Document completion can precede distilled-memory visibility | Poll the exact next read; directly write confirmed normalized facts on timeout. |
 | Signed checkpoint → trusted truth | Integrity does not establish correctness | Verify artifacts/evidence and keep transitions in a workflow ledger. |
 | Unknown catalog cost → zero-cost route | Missing economics wins falsely | Shadow until costs are comparable; record date and charge semantics. |
+| Model plurality → authorized decision | Shared bias or repeated source becomes authority | Require evidence-bound votes and external decision ownership. |
+| Teaching model → mastery score | Same model can reward its own explanation | Grade from independently verified evidence and sign the result. |
+| Passing rehearsal → deploy | Synthetic mechanism does not establish live safety | Apply current health/SLO gates and require explicit change approval. |
+| Semantic deletion → legal retention execution | Probabilistic selection can miss or over-delete | Resolve exact IDs, legal holds, plan digest, replay ledger, and external audit. |
 
 ## Coverage achieved
 
@@ -126,9 +144,15 @@ of providers.
 | SuperServe | Yes | Sandboxed debugging; release triage; dependency guardian; incident forensics |
 | Vercel | Yes, read-only | Release memory; release-triage rehearsal; incident forensics |
 
+The sixth due-diligence run also exercised current credential degradation: Exa, Monid, and
+Composio returned 401 after authenticating in earlier passes. The agent retained their failures,
+continued with three healthy publisher channels, labeled the report partial, and withheld
+promotion. “Yes” in the table records successful live use in this lab, not current credential
+health or an availability guarantee.
+
 Repeated runs, failure injection, lifecycle controls, a 120-search policy grid, multi-scope
 credentials, natural-time queries, learned model fallbacks, signed restart recovery, batch
 readiness fallback, abstaining incident analysis, and cross-tool economics are now in the lab.
 The next valuable coverage is a reviewed reversible-write approval test, connector
-sync/update/delete on an entitled plan, larger blinded datasets, and sustained cost/latency
-tracking—not arbitrary provider subsets.
+sync/update/delete on an entitled plan, refreshed-provider full/degraded campaigns, larger
+blinded datasets, and sustained cost/latency tracking—not arbitrary provider subsets.

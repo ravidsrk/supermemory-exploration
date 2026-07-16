@@ -10,7 +10,9 @@ evidence notes. The latest five systems are in the
 [fourth-pass evidence](../evidence/2026-07-16-fourth-pass-agent-systems.md) and the five
 operational systems are in the
 [fifth-pass evidence](../evidence/2026-07-16-fifth-pass-operational-agents.md). Newer agents are
-split into focused modules so their safety boundary can be tested independently.
+split into focused modules so their safety boundary can be tested independently. The newest
+six are covered by the
+[sixth-pass deep-agent evidence](../evidence/2026-07-16-sixth-pass-deep-agents.md).
 
 ## Run them
 
@@ -45,6 +47,12 @@ python experiments/run_resumable_agent_workcell.py
 python experiments/run_relationship_account_briefing.py
 python experiments/run_incident_forensics_agent.py
 python experiments/run_tool_economics_portfolio.py
+python experiments/run_graph_review_steward.py
+python experiments/run_decision_council.py
+python experiments/run_adaptive_tutor.py
+python experiments/run_due_diligence_campaign.py
+python experiments/run_change_risk_board.py
+python experiments/run_retention_controller.py
 ```
 
 Raw traces go to ignored `.runs/` files. They contain bounded experiment details but should
@@ -430,7 +438,8 @@ versioned update.
 
 The live run quarantined a retrieved poisoned candidate, denied a wrong hash, applied the exact
 approval once, and produced version 2 with the expected parent/root lineage. Normal inventory
-showed latest truth rather than old version 1. Use this for customer records, decisions,
+showed latest truth rather than old version 1 as a separate top-level entry; a later
+three-version audit recovered old versions from nested history. Use this for customer records, decisions,
 preferences, and policy facts whose correction matters. Keep signatures, approval history,
 and canonical truth outside Supermemory.
 
@@ -493,6 +502,93 @@ per-call cost in this flow. Composio therefore stayed shadow-only instead of bei
 free. Use this pattern for search, enrichment, crawling, and model/tool routing; include failed
 attempts, retries, memory operations, and quality labels in end-to-end economics.
 
+## 26. Graph-lineage and inferred-review steward
+
+Providers: Supermemory + OpenRouter.
+
+The steward reconstructs durable-fact evolution from the latest memory entry's nested
+`history`, validates version/parent/root continuity, and gives the model explanation authority
+only. A separate application ledger binds inferred-memory approve, decline, or undo to the
+exact candidate, content hash, reviewer, and action.
+
+The live three-version chain returned history `[1, 2, 3]`; ordinary non-inferred review failed
+closed with 409. No inferred candidate appeared after a bounded instant-Dreaming seed, so the
+endpoint and negative case are proven but live approve/decline/undo remain a next gate. Use it
+for preference corrections, knowledge curation, and operator review—not as a compliance
+signature system.
+
+## 27. Evidence-bound multi-model decision council
+
+Providers: Supermemory + three OpenRouter model families.
+
+Each model sees the same immutable evidence manifest and must return a strict vote with exact
+citations, recommendation, confidence, and falsifier. Trusted code validates schemas, rejects
+unknown evidence, computes quorum, preserves dissent, signs the proposal, and keeps action
+authorization false. A fresh process may reuse the proposal only while its evidence digest is
+unchanged.
+
+The final live run produced three valid `STAGED` votes while excluding retrieved poison. The
+first run safely returned no consensus when two providers wrapped JSON in code fences; the
+repair normalized only the fence and retained every evidence gate. Use this for architecture,
+vendor, investment, or rollout review where disagreement and falsifiability matter.
+
+## 28. Assessment-verified adaptive tutor
+
+Providers: Supermemory + OpenRouter + SuperServe.
+
+Mastery records are signed outside memory and carry score, assessment evidence, time, review
+schedule, and version. Trusted code applies decay and chooses `worked-example`,
+`guided-practice`, or a harder mode. The model teaches but never grades. Only a sandbox-verified
+assessment can create the next mastery version.
+
+The live run ignored an unsigned score-1.0 poison record, verified a 4/4 exercise with egress
+blocked, moved mastery from 0.30 to 0.72, and recovered the new lesson mode in a fresh process.
+Use the structure for training and coaching, but replace the toy grader with a domain-valid
+assessment and never infer sensitive ability from conversation alone.
+
+## 29. Resumable budgeted due-diligence campaign
+
+Providers: Supermemory + Context.dev + Exa + ScrapeCreators + Monid + Composio + OpenRouter.
+
+The campaign owns a call ledger, known-cost reservation, explicit unknown costs, publisher
+identity, exact citations, signed checkpoints, and fresh/degraded/stale result states. A new
+process can resume acquisition without treating remembered sources as current or repeating a
+completed stage.
+
+In the final run Context.dev, X, and Reddit supplied three relevant publishers while Exa,
+Monid, and Composio returned 401. The report was correctly labeled `degraded-partial`, cited
+three evidence IDs, excluded poison, promoted no conclusion, and authorized no purchase. This
+is the pattern for vendor evaluation, market landscapes, account research, and recurring
+briefs: provider failure must be visible in the conclusion contract.
+
+## 30. Operational change-risk simulation board
+
+Providers: Supermemory + Vercel + Context.dev + SuperServe + OpenRouter.
+
+The board records minimized live health counts, official rollout guidance, and an isolated
+simulation as different evidence classes. A deterministic gate makes unhealthy live state
+override a passing rehearsal. Signed advice is bound to the snapshot and becomes stale after
+any material change; the board has no deploy tool.
+
+The live rehearsal passed 5/5, but 8 error and 2 blocked deployments among 30 forced `HOLD`.
+No project names were persisted, the sandbox was deleted, and deploy authorization remained
+false. Use this as a change-review aid, not a diagnosis or autonomous release controller.
+
+## 31. Legal-hold-aware retention controller
+
+Providers: Supermemory + OpenRouter.
+
+Trusted code partitions exact latest IDs into forget, protected, retained, and review sets.
+Legal-hold authorization is bound to the inventory snapshot; placing a hold creates a new
+version and invalidates the prior deletion plan. The revised plan and one-time approval bind
+the exact IDs and digest. The model can explain but never select or delete IDs; audit events
+live in an external canonical sink.
+
+The live run denied a wrong hold, old-plan drift, wrong deletion approval, and replay. It
+forgot one exact expired record, verified absence, retained all held/active/ambiguous records,
+and emitted hold/forget audit events. Use this only as an engineering pattern: real legal
+retention also covers connectors, backups, caches, exports, jurisdiction, and counsel.
+
 ## Other high-value builds
 
 | Agent | Providers | Memory design |
@@ -523,6 +619,12 @@ attempts, retries, memory operations, and quality labels in end-to-end economics
 | Relationship account brief | Context.dev + Exa + public social + OpenRouter + Supermemory | Consented CRM facts, batch source archive, freshness banner, cited preparation, no outreach authority. |
 | Incident hypothesis forensics | Vercel + Exa + SuperServe + OpenRouter + Supermemory | Read-only state, isolated falsification, explicit unknown, human mitigation gate. |
 | Tool-economics portfolio | Monid + Composio + Exa + OpenRouter + Supermemory | Comparable read routes, unknown-cost shadow mode, expiring policy, runtime revalidation. |
+| Graph review steward | Supermemory + OpenRouter | Nested history audit, exact inferred-review authorization, replay-safe external ledger. |
+| Multi-model decision council | Three OpenRouter families + Supermemory | Independent evidence-bound votes, dissent, proposal digest, stale-evidence refusal. |
+| Adaptive tutor | OpenRouter + SuperServe + Supermemory | Signed mastery, deterministic decay, isolated verified assessment, versioned learning. |
+| Budgeted due diligence | Context.dev + Exa + public social + Monid + Composio + OpenRouter + Supermemory | Resumable acquisition, provider/publisher diversity, explicit degradation, exact citations. |
+| Change-risk board | Vercel + Context.dev + SuperServe + OpenRouter + Supermemory | Minimized live health, separated rehearsal, deterministic hold, snapshot-bound advice. |
+| Retention controller | Supermemory + OpenRouter | Exact policy partition, legal-hold versioning, drift/replay denial, external audit. |
 
 ## What not to build
 
@@ -542,3 +644,8 @@ attempts, retries, memory operations, and quality labels in end-to-end economics
 - An account agent that turns public interest signals into contact consent.
 - An incident agent that labels a sandbox rehearsal as the live root cause.
 - A cost router that sorts missing price as zero or trusts yesterday's route without revalidation.
+- A council that converts model majority into action authority or discards valid minority dissent.
+- A tutor that lets conversational inference or the teaching model update mastery.
+- A research campaign that hides provider failure or counts API diversity as publisher diversity.
+- A change board that treats a passing sandbox as permission to deploy into unhealthy live state.
+- A retention agent that lets a model choose deletion IDs or stores its only audit log beside the data it erases.

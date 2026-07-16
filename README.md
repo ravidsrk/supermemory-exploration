@@ -23,7 +23,7 @@ Hands-on exploration of Supermemory product surface, APIs, SDKs, and integration
 ## Status
 
 The field lab includes hosted/self-hosted capability probes, nine authenticated provider
-adapters, thirty reference patterns, 110 offline tests, and live memory/no-memory
+adapters, thirty-six reference patterns, 146 offline tests, and live memory/no-memory
 experiments.
 The latest 12-case domain smoke suite scored 12/12 with bounded memory versus 2/12 without it,
 with zero tenant leaks or prompt-injection bypasses.
@@ -95,6 +95,12 @@ PYTHONPATH=src python3 experiments/run_resumable_agent_workcell.py
 PYTHONPATH=src python3 experiments/run_relationship_account_briefing.py
 PYTHONPATH=src python3 experiments/run_incident_forensics_agent.py
 PYTHONPATH=src python3 experiments/run_tool_economics_portfolio.py
+PYTHONPATH=src python3 experiments/run_graph_review_steward.py
+PYTHONPATH=src python3 experiments/run_decision_council.py
+PYTHONPATH=src python3 experiments/run_adaptive_tutor.py
+PYTHONPATH=src python3 experiments/run_due_diligence_campaign.py
+PYTHONPATH=src python3 experiments/run_change_risk_board.py
+PYTHONPATH=src python3 experiments/run_retention_controller.py
 ```
 
 Live commands create synthetic, isolated `lab:` containers. Raw probe output is ignored under
