@@ -79,6 +79,7 @@ def main() -> None:
                 support_terms=["supermemory", "memory", "agents"],
                 contradiction_terms=["not a memory platform"],
                 refresh=True,
+                official_url="https://supermemory.ai/",
                 official_domain="supermemory.ai",
                 twitter_handle="supermemory",
                 reddit_query="supermemory AI agents memory",

@@ -42,6 +42,19 @@ class ProviderAdapterTests(unittest.TestCase):
         self.assertIn("domain=supermemory.ai", transport.calls[1][1])
         self.assertIn("maxSpeed=true", transport.calls[1][1])
 
+    def test_context_markdown_scrape_uses_current_get_contract(self) -> None:
+        transport = RecordingTransport()
+
+        ContextDevClient(transport).scrape_markdown(
+            "https://example.com/docs?section=memory", max_age_ms=0
+        )
+
+        method, path, body = transport.calls[0]
+        self.assertEqual(method, "GET")
+        self.assertTrue(path.startswith("/web/scrape/markdown?"))
+        self.assertIn("url=https%3A%2F%2Fexample.com%2Fdocs%3Fsection%3Dmemory", path)
+        self.assertIsNone(body)
+
     def test_context_monitor_lifecycle_uses_exact_page_schema(self) -> None:
         transport = RecordingTransport()
         client = ContextDevClient(transport)

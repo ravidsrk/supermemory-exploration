@@ -20,8 +20,11 @@ class ContextDevClient:
         )
 
     def scrape_markdown(self, url: str, *, max_age_ms: int = 0) -> JsonObject:
+        # The current v1 contract is a GET with the target URL in the query string.
+        # Keep the historical argument for callers, but only send the documented URL;
+        # the current API does not document a cache-age parameter.
         return self._transport.request(
-            "POST", "/web/scrape/markdown", {"url": url, "max_age": max_age_ms}
+            "GET", with_query("/web/scrape/markdown", {"url": url})
         )
 
     def monitor_limits(self) -> JsonObject:
