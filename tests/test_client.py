@@ -65,6 +65,25 @@ class SupermemoryClientTests(unittest.TestCase):
         self.assertEqual(response["_pollAttempts"], 2)
         self.assertEqual(transport.calls[0][2]["searchMode"], "hybrid")
 
+    def test_wait_for_memory_can_require_exact_canary(self) -> None:
+        transport = RecordingTransport(
+            responses=[
+                {"results": [{"memory": "unrelated seed"}]},
+                {"results": [{"memory": "expected CANARY fact"}]},
+            ]
+        )
+        client = SupermemoryClient(transport)
+
+        response = client.wait_for_memory(
+            "preference",
+            container_tag="tools:one",
+            required_text="CANARY",
+            poll_seconds=0.001,
+            timeout_seconds=1,
+        )
+
+        self.assertEqual(response["_pollAttempts"], 2)
+
     def test_wait_for_profile_polls_until_dynamic_memory_is_visible(self) -> None:
         transport = RecordingTransport(
             responses=[

@@ -1,5 +1,6 @@
 """Explicit wrapper over the hosted Supermemory v3/v4 endpoints under test."""
 
+import json
 import time
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence
 from urllib.parse import quote
@@ -207,6 +208,7 @@ class SupermemoryClient:
         poll_seconds: float = 2.0,
         limit: int = 10,
         threshold: float = 0.0,
+        required_text: Optional[str] = None,
     ) -> JsonObject:
         """Poll until a newly written memory becomes searchable.
 
@@ -228,12 +230,16 @@ class SupermemoryClient:
                 threshold=threshold,
             )
             results = last.get("results")
-            if isinstance(results, list) and results:
+            text_visible = required_text is None or required_text.casefold() in json.dumps(
+                results, ensure_ascii=False, default=str
+            ).casefold()
+            if isinstance(results, list) and results and text_visible:
                 last["_pollAttempts"] = attempts
                 return last
             time.sleep(poll_seconds)
         raise TimeoutError(
-            f"memory did not become searchable in {container_tag}; attempts={attempts}"
+            f"memory did not become searchable in {container_tag}; attempts={attempts}; "
+            f"required_text={bool(required_text)}"
         )
 
     def profile(
