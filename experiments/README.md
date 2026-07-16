@@ -10,6 +10,7 @@ PYTHONPATH=src python3 -m supermemory_lab.probes --router-only
 PYTHONPATH=src python3 -m supermemory_lab.probes --scoped-key-only
 PYTHONPATH=src python3 experiments/run_safe_tool_execution.py
 PYTHONPATH=src python3 experiments/run_governance_scorecard.py
+PYTHONPATH=src python3 experiments/run_signal_radar.py
 ```
 
 The core probe exercises:
@@ -36,3 +37,8 @@ three precise-forget cases with retained controls, four tenant-isolation pairs, 
 attacker-controlled document payloads. It checks profile, memories, and hybrid reads. The
 injection agent can answer from retrieved facts, but authorization is always decided by
 trusted application code and remains false regardless of model output.
+
+`run_signal_radar.py` combines a no-auth Hacker News search through Composio, Exa web
+search, ScrapeCreators Reddit/X reads, OpenRouter synthesis, and Supermemory history. It
+then repeats the briefing with external refresh disabled to measure a cheaper memory-only
+continuity/degraded mode without claiming that remembered evidence is current.
