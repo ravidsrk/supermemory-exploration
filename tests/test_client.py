@@ -130,6 +130,138 @@ class SupermemoryClientTests(unittest.TestCase):
             },
         )
 
+    def test_versioned_update_preserves_explicit_expiry_nulls(self) -> None:
+        transport = RecordingTransport()
+        client = SupermemoryClient(transport)
+
+        client.update_memory(
+            memory_id="mem_1",
+            container_tag="project_alpha",
+            new_content="Incident is now permanent history",
+            forget_after=None,
+            forget_reason=None,
+            temporal_context={"eventDate": ["2026-07-16"]},
+        )
+
+        body = transport.calls[0][2]
+        self.assertIn("forgetAfter", body)
+        self.assertIsNone(body["forgetAfter"])
+        self.assertIsNone(body["forgetReason"])
+        self.assertEqual(
+            body["temporalContext"], {"eventDate": ["2026-07-16"]}
+        )
+
+    def test_memory_history_list_keeps_filters_and_pagination(self) -> None:
+        transport = RecordingTransport()
+        client = SupermemoryClient(transport)
+
+        client.list_memory_entries(
+            ["tenant:one"],
+            filters={"AND": [{"key": "priority", "value": "9"}]},
+            limit=20,
+            page=2,
+            sort="updatedAt",
+            order="asc",
+        )
+
+        self.assertEqual(transport.calls[0][0:2], ("POST", "/v4/memories/list"))
+        self.assertEqual(
+            transport.calls[0][2],
+            {
+                "containerTags": ["tenant:one"],
+                "filters": {"AND": [{"key": "priority", "value": "9"}]},
+                "limit": 20,
+                "page": 2,
+                "sort": "updatedAt",
+                "order": "asc",
+            },
+        )
+
+    def test_container_settings_support_buckets_and_explicit_clear(self) -> None:
+        transport = RecordingTransport()
+        client = SupermemoryClient(transport)
+
+        client.update_container_settings(
+            "tenant/one",
+            name="Preference Lab",
+            entity_context=None,
+            memory_filesystem_paths=["/memory/"],
+            profile_buckets=[
+                {"key": "privacy", "description": "Explicit privacy constraints"}
+            ],
+        )
+
+        self.assertEqual(
+            transport.calls[0][0:2],
+            ("PATCH", "/v3/container-tags/tenant%2Fone"),
+        )
+        self.assertEqual(
+            transport.calls[0][2],
+            {
+                "name": "Preference Lab",
+                "entityContext": None,
+                "memoryFilesystemPaths": ["/memory/"],
+                "profileBuckets": [
+                    {
+                        "key": "privacy",
+                        "description": "Explicit privacy constraints",
+                    }
+                ],
+            },
+        )
+
+    def test_container_merge_validates_shape_and_polls_status(self) -> None:
+        transport = RecordingTransport(
+            responses=[{"status": "queued"}, {"status": "completed"}]
+        )
+        client = SupermemoryClient(transport)
+
+        client.merge_containers(
+            ["source", "target"], target_container_tag="target"
+        )
+        status = client.wait_for_container_merge(
+            "merge/id", poll_seconds=0.001, timeout_seconds=1
+        )
+
+        self.assertEqual(
+            transport.calls[0][2],
+            {
+                "containerTags": ["source", "target"],
+                "targetContainerTag": "target",
+            },
+        )
+        self.assertEqual(
+            transport.calls[1][0:2],
+            ("GET", "/v3/container-tags/merge/merge%2Fid"),
+        )
+        self.assertEqual(status["status"], "completed")
+        with self.assertRaises(ValueError):
+            client.merge_containers(["only-one"], target_container_tag="target")
+
+    def test_inference_review_rejects_unknown_actions(self) -> None:
+        transport = RecordingTransport()
+        client = SupermemoryClient(transport)
+
+        client.list_inferred_memories("tenant/one")
+        client.review_inferred_memory(
+            "tenant/one", "memory/id", action="approve"
+        )
+
+        self.assertEqual(
+            transport.calls[0][1],
+            "/v3/container-tags/tenant%2Fone/inferred",
+        )
+        self.assertEqual(
+            transport.calls[1],
+            (
+                "POST",
+                "/v3/container-tags/tenant%2Fone/inferred/memory%2Fid/review",
+                {"action": "approve"},
+            ),
+        )
+        with self.assertRaises(ValueError):
+            client.review_inferred_memory("tenant", "memory", action="reject")
+
     def test_web_crawler_connection_uses_bounded_scope(self) -> None:
         transport = RecordingTransport()
         client = SupermemoryClient(transport)

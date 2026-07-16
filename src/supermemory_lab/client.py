@@ -7,6 +7,9 @@ from urllib.parse import quote
 from .http import JsonObject, JsonTransport
 
 
+_UNSET = object()
+
+
 def _without_none(values: Mapping[str, Any]) -> Dict[str, Any]:
     return {key: value for key, value in values.items() if value is not None}
 
@@ -263,6 +266,119 @@ class SupermemoryClient:
             "POST", "/v4/profile/buckets", {"containerTag": container_tag}
         )
 
+    def suggest_profile_buckets(self) -> JsonObject:
+        """Ask Supermemory to propose org-level profile bucket definitions."""
+
+        return self._transport.request("POST", "/v3/settings/suggest-buckets", {})
+
+    def get_container_settings(self, container_tag: str) -> JsonObject:
+        return self._transport.request(
+            "GET", f"/v3/container-tags/{quote(container_tag, safe='')}"
+        )
+
+    def update_container_settings(
+        self,
+        container_tag: str,
+        *,
+        name: Any = _UNSET,
+        entity_context: Any = _UNSET,
+        memory_filesystem_paths: Any = _UNSET,
+        profile_buckets: Any = _UNSET,
+    ) -> JsonObject:
+        """Update per-container extraction settings.
+
+        ``None`` is meaningful for nullable fields, so a private sentinel distinguishes
+        an omitted setting from an explicit request to clear it.
+        """
+
+        payload: Dict[str, Any] = {}
+        if name is not _UNSET:
+            payload["name"] = name
+        if entity_context is not _UNSET:
+            payload["entityContext"] = entity_context
+        if memory_filesystem_paths is not _UNSET:
+            payload["memoryFilesystemPaths"] = (
+                list(memory_filesystem_paths)
+                if memory_filesystem_paths is not None
+                else None
+            )
+        if profile_buckets is not _UNSET:
+            payload["profileBuckets"] = (
+                [dict(bucket) for bucket in profile_buckets]
+                if profile_buckets is not None
+                else None
+            )
+        return self._transport.request(
+            "PATCH", f"/v3/container-tags/{quote(container_tag, safe='')}", payload
+        )
+
+    def delete_container(self, container_tag: str) -> JsonObject:
+        return self._transport.request(
+            "DELETE", f"/v3/container-tags/{quote(container_tag, safe='')}"
+        )
+
+    def merge_containers(
+        self, container_tags: Sequence[str], *, target_container_tag: str
+    ) -> JsonObject:
+        if len(container_tags) != 2:
+            raise ValueError("container merge requires exactly two source tags")
+        return self._transport.request(
+            "POST",
+            "/v3/container-tags/merge",
+            {
+                "containerTags": list(container_tags),
+                "targetContainerTag": target_container_tag,
+            },
+        )
+
+    def get_container_merge_status(self, merge_id: str) -> JsonObject:
+        return self._transport.request(
+            "GET", f"/v3/container-tags/merge/{quote(merge_id, safe='')}"
+        )
+
+    def wait_for_container_merge(
+        self,
+        merge_id: str,
+        *,
+        timeout_seconds: float = 120.0,
+        poll_seconds: float = 2.0,
+    ) -> JsonObject:
+        deadline = time.monotonic() + timeout_seconds
+        last: JsonObject = {}
+        while time.monotonic() < deadline:
+            last = self.get_container_merge_status(merge_id)
+            status = str(last.get("status", "")).lower()
+            if status in {"completed", "complete", "done", "succeeded", "success"}:
+                return last
+            if status in {"failed", "error", "cancelled", "canceled"}:
+                raise RuntimeError(
+                    f"container merge {merge_id} failed with status={status}"
+                )
+            time.sleep(poll_seconds)
+        raise TimeoutError(
+            f"container merge {merge_id} did not finish; status={last.get('status')}"
+        )
+
+    def list_inferred_memories(self, container_tag: str) -> JsonObject:
+        return self._transport.request(
+            "GET",
+            f"/v3/container-tags/{quote(container_tag, safe='')}/inferred",
+        )
+
+    def review_inferred_memory(
+        self, container_tag: str, memory_id: str, *, action: str
+    ) -> JsonObject:
+        if action not in {"approve", "decline", "undo"}:
+            raise ValueError("review action must be approve, decline, or undo")
+        return self._transport.request(
+            "POST",
+            (
+                f"/v3/container-tags/{quote(container_tag, safe='')}/inferred/"
+                f"{quote(memory_id, safe='')}/review"
+            ),
+            {"action": action},
+        )
+
     def wait_for_profile(
         self,
         container_tag: str,
@@ -395,6 +511,31 @@ class SupermemoryClient:
             {"containerTag": container_tag, "memories": [dict(m) for m in memories]},
         )
 
+    def list_memory_entries(
+        self,
+        container_tags: Sequence[str],
+        *,
+        filters: Optional[Mapping[str, Any]] = None,
+        limit: int = 50,
+        page: int = 1,
+        sort: str = "createdAt",
+        order: str = "desc",
+    ) -> JsonObject:
+        return self._transport.request(
+            "POST",
+            "/v4/memories/list",
+            _without_none(
+                {
+                    "containerTags": list(container_tags),
+                    "filters": dict(filters) if filters is not None else None,
+                    "limit": limit,
+                    "page": page,
+                    "sort": sort,
+                    "order": order,
+                }
+            ),
+        )
+
     def update_memory(
         self,
         *,
@@ -403,19 +544,31 @@ class SupermemoryClient:
         memory_id: Optional[str] = None,
         content: Optional[str] = None,
         metadata: Optional[Mapping[str, Any]] = None,
+        forget_after: Any = _UNSET,
+        forget_reason: Any = _UNSET,
+        temporal_context: Any = _UNSET,
     ) -> JsonObject:
+        payload: Dict[str, Any] = _without_none(
+            {
+                "id": memory_id,
+                "content": content,
+                "containerTag": container_tag,
+                "newContent": new_content,
+                "metadata": dict(metadata) if metadata is not None else None,
+            }
+        )
+        if forget_after is not _UNSET:
+            payload["forgetAfter"] = forget_after
+        if forget_reason is not _UNSET:
+            payload["forgetReason"] = forget_reason
+        if temporal_context is not _UNSET:
+            payload["temporalContext"] = (
+                dict(temporal_context) if temporal_context is not None else None
+            )
         return self._transport.request(
             "PATCH",
             "/v4/memories",
-            _without_none(
-                {
-                    "id": memory_id,
-                    "content": content,
-                    "containerTag": container_tag,
-                    "newContent": new_content,
-                    "metadata": dict(metadata) if metadata is not None else None,
-                }
-            ),
+            payload,
         )
 
     def forget_memory(
