@@ -480,15 +480,91 @@ def run_core(config: LabConfig, *, with_llm: bool = False) -> Path:
     return path
 
 
+def run_web_crawler(config: LabConfig) -> Path:
+    suffix = secrets.token_hex(3)
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
+    run_id = f"web-crawler-{stamp}-{suffix}"
+    container = f"lab:crawler:{stamp}:{suffix}"
+    _, client = _build_clients(config)
+    recorder = ProbeRecorder(run_id)
+    recorder.report["containers"] = [container]
+
+    connection = recorder.capture(
+        "create_web_crawler_connection",
+        lambda: client.create_connection(
+            "web-crawler",
+            container_tags=[container],
+            metadata={"startUrl": "https://example.com", "probe": run_id},
+            document_limit=1,
+        ),
+    )
+    connection_id = connection.get("id") if isinstance(connection, Mapping) else None
+
+    if isinstance(connection_id, str):
+        documents: Optional[Mapping[str, Any]] = None
+        for attempt in range(1, 13):
+            documents = recorder.capture(
+                f"crawler_documents_poll_{attempt}",
+                lambda: client.list_connection_documents(
+                    "web-crawler", container_tags=[container]
+                ),
+            )
+            items = documents.get("data") if isinstance(documents, Mapping) else None
+            if not isinstance(items, list) and isinstance(documents, Mapping):
+                items = documents.get("documents")
+            if isinstance(items, list) and items:
+                break
+            time.sleep(5)
+
+        recorder.capture(
+            "list_connections",
+            lambda: client.list_connections(container_tags=[container]),
+        )
+        recorder.capture(
+            "delete_web_crawler_connection",
+            lambda: client.delete_connection(connection_id),
+        )
+
+        listed = recorder.capture(
+            "list_crawler_documents_for_cleanup",
+            lambda: client.list_documents(container_tags=[container], limit=20),
+        )
+        if isinstance(listed, Mapping) and isinstance(listed.get("memories"), list):
+            for index, document in enumerate(listed["memories"], start=1):
+                document_id = document.get("id") if isinstance(document, Mapping) else None
+                if isinstance(document_id, str):
+                    recorder.capture(
+                        f"delete_crawler_document_{index}",
+                        lambda document_id=document_id: client.delete_document(document_id),
+                    )
+
+    path = recorder.write()
+    print(f"Raw secret-free run written to {path}", flush=True)
+    return path
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--with-llm", action="store_true", help="also run an OpenRouter-backed agent"
     )
+    parser.add_argument(
+        "--with-connector",
+        action="store_true",
+        help="also exercise the no-OAuth web-crawler connector",
+    )
+    parser.add_argument(
+        "--connector-only",
+        action="store_true",
+        help="run only the no-OAuth web-crawler connector probe",
+    )
     parser.add_argument("--env-file", default=".env.local")
     args = parser.parse_args()
     config = load_config(args.env_file)
-    run_core(config, with_llm=args.with_llm)
+    if not args.connector_only:
+        run_core(config, with_llm=args.with_llm)
+    if args.with_connector or args.connector_only:
+        run_web_crawler(config)
 
 
 if __name__ == "__main__":

@@ -97,6 +97,27 @@ class SupermemoryClientTests(unittest.TestCase):
             },
         )
 
+    def test_web_crawler_connection_uses_bounded_scope(self) -> None:
+        transport = RecordingTransport()
+        client = SupermemoryClient(transport)
+
+        client.create_connection(
+            "web-crawler",
+            container_tags=["lab:crawler:1"],
+            metadata={"startUrl": "https://example.com"},
+            document_limit=1,
+        )
+
+        self.assertEqual(transport.calls[0][1], "/v3/connections/web-crawler")
+        self.assertEqual(
+            transport.calls[0][2],
+            {
+                "containerTags": ["lab:crawler:1"],
+                "metadata": {"startUrl": "https://example.com"},
+                "documentLimit": 1,
+            },
+        )
+
     def test_structured_conversation_preserves_roles(self) -> None:
         transport = RecordingTransport()
         client = SupermemoryClient(transport)

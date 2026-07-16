@@ -5,6 +5,7 @@ Experiments are opt-in and use isolated container tags prefixed with `lab:`. Raw
 ```bash
 PYTHONPATH=src python3 -m supermemory_lab.probes
 PYTHONPATH=src python3 -m supermemory_lab.probes --with-llm
+PYTHONPATH=src python3 -m supermemory_lab.probes --connector-only
 ```
 
 The core probe exercises:

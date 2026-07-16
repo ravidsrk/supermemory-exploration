@@ -219,6 +219,64 @@ class SupermemoryClient:
             ),
         )
 
+    def list_profile_buckets(self, container_tag: str) -> JsonObject:
+        return self._transport.request(
+            "POST", "/v4/profile/buckets", {"containerTag": container_tag}
+        )
+
+    def create_connection(
+        self,
+        provider: str,
+        *,
+        container_tags: Optional[Sequence[str]] = None,
+        redirect_url: Optional[str] = None,
+        metadata: Optional[Mapping[str, Any]] = None,
+        document_limit: Optional[int] = None,
+    ) -> JsonObject:
+        return self._transport.request(
+            "POST",
+            f"/v3/connections/{quote(provider, safe='')}",
+            _without_none(
+                {
+                    "containerTags": list(container_tags)
+                    if container_tags is not None
+                    else None,
+                    "redirectUrl": redirect_url,
+                    "metadata": dict(metadata) if metadata is not None else None,
+                    "documentLimit": document_limit,
+                }
+            ),
+        )
+
+    def list_connections(
+        self, *, container_tags: Optional[Sequence[str]] = None
+    ) -> JsonObject:
+        return self._transport.request(
+            "POST",
+            "/v3/connections/list",
+            _without_none(
+                {
+                    "containerTags": list(container_tags)
+                    if container_tags is not None
+                    else None
+                }
+            ),
+        )
+
+    def list_connection_documents(
+        self, provider: str, *, container_tags: Sequence[str]
+    ) -> JsonObject:
+        return self._transport.request(
+            "POST",
+            f"/v3/connections/{quote(provider, safe='')}/documents",
+            {"containerTags": list(container_tags)},
+        )
+
+    def delete_connection(self, connection_id: str) -> JsonObject:
+        return self._transport.request(
+            "DELETE", f"/v3/connections/{quote(connection_id, safe='')}"
+        )
+
     def create_memories(
         self,
         container_tag: str,
