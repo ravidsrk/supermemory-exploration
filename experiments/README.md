@@ -12,6 +12,7 @@ PYTHONPATH=src python3 experiments/run_safe_tool_execution.py
 PYTHONPATH=src python3 experiments/run_governance_scorecard.py
 PYTHONPATH=src python3 experiments/run_signal_radar.py
 PYTHONPATH=src python3 experiments/run_retrieval_policy_grid.py
+PYTHONPATH=src python3 experiments/run_release_triage_rehearsal.py
 ```
 
 The core probe exercises:
@@ -49,3 +50,9 @@ search mode, threshold, reranking, and query rewriting. Five exact, semantic, un
 and deceptively similar queries score recall and false positives alongside p50/p95 latency
 and payload size. The winning policy is stored as a dated dynamic memory and immediately
 used by a recall agent; benchmark content is precisely forgotten after the run.
+
+`run_release_triage_rehearsal.py` combines read-only Vercel state, a static Supermemory
+security runbook, OpenRouter patch generation, and an egress-blocked disposable SuperServe
+sandbox. It begins with a deliberately failing webhook verifier and stores the lesson only
+after tests pass. Vercel observations and sandbox results remain explicitly separate: a
+synthetic rehearsal is never presented as diagnosis of a real deployment.
