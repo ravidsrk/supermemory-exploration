@@ -10,6 +10,13 @@ from typing import Dict, Optional
 class LabConfig:
     supermemory_api_key: str
     openrouter_api_key: Optional[str] = None
+    exa_api_key: Optional[str] = None
+    composio_api_key: Optional[str] = None
+    context_dev_api_key: Optional[str] = None
+    scrapecreators_api_key: Optional[str] = None
+    superserve_api_key: Optional[str] = None
+    monid_api_key: Optional[str] = None
+    vercel_token: Optional[str] = None
     supermemory_base_url: str = "https://api.supermemory.ai"
     openrouter_base_url: str = "https://openrouter.ai/api/v1"
     openrouter_model: str = "openai/gpt-4.1-mini"
@@ -51,6 +58,13 @@ def load_config(env_file: str = ".env.local") -> LabConfig:
     return LabConfig(
         supermemory_api_key=supermemory_key,
         openrouter_api_key=openrouter_key,
+        exa_api_key=value("EXA_API_KEY"),
+        composio_api_key=value("COMPOSIO_API_KEY"),
+        context_dev_api_key=value("CONTEXT_DEV_API_KEY"),
+        scrapecreators_api_key=value("SCRAPECREATORS_API_KEY"),
+        superserve_api_key=value("SUPERSERVE_API_KEY"),
+        monid_api_key=value("MONID_API_KEY"),
+        vercel_token=value("VERCEL_TOKEN"),
         supermemory_base_url=value(
             "SUPERMEMORY_BASE_URL", "https://api.supermemory.ai"
         )

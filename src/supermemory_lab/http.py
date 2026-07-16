@@ -39,11 +39,15 @@ class UrlLibTransport:
         api_key: str,
         timeout_seconds: float = 30.0,
         extra_headers: Optional[Mapping[str, str]] = None,
+        auth_header: str = "Authorization",
+        auth_scheme: Optional[str] = "Bearer",
     ) -> None:
         self._base_url = base_url.rstrip("/")
         self._api_key = api_key
         self._timeout_seconds = timeout_seconds
         self._extra_headers = dict(extra_headers or {})
+        self._auth_header = auth_header
+        self._auth_scheme = auth_scheme
 
     def request(
         self,
@@ -52,9 +56,14 @@ class UrlLibTransport:
         body: Optional[Mapping[str, Any]] = None,
     ) -> JsonObject:
         encoded = None if body is None else json.dumps(body).encode("utf-8")
+        credential = (
+            f"{self._auth_scheme} {self._api_key}"
+            if self._auth_scheme
+            else self._api_key
+        )
         headers = {
             "Accept": "application/json",
-            "Authorization": f"Bearer {self._api_key}",
+            self._auth_header: credential,
             "Content-Type": "application/json",
             "User-Agent": "supermemory-field-lab/0.1",
             **self._extra_headers,
