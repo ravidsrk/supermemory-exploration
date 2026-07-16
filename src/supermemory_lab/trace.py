@@ -30,8 +30,10 @@ def utc_now() -> str:
 def redact(value: Any, key: str = "") -> Any:
     lowered = key.lower()
     normalized = re.sub(r"[^a-z]", "", lowered)
-    safe_token_count = normalized in _SAFE_TOKEN_COUNT_KEYS and isinstance(
-        value, (int, float)
+    safe_token_count = isinstance(value, (int, float)) and (
+        normalized in _SAFE_TOKEN_COUNT_KEYS
+        or normalized.endswith("tokens")
+        or normalized.endswith("pricepertoken")
     )
     if not safe_token_count and (
         lowered == "key" or any(part in lowered for part in _SECRET_KEY_PARTS)

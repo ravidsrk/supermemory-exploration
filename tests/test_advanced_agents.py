@@ -194,6 +194,13 @@ class AdvancedAgentTests(unittest.TestCase):
         self.assertEqual(token_counts["completion_tokens"], 8)
         self.assertEqual(token_counts["accessToken"], "[REDACTED]")
         self.assertEqual(redact({"meanEstimatedContextTokens": 327.5})["meanEstimatedContextTokens"], 327.5)
+        self.assertEqual(redact({"routedTokens": 39})["routedTokens"], 39)
+        self.assertEqual(
+            redact({"completionPricePerToken": 0.0000016})[
+                "completionPricePerToken"
+            ],
+            0.0000016,
+        )
 
         with tempfile.TemporaryDirectory() as directory:
             trace = RunTrace("test-run", experiment="unit")
