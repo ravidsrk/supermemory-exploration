@@ -163,6 +163,8 @@ class UrlLibTransport:
             ) from None
         except URLError as error:
             raise ApiError(method.upper(), path, None, str(error.reason)) from None
+        except TimeoutError:
+            raise ApiError(method.upper(), path, None, "request timed out") from None
 
         if not raw.strip():
             return {}

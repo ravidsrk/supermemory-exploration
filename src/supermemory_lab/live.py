@@ -51,13 +51,16 @@ class LiveClients:
     vercel: VercelClient
 
 
-def build_live_clients(config: LabConfig) -> LiveClients:
+def build_live_clients(
+    config: LabConfig, *, memory_timeout_seconds: float = 60
+) -> LiveClients:
     return LiveClients(
         memory=SupermemoryClient(
             _transport(
                 config.supermemory_base_url,
                 config.supermemory_api_key,
                 "SUPERMEMORY_API_KEY",
+                timeout_seconds=memory_timeout_seconds,
             )
         ),
         llm=OpenRouterClient(

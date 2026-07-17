@@ -15,6 +15,8 @@ class FakeMemory:
         self.batch_sizes = []
         self.throttle_once = False
         self.partial = False
+        self.timeout_after_store = False
+        self.timeout_partial_count = None
 
     def add_documents_batch(self, documents, **kwargs):
         self.batch_sizes.append(len(documents))
@@ -22,7 +24,10 @@ class FakeMemory:
             self.throttle_once = False
             raise ApiError("POST", "/v3/documents/batch", 429, "slow", "3")
         results = []
-        for source in documents:
+        stored_documents = documents
+        if self.timeout_partial_count is not None:
+            stored_documents = documents[: self.timeout_partial_count]
+        for source in stored_documents:
             existing = next(
                 (item for item in self.documents if item["customId"] == source["customId"]),
                 None,
@@ -38,12 +43,23 @@ class FakeMemory:
             else:
                 self.documents.append(stored)
             results.append({"id": stored["id"], "status": "queued"})
+        if self.timeout_after_store:
+            self.timeout_after_store = False
+            raise ApiError("POST", "/v3/documents/batch", None, "request timed out")
         if self.partial:
             results = results[:-1]
         return {"results": results, "success": len(results), "failed": 0}
 
     def list_documents(self, **kwargs):
-        return {"memories": self.documents}
+        limit = kwargs.get("limit", 100)
+        page = kwargs.get("page", 1)
+        start = (page - 1) * limit
+        end = start + limit
+        total_pages = max(1, (len(self.documents) + limit - 1) // limit)
+        return {
+            "memories": self.documents[start:end],
+            "pagination": {"totalPages": total_pages},
+        }
 
     def get_processing_documents(self, **kwargs):
         return {"documents": [], "totalCount": 0}
@@ -143,6 +159,49 @@ class BulkIngestionControllerTests(unittest.TestCase):
         self.assertEqual(
             controller._retry_seconds("Fri, 17 Jul 2026 00:00:10 GMT"), 10.0
         )
+
+    def test_reconciliation_paginates_large_inventory(self):
+        memory = FakeMemory()
+        controller = self.controller(memory)
+        manifest = controller.build_manifest(records(205))
+        controller.submit(manifest)
+        report = controller.reconcile(manifest)
+        self.assertEqual(report.imported_count, 205)
+        self.assertTrue(report.semantically_ready)
+
+    def test_lost_acknowledgement_recovers_exact_batch_without_retry(self):
+        memory = FakeMemory()
+        memory.timeout_after_store = True
+        saved = []
+        controller = self.controller(memory, checkpoint_sink=saved.append)
+        manifest = controller.build_manifest(records())
+
+        checkpoint = controller.submit(manifest)
+
+        self.assertTrue(checkpoint.complete)
+        self.assertEqual(memory.batch_sizes, [4, 1])
+        self.assertEqual(len(memory.documents), 5)
+        self.assertEqual(checkpoint.request_attempts, 2)
+        self.assertEqual(len(saved), 2)
+
+    def test_partial_ambiguous_write_never_advances_checkpoint(self):
+        memory = FakeMemory()
+        memory.timeout_after_store = True
+        memory.timeout_partial_count = 2
+        saved = []
+        controller = self.controller(
+            memory,
+            checkpoint_sink=saved.append,
+            ambiguous_recovery_attempts=2,
+            sleep=lambda _: None,
+        )
+        manifest = controller.build_manifest(records())
+
+        with self.assertRaisesRegex(RuntimeError, "ambiguous batch write"):
+            controller.submit(manifest)
+
+        self.assertEqual(saved, [])
+        self.assertEqual(memory.batch_sizes, [4])
 
 
 if __name__ == "__main__":

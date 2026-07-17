@@ -100,6 +100,7 @@ class AdaptiveBulkIngestionController:
         initial_batch_size: int = 50,
         maximum_batch_size: int = 100,
         max_throttle_retries: int = 5,
+        ambiguous_recovery_attempts: int = 5,
         sleep: Callable[[float], None] = time.sleep,
         now: Callable[[], datetime] = lambda: datetime.now(timezone.utc),
         checkpoint_sink: Optional[Callable[[IngestionCheckpoint], None]] = None,
@@ -112,6 +113,8 @@ class AdaptiveBulkIngestionController:
             raise ValueError("batch sizes must satisfy 1 <= initial <= maximum <= 600")
         if max_throttle_retries < 0:
             raise ValueError("max_throttle_retries cannot be negative")
+        if ambiguous_recovery_attempts < 1:
+            raise ValueError("ambiguous_recovery_attempts must be positive")
         self._memory = memory
         self._container = container_tag
         self._run_id = run_id
@@ -119,6 +122,7 @@ class AdaptiveBulkIngestionController:
         self._initial_batch = initial_batch_size
         self._maximum_batch = maximum_batch_size
         self._max_throttle_retries = max_throttle_retries
+        self._ambiguous_recovery_attempts = ambiguous_recovery_attempts
         self._sleep = sleep
         self._now = now
         self._sink = checkpoint_sink or (lambda checkpoint: None)
@@ -236,6 +240,84 @@ class AdaptiveBulkIngestionController:
                     pass
         return 1.0
 
+    def _inventory_documents(self) -> List[Mapping[str, Any]]:
+        documents: List[Mapping[str, Any]] = []
+        seen_inventory_ids = set()
+        for page in range(1, 101):
+            inventory = self._memory.list_documents(
+                container_tags=[self._container], limit=100, page=page
+            )
+            page_documents = _items(
+                inventory.get("documents")
+                or inventory.get("memories")
+                or inventory.get("results")
+            )
+            new_documents = []
+            for document in page_documents:
+                identity = str(document.get("id") or document.get("customId") or "")
+                if identity and identity not in seen_inventory_ids:
+                    seen_inventory_ids.add(identity)
+                    new_documents.append(document)
+            documents.extend(new_documents)
+            pagination = inventory.get("pagination")
+            total_pages = (
+                int(pagination.get("totalPages") or 0)
+                if isinstance(pagination, Mapping)
+                else 0
+            )
+            if (
+                not page_documents
+                or not new_documents
+                or len(page_documents) < 100
+                or (total_pages and page >= total_pages)
+            ):
+                break
+        return documents
+
+    def _recover_ambiguous_batch(
+        self, batch: Sequence[IngestionRecord]
+    ) -> Optional[List[str]]:
+        """Recover a lost acknowledgement only from exact provider inventory.
+
+        A transport timeout after POST has unknown write status. Stable custom IDs,
+        run metadata, source hashes, and provider document IDs jointly prove whether
+        the complete batch landed. No request is retried when that proof is absent.
+        """
+
+        expected = {item.custom_id: item for item in batch}
+        last_grouped: Dict[str, List[Tuple[str, Mapping[str, Any]]]] = {}
+        for attempt in range(self._ambiguous_recovery_attempts):
+            grouped: Dict[str, List[Tuple[str, Mapping[str, Any]]]] = {}
+            for document in self._inventory_documents():
+                metadata = document.get("metadata")
+                metadata = metadata if isinstance(metadata, Mapping) else {}
+                if metadata.get("ingestionRunId") != self._run_id:
+                    continue
+                custom_id = str(
+                    document.get("customId") or metadata.get("sourceCustomId") or ""
+                )
+                if custom_id not in expected:
+                    continue
+                document_id = str(document.get("id") or "")
+                grouped.setdefault(custom_id, []).append((document_id, metadata))
+            exact = len(grouped) == len(expected) and all(
+                len(grouped[item.custom_id]) == 1
+                and bool(grouped[item.custom_id][0][0])
+                and grouped[item.custom_id][0][1].get("sourceHash")
+                == item.source_hash
+                for item in batch
+            )
+            if exact:
+                return [grouped[item.custom_id][0][0] for item in batch]
+            last_grouped = grouped
+            if attempt + 1 < self._ambiguous_recovery_attempts:
+                self._sleep(1.0)
+        if last_grouped:
+            raise RuntimeError(
+                "ambiguous batch write was partial, duplicated, or hash-mismatched"
+            )
+        return None
+
     def submit(
         self,
         manifest: SignedIngestionManifest,
@@ -294,16 +376,26 @@ class AdaptiveBulkIngestionController:
                     dreaming="instant",
                 )
             except ApiError as error:
-                if error.status == 429 and throttle_retries < self._max_throttle_retries:
+                if error.status is None:
+                    recovered_ids = self._recover_ambiguous_batch(batch)
+                    if recovered_ids is None:
+                        raise
+                    response = {
+                        "results": [{"id": value} for value in recovered_ids],
+                        "success": len(recovered_ids),
+                        "failed": 0,
+                    }
+                elif error.status == 429 and throttle_retries < self._max_throttle_retries:
                     throttles += 1
                     throttle_retries += 1
                     batch_size = max(1, batch_size // 2)
                     self._sleep(self._retry_seconds(error.retry_after))
                     continue
-                if error.status == 413 and batch_size > 1:
+                elif error.status == 413 and batch_size > 1:
                     batch_size = max(1, batch_size // 2)
                     continue
-                raise
+                elif error.status is not None:
+                    raise
             results = _items(response.get("results"))
             success = int(response.get("success") or len(results))
             failed = int(response.get("failed") or 0)
@@ -333,14 +425,7 @@ class AdaptiveBulkIngestionController:
     def reconcile(self, manifest: SignedIngestionManifest) -> IngestionReport:
         if not self.verify_manifest(manifest):
             raise PermissionError("ingestion manifest signature is invalid")
-        inventory = self._memory.list_documents(
-            container_tags=[self._container], limit=1100, page=1
-        )
-        documents = _items(
-            inventory.get("documents")
-            or inventory.get("memories")
-            or inventory.get("results")
-        )
+        documents = self._inventory_documents()
         processing = self._memory.get_processing_documents(
             container_tags=[self._container]
         )
