@@ -2,7 +2,8 @@
 
 from dataclasses import dataclass
 import json
-from typing import Any, Dict, Mapping, Optional, Protocol
+import secrets
+from typing import Any, Dict, Mapping, Optional, Protocol, Tuple
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
@@ -16,6 +17,18 @@ class JsonTransport(Protocol):
         method: str,
         path: str,
         body: Optional[Mapping[str, Any]] = None,
+    ) -> JsonObject:
+        ...
+
+
+class MultipartJsonTransport(JsonTransport, Protocol):
+    def request_multipart(
+        self,
+        method: str,
+        path: str,
+        *,
+        fields: Mapping[str, str],
+        files: Mapping[str, Tuple[str, bytes, str]],
     ) -> JsonObject:
         ...
 
@@ -68,10 +81,70 @@ class UrlLibTransport:
             "User-Agent": "supermemory-field-lab/0.1",
             **self._extra_headers,
         }
+        return self._send(method, path, encoded, headers)
+
+    def request_multipart(
+        self,
+        method: str,
+        path: str,
+        *,
+        fields: Mapping[str, str],
+        files: Mapping[str, Tuple[str, bytes, str]],
+    ) -> JsonObject:
+        """Send a bounded multipart form without logging file or credential contents."""
+
+        boundary = f"supermemory-field-lab-{secrets.token_hex(16)}"
+        body = bytearray()
+        for name, value in fields.items():
+            safe_name = _safe_disposition_value(name)
+            body.extend(f"--{boundary}\r\n".encode("ascii"))
+            body.extend(
+                (
+                    f'Content-Disposition: form-data; name="{safe_name}"\r\n\r\n'
+                    f"{value}\r\n"
+                ).encode("utf-8")
+            )
+        for name, (filename, content, content_type) in files.items():
+            safe_name = _safe_disposition_value(name)
+            safe_filename = _safe_disposition_value(filename)
+            safe_content_type = content_type.replace("\r", "").replace("\n", "")
+            body.extend(f"--{boundary}\r\n".encode("ascii"))
+            body.extend(
+                (
+                    f'Content-Disposition: form-data; name="{safe_name}"; '
+                    f'filename="{safe_filename}"\r\n'
+                    f"Content-Type: {safe_content_type}\r\n\r\n"
+                ).encode("utf-8")
+            )
+            body.extend(content)
+            body.extend(b"\r\n")
+        body.extend(f"--{boundary}--\r\n".encode("ascii"))
+
+        credential = (
+            f"{self._auth_scheme} {self._api_key}"
+            if self._auth_scheme
+            else self._api_key
+        )
+        headers = {
+            "Accept": "application/json",
+            self._auth_header: credential,
+            "Content-Type": f"multipart/form-data; boundary={boundary}",
+            "User-Agent": "supermemory-field-lab/0.1",
+            **self._extra_headers,
+        }
+        return self._send(method, path, bytes(body), headers)
+
+    def _send(
+        self,
+        method: str,
+        path: str,
+        encoded: Optional[bytes],
+        headers: Mapping[str, str],
+    ) -> JsonObject:
         request = Request(
             f"{self._base_url}{path}",
             data=encoded,
-            headers=headers,
+            headers=dict(headers),
             method=method.upper(),
         )
 
@@ -97,6 +170,10 @@ class UrlLibTransport:
         if isinstance(parsed, dict):
             return parsed
         return {"data": parsed}
+
+
+def _safe_disposition_value(value: str) -> str:
+    return str(value).replace("\r", "").replace("\n", "").replace('"', "'")
 
 
 def _safe_error_detail(raw: str) -> str:

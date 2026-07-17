@@ -83,6 +83,55 @@ class SupermemoryClient:
             ),
         )
 
+    def upload_file(
+        self,
+        filename: str,
+        content: bytes,
+        *,
+        content_type: str = "application/octet-stream",
+        container_tag: Optional[str] = None,
+        custom_id: Optional[str] = None,
+        metadata: Optional[Mapping[str, Any]] = None,
+        entity_context: Optional[str] = None,
+        dreaming: Optional[str] = None,
+        filter_by_metadata: Optional[Mapping[str, Any]] = None,
+        task_type: Optional[str] = None,
+    ) -> JsonObject:
+        """Upload one bounded file through the documented multipart endpoint."""
+
+        if not filename.strip():
+            raise ValueError("file upload requires a non-empty filename")
+        if not content:
+            raise ValueError("file upload requires non-empty content")
+        if len(content) > 50 * 1024 * 1024:
+            raise ValueError("file upload exceeds the documented 50 MB limit")
+        request_multipart = getattr(self._transport, "request_multipart", None)
+        if not callable(request_multipart):
+            raise RuntimeError("configured transport does not support multipart upload")
+        fields = _without_none(
+            {
+                "containerTag": container_tag,
+                "customId": custom_id,
+                "metadata": json.dumps(metadata, separators=(",", ":"))
+                if metadata is not None
+                else None,
+                "entityContext": entity_context,
+                "dreaming": dreaming,
+                "filterByMetadata": json.dumps(
+                    filter_by_metadata, separators=(",", ":")
+                )
+                if filter_by_metadata is not None
+                else None,
+                "taskType": task_type,
+            }
+        )
+        return request_multipart(
+            "POST",
+            "/v3/documents/file",
+            fields={key: str(value) for key, value in fields.items()},
+            files={"file": (filename, bytes(content), content_type)},
+        )
+
     def get_document(self, document_id: str) -> JsonObject:
         return self._transport.request(
             "GET", f"/v3/documents/{quote(document_id, safe='')}"

@@ -2,7 +2,7 @@ import unittest
 
 from supermemory_lab.client import SupermemoryClient
 
-from .fakes import RecordingTransport
+from .fakes import RecordingMultipartTransport, RecordingTransport
 
 
 class SupermemoryClientTests(unittest.TestCase):
@@ -57,6 +57,44 @@ class SupermemoryClientTests(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             client.add_documents_batch([])
+
+    def test_file_upload_encodes_documented_fields_and_bytes(self) -> None:
+        transport = RecordingMultipartTransport([{"id": "document-1"}])
+        client = SupermemoryClient(transport)
+
+        response = client.upload_file(
+            "meeting.md",
+            b"# Meeting\nSynthetic notes",
+            content_type="text/markdown",
+            container_tag="project:one",
+            custom_id="meeting-1",
+            metadata={"kind": "meeting", "version": 1},
+            entity_context="Synthetic project meeting.",
+            dreaming="instant",
+            filter_by_metadata={"project": "one"},
+            task_type="superrag",
+        )
+
+        self.assertEqual(response["id"], "document-1")
+        method, path, fields, files = transport.multipart_calls[0]
+        self.assertEqual((method, path), ("POST", "/v3/documents/file"))
+        self.assertEqual(fields["containerTag"], "project:one")
+        self.assertEqual(fields["metadata"], '{"kind":"meeting","version":1}')
+        self.assertEqual(fields["filterByMetadata"], '{"project":"one"}')
+        self.assertEqual(
+            files["file"],
+            ("meeting.md", b"# Meeting\nSynthetic notes", "text/markdown"),
+        )
+
+    def test_file_upload_rejects_empty_and_oversized_payloads(self) -> None:
+        client = SupermemoryClient(RecordingMultipartTransport())
+
+        with self.assertRaises(ValueError):
+            client.upload_file("", b"data")
+        with self.assertRaises(ValueError):
+            client.upload_file("meeting.md", b"")
+        with self.assertRaises(ValueError):
+            client.upload_file("meeting.md", b"x" * (50 * 1024 * 1024 + 1))
 
     def test_document_portability_paths_quote_ids(self) -> None:
         transport = RecordingTransport()
