@@ -1,3 +1,4 @@
+from contextlib import closing
 from pathlib import Path
 import sqlite3
 import tempfile
@@ -40,8 +41,9 @@ class AuthorizationLedgerTests(unittest.TestCase):
             resource = authorization_resource("plan", "tamper")
             ledger = SqliteAuthorizationLedger(path, integrity_key=key)
             ledger.grant(scope="test.apply", actor="owner", resource_hash=resource)
-            with sqlite3.connect(str(path)) as connection:
+            with closing(sqlite3.connect(str(path))) as connection:
                 connection.execute("UPDATE authorization_grants SET signature='forged'")
+                connection.commit()
             with self.assertRaises(PermissionError):
                 ledger.consume(scope="test.apply", actor="owner", resource_hash=resource)
 

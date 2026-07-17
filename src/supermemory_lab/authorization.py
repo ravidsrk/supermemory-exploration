@@ -89,7 +89,8 @@ class SqliteAuthorizationLedger:
         return connection
 
     def _initialize(self) -> None:
-        with self._connect() as connection:
+        connection = self._connect()
+        try:
             connection.execute(
                 """
                 CREATE TABLE IF NOT EXISTS authorization_grants (
@@ -102,6 +103,8 @@ class SqliteAuthorizationLedger:
                 )
                 """
             )
+        finally:
+            connection.close()
 
     def _signature(self, key: Sequence[str], state: str) -> str:
         payload = json.dumps(
