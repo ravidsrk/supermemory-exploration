@@ -39,6 +39,7 @@ class ApiError(RuntimeError):
     path: str
     status: Optional[int]
     detail: str
+    retry_after: Optional[str] = None
 
     def __str__(self) -> str:
         status = str(self.status) if self.status is not None else "network"
@@ -154,7 +155,11 @@ class UrlLibTransport:
         except HTTPError as error:
             raw = error.read().decode("utf-8", errors="replace")
             raise ApiError(
-                method.upper(), path, error.code, _safe_error_detail(raw)
+                method.upper(),
+                path,
+                error.code,
+                _safe_error_detail(raw),
+                error.headers.get("Retry-After"),
             ) from None
         except URLError as error:
             raise ApiError(method.upper(), path, None, str(error.reason)) from None
