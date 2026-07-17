@@ -22,6 +22,7 @@ coverage/
 
 # Local experiment output (curated, redacted results belong in evidence/)
 .runs/
+.supermemory/
 *.log
 
 # Editors and operating systems
