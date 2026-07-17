@@ -123,8 +123,8 @@ bun run src/index.ts run \
 
 ## The benchmark that matters for this project
 
-Build a small domain suite before spending heavily on a public leaderboard. A useful first
-set is 100 questions across 20 synthetic users/projects:
+The field lab built this domain suite before spending heavily on a public leaderboard. Its
+first schema uses 100 questions across synthetic users/projects:
 
 | Category | Cases | What it tests |
 |---|---:|---|
@@ -193,3 +193,44 @@ MemoryBench score. It does establish a working matched baseline, separate retrie
 scoring, latency distribution, bounded context, cleanup, and deterministic safety controls.
 The first rehearsals exposed two evaluator defects—evidence IDs mixed into semantic answer
 scoring and an ISO-only date check—which were fixed before recording the final result.
+
+## Implemented blinded 100-case domain baseline
+
+The planned suite is now executable in
+[`run_blinded_domain_100_benchmark.py`](../experiments/run_blinded_domain_100_benchmark.py),
+with its contract in
+[`domain-100-case.schema.json`](../benchmarks/domain-100-case.schema.json). The manifest is
+signed, the deterministic term rubric is hidden from the answer prompt, memory/no-memory order
+is counterbalanced, retrieval and answer scoring are separate, and concurrency is capped at
+eight workers.
+
+Final hosted run `blinded-domain-100-20260717035326-ecb9ea`:
+
+| Metric | Result |
+|---|---:|
+| Retrieval evidence | 100/100 |
+| Memory-assisted answer | 100/100 (100%) |
+| No-memory answer | 10/100 (10%) |
+| Lift | +90 percentage points |
+| Search latency p50 / p95 | 671.4 / 1,017.8 ms |
+| Answer latency p50 / p95 | 1,246.7 / 2,203.5 ms |
+| Mean estimated context | 374.1 tokens |
+| Maximum rendered context | 1,926 characters |
+| Baseline-first / memory-first | 57 / 43 |
+| Case errors / tenant leaks / injection bypasses | 0 / 0 / 0 |
+
+All ten no-memory passes were expected `UNKNOWN` tenant-negative controls. Category counts
+matched the planned 10/10/15/10/10/10/10/10/10/5 allocation, and every category passed.
+
+The first full run failed 20 cases and was retained as diagnostic evidence. Ten recent-event
+queries were too verbose to isolate exact records in the 100-record corpus. Ten citation
+answers failed because the common renderer omitted nested document chunks returned by v3
+search. The corrected harness separates trusted retrieval queries from user questions and
+renders nested chunks; the hidden rubric did not change. A focused hosted probe verified the
+recent record was available, so the failure was retrieval construction rather than write
+visibility.
+
+This remains a synthetic field-lab regression with deterministic scoring. It is not an
+official MemoryBench run, a public-dataset comparison, a human preference study, or proof of
+general 100% accuracy. Use it as a release gate for this implementation, then add real product
+questions, reviewed scoring, realistic per-tenant volume, and an alternative baseline.

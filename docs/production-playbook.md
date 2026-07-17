@@ -105,6 +105,8 @@ Classify operations by whether they belong in the synchronous request path.
 | Document/conversation ingestion | No | Tens of seconds to extraction |
 | Batch + Dynamic Dreaming | No | Three-document batches accepted, but exact memory readiness remained pending beyond 60–90 s in repeated small runs |
 | Batch + instant SuperRAG | No | A 24-record run had exact inventory while 8 were done and 16 processing; a later barrier reached 24/24 done/searchable |
+| Maximum batch | No | One exact 600-record request reached 600/600 done/searchable; an earlier 60 s timeout had unknown acknowledgement and required inventory reconciliation |
+| Concurrent four-surface read | Yes, within a bounded product budget | 20/20 at eight workers passed with zero errors/leaks; per-surface concurrent p95 was ~0.59–1.43 s in one small run |
 | AI profile-bucket suggestion | No; administrative path | One hosted call returned five suggestions in 25.4 s; apply only through reviewed schema evolution |
 | Mass-forget agent | No | ~5.8 s to >60 s |
 | Connector sync | No | Background and plan/provider-dependent |
@@ -219,6 +221,22 @@ record only provider/key-version metadata, and run a non-mutating health contrac
 serialize, or commit the credential. Authentication success does not establish entitlement,
 evidence quality, or permission for a write.
 
+## Connector admission and OAuth
+
+Treat a connection as a privileged ingestion principal. Before any create call, bind provider,
+container, maximum documents, flat metadata, redirect target, and resource-selection policy in
+a signed intent. Wrong approval or replay must fail before network I/O. Store only an OAuth
+link hash/presence in logs and checkpoints. After user consent, re-fetch resources and bind
+exact IDs immediately before configuration; any provider/connection/resource drift requires a
+new plan. Current resource-management documentation is GitHub-specific, so do not assume other
+providers expose the same selection lifecycle.
+
+Entitlement is separate from authentication and consent. The governed live attempt received
+`403` before OAuth and created no connection or document. Surface that state explicitly; never
+claim onboarding completed or substitute an organization credential. For Google Drive, treat
+`metadata.syncScope=full` as a separate high-scope approval rather than a default. Disconnect
+should preserve documents unless exact deletion is separately authorized and verified.
+
 ## Prompt-injection and tool safety
 
 All connected sources are attacker-controlled from the model's perspective. Email, web pages,
@@ -289,6 +307,28 @@ absent, verify pre-existing controls remain, and emit audit outside the target. 
 and checkpoint each confirmed batch before attempting documented cardinality limits. Poll
 processing state and reconcile status as well as inventory: request acceptance, target
 presence, processing completion, and search readiness are separate barriers.
+
+The current hosted schema allows 1–600 documents per batch and 1–100 exact IDs per bulk
+delete. Local guards should reject 601/101. The live maximum proof reached 600/600 done and
+searchable, then resumed after two deletion batches and completed six exact 100-ID batches.
+This validates the boundary, not a default operating size: official ingestion guidance favors
+smaller pacing, and production should adapt batch size to latency, throttling, queue depth, and
+recovery cost. A timed-out POST is an ambiguous write; reconcile exact stable IDs and hashes,
+and fail closed if only part of the intended set exists.
+
+## Self-host backup and recovery
+
+Stop the server before snapshotting. Inventory every path, file type, size, and content hash;
+copy the complete `SUPERMEMORY_DATA_DIR`; compare source/backup manifests; restart the original;
+then restore into a clean directory and different port. Prove the same exact memory through
+search and profile and verify deletion on both copies. Restore extraction-provider environment
+separately—do not bundle provider secrets into the data backup.
+
+On macOS, normalize both `/tmp` and `/private/tmp` when supervising worker command lines. The
+v0.0.5 drill passed data integrity and recovery but returned signal-derived `-5`, left workers
+that needed reaping, and separately left a v3 ingest queued for 180 seconds. Keep production
+on HOLD until shutdown is clean, workers are supervised, queue restart is proven, and a real
+upgrade from the deployed version succeeds.
 
 ## Observability
 
@@ -391,5 +431,7 @@ Measure, because current pricing and provider behavior can change.
 - [ ] Profile bucket changes are additive, effective-schema-aware, drift-checked, reviewed, and replay-safe.
 - [ ] Stale continuity is signed, query-class/risk bounded, visibly labeled, and unavailable to high-risk tasks.
 - [ ] Bulk ingestion honors backpressure, checkpoints every accepted batch, polls processing, and reconciles exact hashes.
+- [ ] Ambiguous batch writes reconcile stable IDs/hashes without blind retry; exact deletes stay at 100 IDs or fewer and checkpoint every batch.
 - [ ] Profile/memories/hybrid/documents canaries run outside user data and hard-alert on any tenant marker leak.
-- [ ] Self-hosted backup/restore and version-upgrade drill passes, if applicable.
+- [ ] Connector entitlement, OAuth consent, selected-resource drift, sync/revoke, and document-retention/deletion behavior pass before real workspace access.
+- [ ] Self-hosted stopped backup/clean restore, clean shutdown, worker supervision, queued-ingestion restart, and real version-upgrade drill pass, if applicable.

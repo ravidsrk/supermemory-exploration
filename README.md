@@ -23,10 +23,12 @@ Hands-on exploration of Supermemory product surface, APIs, SDKs, and integration
 ## Status
 
 The field lab includes hosted/self-hosted capability probes, nine authenticated provider
-adapters, fifty-two reference implementations, 238 offline tests, and live memory/no-memory
-experiments.
-The latest 12-case domain smoke suite scored 12/12 with bounded memory versus 2/12 without it,
-with zero tenant leaks or prompt-injection bypasses.
+adapters, 57 reference implementations, 262 offline tests, and live memory/no-memory
+experiments. The latest blinded 100-case domain suite scored 100/100 with bounded memory
+versus 10/100 without it, with zero case errors, tenant leaks, or prompt-injection bypasses.
+An exact 600-document ingest/delete audit and an eight-worker four-surface recall challenge
+also passed. Stopped-state local backup/restore passed, while self-host production remains a
+HOLD because clean shutdown, worker supervision, queued ingestion, and a real upgrade are open.
 Start with the
 [practical wiki](docs/README.md), [multi-provider agents](docs/practical-agents.md), or the
 [verdict](docs/verdict.md).
@@ -118,6 +120,15 @@ PYTHONPATH=src python3 experiments/run_profile_schema_evolution_steward.py
 PYTHONPATH=src python3 experiments/run_memory_outage_continuity_gateway.py
 PYTHONPATH=src python3 experiments/run_adaptive_bulk_ingestion_controller.py
 PYTHONPATH=src python3 experiments/run_memory_slo_canary_monitor.py
+PYTHONPATH=src python3 experiments/run_governed_connector_onboarding.py
+PYTHONPATH=src python3 experiments/run_max_cardinality_capacity_audit.py
+PYTHONPATH=src python3 experiments/run_concurrent_four_surface_recall_challenge.py
+PYTHONPATH=src python3 experiments/run_blinded_domain_100_benchmark.py
+# Requires a disposable installed local binary, data directory, and provider-env file:
+PYTHONPATH=src python3 experiments/run_self_host_backup_restore.py \
+  --server-binary /path/to/supermemory-server \
+  --source-data-dir /tmp/supermemory-recovery-source \
+  --provider-env /path/to/provider.env
 ```
 
 Live commands create synthetic, isolated `lab:` containers. Raw probe output is ignored under

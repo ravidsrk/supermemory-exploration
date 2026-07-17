@@ -46,6 +46,9 @@ Delivered:
   all-provider readiness;
 - five resilience/freshness systems for source-revision citation, additive profile-schema
   evolution, risk-aware continuity, checkpointed adaptive ingestion, and four-surface SLOs;
+- five boundary systems for governed connector admission, exact maximum-cardinality rollback,
+  concurrent four-surface recall, blinded 100-case evaluation, and stopped-state self-host
+  recovery;
 - systematic classification of all 255 auxiliary-provider subsets and live portfolio coverage
   of all 28 provider pairs;
 - a causal sandbox transfer test where memory passed and the stateless candidate failed;
@@ -57,6 +60,12 @@ Delivered:
   container merge lifecycle;
 - a correction-aware conversation-plus-direct-fact agent and preview-gated erasure agent;
 - a 12-case matched domain smoke suite scoring 12/12 with memory versus 2/12 without;
+- a blinded 100-case domain suite scoring 100/100 with memory versus 10/100 without, with zero
+  errors, tenant leaks, or prompt-injection bypasses;
+- a 600-document accepted/processed/searchable lifecycle and resumable six-by-100 exact
+  deletion proof;
+- same-directory restart and byte-identical clean-directory local restore, with production
+  held for shutdown, worker, queued-ingestion, and upgrade blockers;
 - a Router continuity matrix separating model history, direct memory pool, tenant isolation,
   and Router-generated cross-session persistence;
 - practical wiki, production guardrails, evidence note, and benchmark plan.
@@ -68,11 +77,13 @@ all project keys out of git and use provider-specific least privilege where avai
 
 ### Build
 
-- Create the 100-question domain suite from [Benchmarks](benchmarks.md).
-- Grow the completed 12-case executable smoke slice into that blinded 100-question suite.
-- Add a JSONL dataset schema with facts, updates, expected sources, forbidden tenants, and
-  prompt-injection cases.
-- Add repeatable result capture for quality, latency distribution, context tokens, and cost.
+- Maintain and extend the completed blinded 100-question suite from
+  [Benchmarks](benchmarks.md); the first final run scored 100/100 with memory versus 10/100
+  without.
+- Evolve the committed dataset schema with facts, updates, expected/forbidden evidence,
+  tenant controls, and prompt-injection cases without changing rubrics after seeing answers.
+- Retain repeatable result capture for quality, latency distribution, context tokens, and
+  model usage; add reviewed cost accounting before production.
 - Schedule exact profile/memories/hybrid/documents canaries in an isolated synthetic container;
   retain signed latency/miss/leak reports and test one injected outage monthly.
 - Require chunk-digest revision binding for the cited research notebook and implement reviewed,
@@ -153,6 +164,11 @@ Obtain entitlement for exactly one high-value provider. Test OAuth branding, res
 selection, initial sync, update, delete, revocation, ACL change, and container cleanup with
 synthetic data before connecting real workspaces.
 
+The governed onboarding state machine is ready and the current account boundary is proven:
+connection creation returned `403` before OAuth, produced no connection/link/document, and
+was classified as `plan-or-entitlement-blocked`. Resource selection, sync, and revocation
+still require entitlement and a consenting OAuth user.
+
 ### SMFS
 
 Pilot one sandbox workflow. Compare the real mount and virtual Bash tool on:
@@ -169,6 +185,11 @@ Pilot one sandbox workflow. Compare the real mount and virtual Bash tool on:
 Pin a server release. Run fresh install, restart durability, backup/restore, version upgrade,
 large document, queue pressure, model outage, disk pressure, concurrency, and deletion tests.
 Compare local extraction quality to hosted on the exact domain suite.
+
+The v0.0.5 stopped-state drill now passes direct-memory restart, byte-identical backup, clean
+restore, search/profile persistence, and exact deletion. Production remains a HOLD: shutdown
+returned signal-derived `-5`, detached workers required reaping, a v3 document remained queued
+for 180 seconds, and no release newer than v0.0.5 existed for an upgrade rehearsal.
 
 ### Gate
 
@@ -234,13 +255,13 @@ On or near the 16th of each month:
 | Source retrieval | Correct chunk and citation | Passed synthetic text |
 | Profile usefulness | Stable/dynamic are relevant | Passed synthetic facts and custom bucket classification |
 | Cross-session Router | Recalls synthetic fact | Direct API pool passed; Router-generated new-conversation recall failed |
-| Connector lifecycle | Sync/update/delete | Blocked by plan; entitlement only verified |
-| Hosted retrieval p95 | Product-specific | Insufficient samples |
-| Domain accuracy | Product-specific | 12-case smoke: 12/12 memory vs 2/12 baseline; 100-case blinded suite pending |
+| Connector lifecycle | Sync/update/delete | Governed pre-OAuth intent/negative cleanup passed; hosted create returned entitlement `403`, so OAuth/resource/sync/revoke remain external-blocked |
+| Hosted retrieval p95 | Product-specific | 100-case search p95 1.018 s plus bounded concurrent surface p95s recorded; still insufficient for a production SLA |
+| Domain accuracy | Product-specific | Blinded synthetic suite: 100/100 memory vs 10/100 baseline; zero errors/leaks/bypasses |
 | Support continuity | Memory beats empty-tenant baseline | 3/3 vs 0/3 on small synthetic suite |
 | Verified lesson transfer | Memory improves related sandbox task | Memory passed; stateless failed on one hidden case |
 | Immediate direct-fact visibility | Next agent can retrieve safely | Exact canaries passed first read in all paths; natural-query miss requires tuning |
-| Prompt-injection resistance | No policy bypass | Governance 5/5 plus domain 2/2; larger adversarial suite pending |
+| Prompt-injection resistance | No policy bypass | Governance 5/5, smoke domain 2/2, and blinded domain 5/5; broader real-source adversarial review pending |
 | Retrieval policy | Domain precision/recall and latency gate | 120-search grid complete; winner 4/5 with zero false positives on synthetic corpus |
 | Hierarchical context | Allowed scopes compose without policy bypass | Three-scope key passed; other tenant/revocation denied; action stayed false |
 | Claim promotion | Stale/poisoned memory cannot become fresh truth | Four-channel fresh gate passed; memory-only cycle did not promote |
@@ -273,7 +294,9 @@ On or near the 16th of each month:
 | Recall continuity | Stale use is explicit/risk-bounded; high-risk fails closed | Signed restart cache, query-class/tamper denial, circuit skip, no-model high-risk failure, and recovery passed |
 | Bulk backpressure/readiness | Rate response, resume, processing, and exact inventory are distinct | Injected 429 reduced 8→4; signed 9/24 resume reached 24/24 done/searchable |
 | Memory SLO | Profile/memory/hybrid/document correctness and isolation stay visible | 12/12 small canary run, zero leaks; injected forbidden result produced signed alert |
-| Self-host durability | Restore and upgrade | Fresh run passed; durability/upgrade pending |
+| Maximum-cardinality lifecycle | Schema max/rejection, timeout ambiguity, exact rollback | Local 601/101 denial; hosted 600/600 done/searchable; six exact 100-ID deletes; restart-safe checkpoint and empty verification passed |
+| Concurrent recall | Correctness and isolation at bounded parallelism | 20/20 sequential and 20/20 at eight workers; zero errors/leaks; not a sustained load test |
+| Self-host durability | Restore and upgrade | Direct-memory backup/restart/clean restore/delete passed; production HOLD for signal-5 shutdown, orphan workers, queued ingestion, and unavailable newer-version upgrade |
 | SMFS maturity | Consistent read/search/profile | Read/search passed; profile/list quirks observed |
 
 ## Keep the integration replaceable

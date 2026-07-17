@@ -143,8 +143,12 @@ Important design questions for every connector:
 6. Who sees the OAuth branding and consent text?
 7. What plan and rate limits apply?
 
-The current account's crawler call was rejected as Scale-only. Connector presence in docs
-does not imply account entitlement.
+The governed current-account attempt signed exact scope and denied wrong authorization before
+I/O, but hosted creation returned `403` before OAuth. No connection/link/document was created.
+Connector presence in docs does not imply account entitlement; OAuth, GitHub resource
+selection, sync/update/revoke, and ACL-change tests require entitlement and user consent.
+Google Drive's `metadata.syncScope=full` should receive separate high-scope approval rather
+than inheriting a picker-scoped intent.
 
 ## SMFS
 
@@ -167,6 +171,13 @@ functional but visibly alpha. Use it for agent ergonomics, not POSIX compatibili
 The official installer downloads a release asset and verifies its checksum. Local state,
 auth material, and model cache live under one data directory, making backup conceptually
 simple. Extraction needs a provider model; embeddings default to a local English 768d model.
+
+The lab now tested that concept on v0.0.5. A stopped 51-file, 378,216,164-byte tree matched its
+backup and clean restore byte-for-byte; direct-memory search/profile survived restart and a
+second-port restore, and deletion passed. Extraction-provider configuration was restored
+separately. The same drill kept production on HOLD because Bun parents returned signal-derived
+`-5`, detached workers needed explicit reaping, and an earlier v3 document remained queued for
+180 seconds. With v0.0.5 still latest, no genuine upgrade target existed.
 
 The local server is attractive when:
 
@@ -192,7 +203,7 @@ response diagnostic headers directly; product pages can lag implementation.
 
 ## Current risk signals
 
-These are **open issue reports observed on 2026-07-16**, not reproduced facts. They identify
+These are **open issue reports rechecked on 2026-07-17**, not reproduced facts. They identify
 where a production proof should focus:
 
 - [#1296](https://github.com/supermemoryai/supermemory/issues/1296): self-hosted macOS process allegedly wedges and resists termination.
@@ -208,7 +219,9 @@ where a production proof should focus:
 - [#1152](https://github.com/supermemoryai/supermemory/issues/1152): self-hosted XLSX extraction.
 
 The correct response is not to conclude the product is broken. It is to pin versions and turn
-each relevant report into a release-gate test.
+each relevant report into a release-gate test. The v0.0.5 macOS recovery run reproduced a
+signal-5 shutdown, detached worker, and queued-ingestion wedge in the same operational risk
+family; it does not prove any issue report's exact root cause.
 
 ## Product trajectory and research culture
 

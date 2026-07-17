@@ -410,6 +410,54 @@ PYTHONPATH=src python3 experiments/run_adaptive_bulk_ingestion_controller.py
 PYTHONPATH=src python3 experiments/run_memory_slo_canary_monitor.py
 ```
 
+## Tenth-pass capacity, connectors, evaluation, and recovery
+
+Five boundary experiments produced four positive proofs and one typed external block:
+
+- governed connector onboarding denied wrong authorization before I/O, then classified hosted
+  create `403` as `plan-or-entitlement-blocked`; it created no OAuth link, connection,
+  resource selection, sync, or document;
+- the maximum-cardinality audit locally rejected 601 documents and 101 delete IDs, submitted
+  exactly 600, observed 78 still processing in the immediate exact inventory, reached 600/600
+  done/searchable, then resumed after two batches and completed six exact 100-ID deletions;
+- the concurrent challenger produced 20/20 correct sequential and 20/20 correct eight-worker
+  profile/memories/hybrid/documents reads with zero errors or tenant leaks, reducing wall time
+  from 13.87 seconds to 2.15 seconds in the bounded sample;
+- the blinded domain benchmark scored retrieval 100/100 and memory answers 100/100 versus
+  10/100 no-memory controls, with zero errors, leaks, or injection bypasses; search p50/p95 was
+  671.4/1,017.8 ms and answer p50/p95 was 1,246.7/2,203.5 ms;
+- the v0.0.5 recovery drill matched a 51-file, 378,216,164-byte source to its stopped backup,
+  preserved direct-memory search/profile across restart and byte-identical clean restore, and
+  verified deletion. Its production gate stayed false because shutdown returned signal `-5`,
+  four detached workers needed reaping, an earlier v3 ingest stayed queued for 180 seconds,
+  and no newer release existed for an upgrade rehearsal.
+
+The first 600-record attempt timed out after 60 seconds with unknown acknowledgement and later
+empty inventory; timeout typing and exact inventory reconciliation were added before the final
+run. The first 100-case attempt failed ten recent queries and ten citations; trusted retrieval
+queries and nested chunk rendering were fixed without changing the hidden rubric. The first
+self-host recovery attempt exposed the queue wedge, shutdown panic, and orphan worker. These
+failures are part of the evidence rather than discarded warm-ups. See the
+[tenth-pass evidence](../evidence/2026-07-17-tenth-pass-capacity-connectors-and-recovery.md).
+
+Run the hosted experiments with:
+
+```bash
+PYTHONPATH=src python3 experiments/run_governed_connector_onboarding.py
+PYTHONPATH=src python3 experiments/run_max_cardinality_capacity_audit.py
+PYTHONPATH=src python3 experiments/run_concurrent_four_surface_recall_challenge.py
+PYTHONPATH=src python3 experiments/run_blinded_domain_100_benchmark.py
+```
+
+The local recovery runner deliberately requires explicit disposable paths:
+
+```bash
+PYTHONPATH=src python3 experiments/run_self_host_backup_restore.py \
+  --server-binary /path/to/supermemory-server \
+  --source-data-dir /tmp/supermemory-recovery-source \
+  --provider-env /path/to/provider.env
+```
+
 ## Disposable self-hosted probe
 
 Follow the official [quickstart](https://supermemory.ai/docs/self-hosting/quickstart) in a
@@ -428,10 +476,11 @@ Use a disposable key/data directory, wait for the worker-ready log, then point t
 client at `SUPERMEMORY_BASE_URL=http://127.0.0.1:6779` with the local server's generated API
 key. Test add → poll → memories/hybrid search → profile → restart → search again.
 
-Before production, add:
+The tenth pass completed stopped-state backup, same-directory restart, clean-directory restore,
+and direct-memory deletion durability. Before production, still add or repeat:
 
 - upgrade from the exact currently deployed version;
-- backup/restore to a fresh host;
+- queued-ingestion recovery and clean supervised shutdown with no detached worker;
 - large documents and configured content types;
 - embedding model/dimension lock;
 - queue pressure, restart during ingest, disk-full, and model outage;
@@ -490,8 +539,9 @@ For each run, add a dated evidence note containing:
 - exercise retention across connectors, backups, caches, export, and self-hosted restore;
 - repeat both Dreaming modes across larger related batches, longer windows, and queue/readiness
   instrumentation; instant candidate generation was non-deterministic and dynamic stayed pending;
-- batch file upload, 600-document ingest, and 100-ID bulk-delete/cardinality boundaries;
-- repeat the retrieval grid on a domain corpus with at least 100 blinded queries;
+- batch file upload and the exact 50 MB/content-type rejection boundaries; the 600-document
+  ingest and 100-ID exact-delete boundaries now pass;
+- repeat the completed 100-case blinded domain suite on realistic product data and volume;
 - file upload formats and the exact 50 MB rejection boundary beyond the passing Markdown path;
 - connector sync/update/delete on an entitled plan;
 - expanded scoped-key endpoint matrix beyond passing single/multi-scope read/write, revocation,
@@ -501,6 +551,6 @@ For each run, add a dated evidence note containing:
 - temporal recall across timezones, recurrence, corrections, and larger corpora;
 - dependency guardian fail-closed controls using known-vulnerable and ambiguous packages;
 - Router outage fail-open behavior and token headers;
-- self-hosted upgrade/backup/restore and large-file regressions;
+- self-hosted real-version upgrade, queued-ingestion/shutdown recovery, and large-file regressions;
 - SMFS mount concurrency and bidirectional 30-second sync;
 - domain-specific MemoryBench run with a compatible judge key.

@@ -824,6 +824,62 @@ three-round run passed 12/12 with zero leaks; an injected forbidden result produ
 hard isolation alert. Use a much larger continuous sample before setting production latency
 budgets.
 
+## 49. Governed connector onboarding controller
+
+Providers: Supermemory connector API; user OAuth only after entitlement.
+
+Sign provider, container, document limit, flat metadata, redirect target, and resource policy
+before creating anything. Store an OAuth URL hash rather than the URL. Re-fetch selectable
+resources immediately before configuration, bind exact IDs, and require new authorization for
+disconnect or document deletion. The current-account live run safely stopped at hosted `403`
+before OAuth and created nothing. This is the correct agent behavior when a feature is
+documented but the deployment is not entitled: surface the external boundary, do not simulate
+completion or silently switch to a broader credential.
+
+## 50. Maximum-cardinality migration and rollback operator
+
+Providers: Supermemory.
+
+Build a signed 600-record manifest with stable custom IDs and source hashes. Treat a timed-out
+POST as ambiguous, reconcile exact paginated provider inventory, and never blindly retry an
+unknown write. After processing readiness and canary search, delete through a separately
+authorized signed manifest in batches of at most 100, checkpointing each response. The live
+run reached 600/600 done/searchable and resumed after 200 deletions to finish six exact batches.
+Use smaller adaptive batches for ordinary production throughput; the schema maximum is a
+boundary proof, not the default batch size.
+
+## 51. Concurrent recall challenger
+
+Providers: Supermemory.
+
+Challenge profile, memories, hybrid, and documents through one bounded read-only worker pool.
+Sign the expected and forbidden markers, cap workers/requests, and record correctness, tenant
+leaks, errors, and latency per surface. Five rounds passed 20/20 sequential and 20/20 at eight
+workers with zero errors/leaks. The challenger is a release canary, not a load generator; add
+soak, regional, write-contention, and rate-limit experiments before capacity planning.
+
+## 52. Blinded domain release evaluator
+
+Providers: Supermemory + OpenRouter.
+
+Separate the user question from the application-owned retrieval query, hide the deterministic
+rubric from the answer model, counterbalance memory/no-memory order, and score retrieval and
+answers independently. The 100-case synthetic suite passed 100/100 with memory versus 10/100
+without it, with bounded context and zero leaks/bypasses. Keep the failed first run: it exposed
+poor query construction and a nested-document-chunk renderer bug. Do not call this an official
+MemoryBench score or general production accuracy.
+
+## 53. Self-host recovery operator
+
+Providers: local Supermemory server plus a separately restored extraction-provider config.
+
+Stop the server, inventory and hash the complete data tree, copy it, restart the source, then
+restore into a clean directory/port and prove search, profile, and deletion. Detect and reap
+workers by resolved and unresolved macOS temp paths. Direct-memory recovery passed, but the
+operator emitted a production HOLD because shutdown used signal `-5`, workers detached, a v3
+ingest wedged, and no newer upgrade target existed. A recovery agent should preserve this mixed
+result rather than converting successful data copying into production approval.
+
 ## Other high-value builds
 
 | Agent | Providers | Memory design |
@@ -877,6 +933,11 @@ budgets.
 | Continuity gateway | Supermemory + OpenRouter | Signed stale cache, risk class, circuit breaker, explicit freshness banner. |
 | Bulk ingestion controller | Supermemory | AIMD backpressure, stable IDs, signed resume, processing/inventory barrier. |
 | Memory SLO monitor | Supermemory + OpenRouter | Exact surface canaries, tenant leak alert, signed metrics, no-action explanation. |
+| Connector onboarding governor | Supermemory | Signed intent, entitlement/OAuth boundary, exact resources, drift/replay-safe lifecycle. |
+| Maximum-cardinality operator | Supermemory | 600-record manifest, ambiguous-write reconciliation, six-by-100 exact rollback. |
+| Concurrent recall challenger | Supermemory | Bounded four-surface worker pool, correctness/leak/error/latency report. |
+| Blinded domain evaluator | Supermemory + OpenRouter | Hidden rubric, trusted retrieval query, counterbalanced matched answers, release gate. |
+| Self-host recovery operator | Local Supermemory | Stopped manifest, byte-identical restore, separate provider env, worker/shutdown gate. |
 
 ## What not to build
 
@@ -916,3 +977,11 @@ budgets.
 - A bulk loader that equates HTTP acceptance or exact inventory with semantic readiness.
 - An SLO monitor that writes its report into the measured container or sends raw private
   memory to an alerting model.
+- A connector bot that opens OAuth before exact scope/retention intent or claims success after
+  an entitlement denial.
+- A maximum-sized loader that blindly retries a timed-out write or rolls back with a semantic
+  selector.
+- A benchmark that tunes its hidden rubric after seeing model answers or calls synthetic 100%
+  accuracy a public benchmark result.
+- A recovery script that copies a live data tree, bundles provider secrets into the backup, or
+  calls restore success production readiness while workers and queues are unhealthy.

@@ -35,7 +35,8 @@ Every important conclusion uses one of these labels:
 
 “Observed” is strongest for behavior but is still a sample from one account, region,
 date, and small synthetic workload. Product behavior, entitlements, and latency can
-change. All observations in the first research pass are dated **2026-07-16**.
+change. The first-pass observations are dated **2026-07-16**; the latest pass is dated
+**2026-07-17**.
 
 The second pass on the same date adds safe live tool execution, a 15-case governance suite,
 a six-provider signal radar, a 120-search retrieval-policy grid, and a test-guided release
@@ -82,6 +83,14 @@ four-surface memory SLO canaries. It live-proves stale-source refusal, concurren
 denial, high-risk fail-closed outage behavior, a 24-document acceptance/processing distinction,
 and profile/memory/hybrid/document isolation monitoring. See the
 [resilience and freshness evidence](../evidence/2026-07-17-ninth-pass-resilience-and-freshness.md).
+
+The tenth pass governs connector onboarding through the entitlement/OAuth boundary, proves
+the exact 600-document ingest and six-by-100 deletion lifecycle, challenges all four recall
+surfaces with eight concurrent workers, completes a blinded 100-case matched benchmark, and
+performs stopped-state self-host backup, restart, and byte-identical clean restore. It also
+records the operationally important negative results: connector entitlement `403`, local
+queued-ingestion wedge, signal-5 shutdown, detached workers, and no newer upgrade target. See
+the [capacity, connectors, evaluation, and recovery evidence](../evidence/2026-07-17-tenth-pass-capacity-connectors-and-recovery.md).
 
 ## Update discipline
 

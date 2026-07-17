@@ -9,7 +9,7 @@ SDKs, and live probes. “Maturity” is a lab judgment, not a vendor status lab
 | Capability | Practical use | Evidence | Maturity judgment |
 |---|---|---|---|
 | Add text, URL, or file | Knowledge ingestion and extraction | [Add document](https://supermemory.ai/docs/api-reference/ingest/add-document); hosted text probe | Core |
-| Batch/file upload | Bulk knowledge loading; current OpenAPI accepts 1–600 documents and files up to 50 MB | [Current OpenAPI](https://api.supermemory.ai/v3/openapi); hosted batch and Markdown multipart runs | Core; 3/3 batch plus file/chunks/temporary URL passed live; exact size/format boundaries pending |
+| Batch/file upload | Bulk knowledge loading; current OpenAPI accepts 1–600 documents and files up to 50 MB | [Current OpenAPI](https://api.supermemory.ai/v3/openapi); hosted batch, Markdown multipart, and maximum-cardinality runs | Core; local 601 rejection and hosted 600/600 accepted, processed, reconciled, and searchable. One earlier 60-second acknowledgement timeout proves the need for stable IDs and inventory reconciliation; 50 MB/file-format boundaries remain pending. |
 | Structured conversation upsert | Preserve roles and append a conversation by ID | [Conversation endpoint](https://supermemory.ai/docs/api-reference/ingest/ingest-or-update-conversation); hosted probe | Core |
 | `customId` upsert | Stable application identity for a document | Hosted probe; same document ID returned | Core, extraction semantics need regression tests |
 | `dreaming=dynamic` | Group related content before memory creation | [Adding memories](https://supermemory.ai/docs/add-memories); repeated hosted batch probe | Asynchronous enrichment: small batches remained `dreaming` beyond 60–90 s and lacked the exact extracted fact in the extra check; use a direct confirmed-fact readiness fallback |
@@ -23,7 +23,7 @@ SDKs, and live probes. “Maturity” is a lab judgment, not a vendor status lab
 | Memory history/list | Inspect current administrative inventory and mutation lineage | [Current OpenAPI](https://api.supermemory.ai/v3/openapi); hosted unfiltered three-version correction probe | Top-level entries represent current truth; the observed latest v3 entry nested history `[1, 2, 3]` with valid parent/root continuity. This corrects the earlier latest-only interpretation; test pagination/export and do not treat it as a compliance signature. |
 | Document lifecycle | List, get, chunks, update, delete, processing state | [Document operations](https://supermemory.ai/docs/document-operations); hosted probes | Core; the 24-record run observed exact inventory while 16 records were still processing, then 24/24 done |
 | Exact document chunks/file URL | Export ordered source chunks or obtain a temporary original-file URL | [Current OpenAPI](https://api.supermemory.ai/v3/openapi); hosted meeting-file run | Ordered chunk citation and temporary HTTPS URL passed. Official changelog says URLs expire after 24 hours; never persist them in memory, prompts, traces, or logs. |
-| Bulk exact document delete | Roll back a known import set without semantic selection | [Current OpenAPI](https://api.supermemory.ai/v3/openapi); hosted ten-ID rollback | Core for migration recovery; wrapper accepts 1–100 unique exact IDs only. Do not expose container-wide selectors to a model. |
+| Bulk exact document delete | Roll back a known import set without semantic selection | [Current OpenAPI](https://api.supermemory.ai/v3/openapi); hosted ten-ID and six-by-100 rollback runs | Core for migration recovery; local 101-ID rejection, signed restart after 200 deletions, six exact 100-ID batches, idempotent completed replay, empty inventory, and negative search passed. Do not expose container-wide selectors to a model. |
 | Organization settings/bucket suggestion | Inspect processing configuration and propose profile organization | [Current OpenAPI](https://api.supermemory.ai/v3/openapi); hosted additive-schema run | Five suggestions passed current shape validation. One was reviewed/applied only after signed effective-schema capture and concurrent-drift rejection; never grant suggestions direct mutation authority. |
 
 ## Recall and profile
@@ -100,7 +100,11 @@ Pipecat, OpenAI, n8n, Zapier, viaSocket, Claude Memory, and several coding plugi
 
 Connector OAuth can show Supermemory branding or use custom credentials for supported
 providers. Treat each connection as a privileged ingestion principal; constrain its
-container and selected resources.
+container and selected resources. The governed live attempt bound provider/container/limits/
+metadata/redirect in a signed intent, denied wrong authorization before the API, then received
+hosted `403` before OAuth and created no resource. Current resource-management docs are
+GitHub-specific. OAuth, selection, sync, update, revoke, and ACL-change behavior remain
+unobserved until this account receives entitlement and a user consents.
 
 ## Alternative runtimes
 
@@ -108,8 +112,12 @@ container and selected resources.
 
 The local server exposes the hosted-style API with encrypted local storage, local or remote
 embeddings, and a bring-your-own extraction model. The local edition is single-tenant and
-does not include managed connectors/MCP. A fresh v0.0.5 run worked; upgrade and scale paths
-need dedicated testing. See [self-hosting](https://supermemory.ai/docs/self-hosting/overview).
+does not include managed connectors/MCP. A v0.0.5 stopped snapshot, same-directory restart,
+byte-identical clean restore, search/profile recovery, and exact deletion passed for direct
+memory state. Production remains a HOLD on this macOS setup: parent shutdown returned signal
+`-5`, detached workers required explicit reaping, a v3 ingest remained queued for 180 seconds,
+and no newer release existed for a real upgrade drill. See
+[self-hosting](https://supermemory.ai/docs/self-hosting/overview).
 
 ### SMFS
 

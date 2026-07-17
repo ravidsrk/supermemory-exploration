@@ -18,8 +18,10 @@ bounded context before a model call, and treat generated memories as untrusted e
 This keeps authority, citations, isolation, and failure behavior under application control.
 
 That conclusion is supported by the current [API model](memory-model.md), hosted core and
-lifecycle runs, a 12-case matched domain benchmark, a local-server run, an SMFS run, and two
-Memory Router control passes. The detailed numbers are in [Experiments](experiments.md).
+lifecycle runs, a blinded 100-case matched domain benchmark, an exact 600-document lifecycle,
+a bounded concurrent four-surface challenge, local restart/clean-restore evidence, an SMFS
+run, and two Memory Router control passes. The detailed numbers are in
+[Experiments](experiments.md).
 
 ## What is genuinely compelling
 
@@ -138,7 +140,14 @@ crawler. The no-OAuth web-crawler probe returned `403` because the account was n
 required Scale plan. A free or promotional API grant should not be assumed to include
 connectors. Build a connector proof before basing a product plan on it.
 
-### Self-hosting works, but is not “just a tiny binary” operationally
+The governed connector controller now makes that proof safe: it signs exact provider,
+container, document limit, metadata, redirect, and resource policy, denies wrong approval
+before I/O, hashes rather than stores the OAuth link, and preserves documents on disconnect
+unless separately authorized. The final attempt stopped at `plan-or-entitlement-blocked` and
+created nothing. OAuth/resource/sync/revocation behavior is therefore still unobserved, not
+failed; it needs entitlement and a consenting user.
+
+### Self-host recovery works, but production is still a HOLD
 
 A fresh disposable v0.0.5 server successfully ingested, extracted, searched, and profiled
 synthetic facts using local embeddings and an OpenRouter-compatible model endpoint.
@@ -146,10 +155,18 @@ First boot needed a model download and approximately 15 seconds before the worke
 the process reported about 1.7 GB baseline memory and 1 GB ingestion headroom. This is
 perfectly viable for a developer workstation and materially heavier than a small utility.
 
-Current open issues report upgrade migrations, API-key auth, large-document queue wedges,
-snapshot memory pressure, spreadsheet extraction, and wrapper regressions. These reports
-were not reproduced, but they justify backup-and-restore tests and pinned versions before
-self-hosting production. See [Ecosystem](ecosystem.md#current-risk-signals).
+The v0.0.5 stopped-state drill copied a complete 51-file, 378,216,164-byte data tree, matched
+source/backup/clean-restore byte manifests, preserved a direct memory in search and profile
+through same-directory restart and second-port restore, and verified deletion. Provider
+configuration remained a separate restore input.
+
+That positive durability result did not clear production. Every Bun parent returned
+signal-derived `-5`; four detached workers required explicit reaping; an earlier v3 document
+stayed queued for 180 seconds without a workflow start; and v0.0.5 was already the latest
+release, so a genuine upgrade was impossible. This partly reproduces the operational risk
+family in current reports without claiming their exact root cause. Pin the release, supervise
+and reap workers, resolve queued ingestion/clean shutdown, and rehearse the next real upgrade
+before production. See [Ecosystem](ecosystem.md#current-risk-signals).
 
 ### Defaults and docs can drift
 
@@ -268,8 +285,12 @@ absence and retained controls. Application logs alone are insufficient.
 The same principle made batch migration recoverable. Stable custom IDs and source hashes,
 a separately signed checkpoint, target-side reconciliation, and exact-ID bulk rollback
 survived simulated acknowledgement loss at ten records while retaining a pre-existing control.
-This is a strong small-case pattern; file uploads and documented cardinality boundaries remain
-open.
+The later boundary run extended this from ten to exactly 600 records: 600/600 became done and
+searchable, a fresh process resumed after two delete batches, and six exact 100-ID batches
+left empty inventory and negative search. A 601 write and 101-ID delete were denied locally.
+One earlier timed-out POST showed why unknown acknowledgement must be reconciled against exact
+stable IDs and hashes instead of retried blindly. File-size/format and sustained-throughput
+boundaries remain open.
 
 ### Memory can recover project state and dissent, not authorize either
 
@@ -286,12 +307,18 @@ The current 32-path OpenAPI plus reported wrapper regressions produced a targete
 reproduced failures, and a schema diff is evidence for exact upgrade tests rather than an
 automatic deploy or permanent block.
 
-### The small domain result is encouraging, not dispositive
+### The blinded domain result is strong for its corpus, not universal
 
-The bounded 12-case smoke suite scored 12/12 with memory versus 2/12 without, at 659 ms search
-p50 and 1.14 s p95 with about 327 estimated context tokens. Tenant leaks and prompt-injection
-bypasses were zero. This establishes a useful regression harness, not production-scale quality:
-the next gate remains the blinded 100-case suite at realistic corpus volume.
+The completed synthetic 100-case suite scored retrieval and memory answers 100/100 versus
+10/100 no-memory controls. Search p50/p95 was 671.4/1,017.8 ms, mean estimated context was
+374.1 tokens, and tenant leaks, case errors, and prompt-injection bypasses were zero. Hidden
+deterministic scoring did not change after the first failed run exposed retrieval-query and
+nested-chunk rendering defects.
+
+This is a meaningful implementation release gate, but it is not an official MemoryBench run,
+human evaluation, realistic production corpus, or proof of general 100% accuracy. The next
+quality gates are real domain data, reviewed scoring, realistic per-tenant volume, and an
+alternative on the same pipeline.
 
 ## Adoption recommendation
 
@@ -322,12 +349,14 @@ the next gate remains the blinded 100-case suite at realistic corpus volume.
 | Contract-drift sentinel | **Adopt as an upgrade test gate** | Exact snapshot/staleness passed; reports and model advice remain non-authoritative. |
 | Project Memory OS | **Pilot as recovery/briefing state** | Signed chain and verified artifact passed; keep workflow coordination transactional. |
 | Valid-dissent council | **Adopt the dissent-preservation invariant** | Minority evidence/falsifier survived restart; calibration and independence remain unproven. |
-| Batch migration reconciler | **Pilot before large migration** | Idempotent replay, exact reconcile, and rollback passed at ten records; boundaries remain open. |
+| Batch migration reconciler | **Adopt the exact checkpoint/rollback pattern** | Idempotent replay passed at ten records; boundary run reached 600/600 and resumed six exact 100-ID deletes. |
 | Source-revision citation guardian | **Adopt for mutable governed knowledge** | Current chunk/digest/quote enforcement rejected stale V1 and persisted exact V2 once. |
 | Profile-schema steward | **Adopt as reviewed administration** | Suggestions were useful, but only additive effective-schema/drift control made application safe. |
 | Risk-aware continuity gateway | **Pilot for low-risk UX** | Signed stale/restart/circuit behavior passed; high risk failed closed; real outage SLO is unknown. |
-| Adaptive bulk-ingestion controller | **Adopt the checkpoint/readiness pattern** | Injected backpressure and 24-record resume/reconciliation passed; documented maximum remains untested. |
+| Adaptive bulk-ingestion controller | **Adopt the checkpoint/readiness pattern** | Injected backpressure and 24-record resume passed; separate boundary run proved exact 600 processing/search and ambiguity recovery. |
 | Four-surface SLO monitor | **Adopt canaries, calibrate thresholds** | Small healthy run and injected leak detection passed; more volume/regions are required for budgets. |
+| Concurrent recall challenger | **Adopt as a release canary** | 20/20 sequential and 20/20 at eight workers passed across all four surfaces with zero errors/leaks; not a load SLA. |
+| Blinded domain evaluator | **Adopt as an implementation release gate** | Synthetic 100/100 vs 10/100 with hidden rubric and bounded context; add real data/human review. |
 | Meeting commitment steward | **Adopt for reviewable extraction** | File/chunk provenance, exact approval, replay denial, and fresh-process recall passed; humans still own commitments. |
 | Consent-aware memory intake | **Adopt as the write boundary** | Purpose, category, sensitivity, retention, and replay controls passed; model classification remained advisory. |
 | Tool apprenticeship | **Pilot for read procedures** | Two-provider episodes and isolated verification passed; contract drift correctly disabled execution. |
@@ -341,8 +370,8 @@ the next gate remains the blinded 100-case suite at realistic corpus volume.
 | Semantic privacy erasure | **Pilot behind preview** | Candidate gate worked; audit-recovery behavior remains inconsistent. |
 | Autonomous action authorization | **Do not use as authority** | Retrieved text is probabilistic and prompt-injectable. |
 | Transparent Memory Router | **Prototype only** | Failed the lab's cross-session recall control. |
-| Plan-gated connector product | **Verify entitlement first** | Crawler was blocked on this account. |
-| Self-hosted production | **Pilot after upgrade/backup tests** | Core worked; current issue queue shows operational risk. |
+| Plan-gated connector product | **Verify entitlement first** | Governed create was blocked by `403` before OAuth and created nothing; full lifecycle needs entitlement/user consent. |
+| Self-hosted production | **HOLD on this release/platform** | Backup/restart/clean restore passed, but signal-5 shutdown, detached workers, queued ingest, and no newer upgrade target remain. |
 
 ## The non-negotiable architecture rule
 
