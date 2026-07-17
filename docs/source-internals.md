@@ -146,8 +146,8 @@ Limitations in the inspected commit:
 - `options.threshold || 0.3` prevents a deliberate threshold of zero.
 - Retrieval relevance uses an LLM judge; judge failure marks every result irrelevant.
 - `recall@k` is effectively binary hit/no-hit and is not classical multi-relevant-item recall.
-- A full run needs one of the supported judge/model credentials; OpenRouter is not a drop-in
-  environment variable in this commit.
+- The unmodified commit accepts only direct judge/model providers. The field-lab overlay adds
+  an explicit `openrouter:<provider/model>` route for answering and judging.
 
 Practical fork backlog:
 
@@ -157,4 +157,11 @@ Practical fork backlog:
 4. Start concurrency at 5–10 and scale from measured limits.
 5. Add deterministic evidence-span scoring alongside the LLM judge.
 6. Separate retrieval quality from answer-model accuracy.
-7. Add OpenRouter as a first-class model and judge provider if it is the standard model path.
+7. Upstream or maintain the tested field-lab OpenRouter overlay; rebase its contracts on every
+   MemoryBench upgrade.
+
+**Observed:** the overlay passed four Bun tests, TypeScript compilation, a live judge control,
+and a complete one-question LoCoMo pipeline. Retrieval returned zero results, the answer scored
+incorrect, and exact cleanup removed and verified all 19 documents. This proves the adapter and
+failure visibility, not provider quality. See the
+[adapter runbook](../integrations/memorybench-openrouter/README.md).

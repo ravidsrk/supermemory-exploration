@@ -3,28 +3,30 @@
 This map covers the current product surface discovered through the official
 [documentation index](https://supermemory.ai/docs/llms.txt), public repositories, generated
 SDKs, and live probes. “Maturity” is a lab judgment, not a vendor status label.
+Mixed labels mean the documented/source contract and the observed behavior were checked
+separately; a local contract observation is never presented as a hosted framework run.
 
 ## Core API
 
 | Capability | Practical use | Evidence | Maturity judgment |
 |---|---|---|---|
-| Add text, URL, or file | Knowledge ingestion and extraction | [Add document](https://supermemory.ai/docs/api-reference/ingest/add-document); hosted text probe | Core |
-| Batch/file upload | Bulk knowledge loading; current OpenAPI accepts 1–600 documents and files up to 50 MB | [Current OpenAPI](https://api.supermemory.ai/v3/openapi); hosted batch, Markdown multipart, and maximum-cardinality runs | Core; local 601 rejection and hosted 600/600 accepted, processed, reconciled, and searchable. One earlier 60-second acknowledgement timeout proves the need for stable IDs and inventory reconciliation; 50 MB/file-format boundaries remain pending. |
-| Structured conversation upsert | Preserve roles and append a conversation by ID | [Conversation endpoint](https://supermemory.ai/docs/api-reference/ingest/ingest-or-update-conversation); hosted probe | Core |
-| `customId` upsert | Stable application identity for a document | Hosted probe; same document ID returned | Core, extraction semantics need regression tests |
-| `dreaming=dynamic` | Group related content before memory creation | [Adding memories](https://supermemory.ai/docs/add-memories); repeated hosted batch probe | Asynchronous enrichment: small batches remained `dreaming` beyond 60–90 s and lacked the exact extracted fact in the extra check; use a direct confirmed-fact readiness fallback |
-| `dreaming=instant` | Extract each document independently; extra documented operation | Same source; hosted probe | Core |
-| `taskType=superrag` | Index knowledge without generating personal memory facts | [SuperRAG](https://supermemory.ai/docs/concepts/super-rag) | Core |
-| Direct v4 memory creation | Exact facts without extraction; up to 100 per call | [Direct creation](https://supermemory.ai/docs/api-reference/content-management/create-memories-directly); hosted probes | Core; profile can precede search visibility |
-| Versioned memory update | Correct a fact while preserving history | [Update](https://supermemory.ai/docs/api-reference/content-management/update-a-memory-creates-new-version); hosted probe | Core |
-| Forget one memory | Remove a fact from normal search | [Forget](https://supermemory.ai/docs/api-reference/content-management/forget-a-memory); hosted probe | Core |
-| Agentic mass-forget | Natural-language deletion with dry-run | [Forget matching](https://supermemory.ai/docs/api-reference/content-management/forget-memories-matching-a-promptquery); hosted probe | Slow/variable; background workflow only |
-| Memory expiry (`forgetAfter`) | Lease temporary context and cancel through versioned update | Current [OpenAPI](https://api.supermemory.ai/v3/openapi); hosted expiry/cancel probe | Core; explicit forget and expiry had different recovery behavior |
-| Memory history/list | Inspect current administrative inventory and mutation lineage | [Current OpenAPI](https://api.supermemory.ai/v3/openapi); hosted unfiltered three-version correction probe | Top-level entries represent current truth; the observed latest v3 entry nested history `[1, 2, 3]` with valid parent/root continuity. This corrects the earlier latest-only interpretation; test pagination/export and do not treat it as a compliance signature. |
-| Document lifecycle | List, get, chunks, update, delete, processing state | [Document operations](https://supermemory.ai/docs/document-operations); hosted probes | Core; the 24-record run observed exact inventory while 16 records were still processing, then 24/24 done |
-| Exact document chunks/file URL | Export ordered source chunks or obtain a temporary original-file URL | [Current OpenAPI](https://api.supermemory.ai/v3/openapi); hosted meeting-file run | Ordered chunk citation and temporary HTTPS URL passed. Official changelog says URLs expire after 24 hours; never persist them in memory, prompts, traces, or logs. |
-| Bulk exact document delete | Roll back a known import set without semantic selection | [Current OpenAPI](https://api.supermemory.ai/v3/openapi); hosted ten-ID and six-by-100 rollback runs | Core for migration recovery; local 101-ID rejection, signed restart after 200 deletions, six exact 100-ID batches, idempotent completed replay, empty inventory, and negative search passed. Do not expose container-wide selectors to a model. |
-| Organization settings/bucket suggestion | Inspect processing configuration and propose profile organization | [Current OpenAPI](https://api.supermemory.ai/v3/openapi); hosted additive-schema run | Five suggestions passed current shape validation. One was reviewed/applied only after signed effective-schema capture and concurrent-drift rejection; never grant suggestions direct mutation authority. |
+| Add text, URL, or file | Knowledge ingestion and extraction | **Documented / Observed:** [Add document](https://supermemory.ai/docs/api-reference/ingest/add-document); hosted text probe | Core |
+| Batch/file upload | Bulk knowledge loading; current OpenAPI accepts 1–600 documents and files up to 50 MB | **Documented / Observed:** [Current OpenAPI](https://api.supermemory.ai/v3/openapi); hosted batch, Markdown multipart, and maximum-cardinality runs | Core; local 601 rejection and hosted 600/600 accepted, processed, reconciled, and searchable. One earlier 60-second acknowledgement timeout proves the need for stable IDs and inventory reconciliation; 50 MB/file-format boundaries remain pending. |
+| Structured conversation upsert | Preserve roles and append a conversation by ID | **Documented / Observed:** [Conversation endpoint](https://supermemory.ai/docs/api-reference/ingest/ingest-or-update-conversation); hosted probe | Core |
+| `customId` upsert | Stable application identity for a document | **Observed:** hosted probe returned the same document ID | Core, extraction semantics need regression tests |
+| `dreaming=dynamic` | Group related content before memory creation | **Documented / Observed:** [Adding memories](https://supermemory.ai/docs/add-memories); repeated hosted batch probe | Asynchronous enrichment: small batches remained `dreaming` beyond 60–90 s and lacked the exact extracted fact in the extra check; use a direct confirmed-fact readiness fallback |
+| `dreaming=instant` | Extract each document independently; extra documented operation | **Documented / Observed:** same source; hosted probe | Core |
+| `taskType=superrag` | Index knowledge without generating personal memory facts | **Documented:** [SuperRAG](https://supermemory.ai/docs/concepts/super-rag) | Core |
+| Direct v4 memory creation | Exact facts without extraction; up to 100 per call | **Documented / Observed:** [Direct creation](https://supermemory.ai/docs/api-reference/content-management/create-memories-directly); hosted probes | Core; profile can precede search visibility |
+| Versioned memory update | Correct a fact while preserving history | **Documented / Observed:** [Update](https://supermemory.ai/docs/api-reference/content-management/update-a-memory-creates-new-version); hosted probe | Core |
+| Forget one memory | Remove a fact from normal search | **Documented / Observed:** [Forget](https://supermemory.ai/docs/api-reference/content-management/forget-a-memory); hosted probe | Core |
+| Agentic mass-forget | Natural-language deletion with dry-run | **Documented / Observed:** [Forget matching](https://supermemory.ai/docs/api-reference/content-management/forget-memories-matching-a-promptquery); hosted probe | Slow/variable; background workflow only |
+| Memory expiry (`forgetAfter`) | Lease temporary context and cancel through versioned update | **Source-inspected / Observed:** current [OpenAPI](https://api.supermemory.ai/v3/openapi); hosted expiry/cancel probe | Core; explicit forget and expiry had different recovery behavior |
+| Memory history/list | Inspect current administrative inventory and mutation lineage | **Source-inspected / Observed:** [Current OpenAPI](https://api.supermemory.ai/v3/openapi); hosted unfiltered three-version correction probe | Top-level entries represent current truth; the observed latest v3 entry nested history `[1, 2, 3]` with valid parent/root continuity. This corrects the earlier latest-only interpretation; test pagination/export and do not treat it as a compliance signature. |
+| Document lifecycle | List, get, chunks, update, delete, processing state | **Documented / Observed:** [Document operations](https://supermemory.ai/docs/document-operations); hosted probes | Core; the 24-record run observed exact inventory while 16 records were still processing, then 24/24 done |
+| Exact document chunks/file URL | Export ordered source chunks or obtain a temporary original-file URL | **Source-inspected / Observed:** [Current OpenAPI](https://api.supermemory.ai/v3/openapi); hosted meeting-file run | Ordered chunk citation and temporary HTTPS URL passed. Official changelog says URLs expire after 24 hours; never persist them in memory, prompts, traces, or logs. |
+| Bulk exact document delete | Roll back a known import set without semantic selection | **Source-inspected / Observed:** [Current OpenAPI](https://api.supermemory.ai/v3/openapi); hosted ten-ID and six-by-100 rollback runs | Core for migration recovery; local 101-ID rejection, signed restart after 200 deletions, six exact 100-ID batches, idempotent completed replay, empty inventory, and negative search passed. Do not expose container-wide selectors to a model. |
+| Organization settings/bucket suggestion | Inspect processing configuration and propose profile organization | **Source-inspected / Observed:** [Current OpenAPI](https://api.supermemory.ai/v3/openapi); hosted additive-schema run | Five suggestions passed current shape validation. One was reviewed/applied only after signed effective-schema capture and concurrent-drift rejection; never grant suggestions direct mutation authority. |
 
 ## Recall and profile
 
@@ -67,18 +69,22 @@ the provider rather than count only explicit source-document writes.
 |---|---|---|
 | TypeScript/Python SDKs | Typed direct API access | Generated clients are useful; pin and wrap them. |
 | `@supermemory/tools` | Framework middleware and tool factories | Convenient; explicit client remains easier to audit. |
-| Vercel AI SDK | TypeScript chat/agent apps | First-class and broadly documented. |
-| OpenAI SDK/Agents | Function tools and middleware | Open issues report default/fail-open drift; contract-test version used. |
-| LangChain/LangGraph | Existing graph/chain stacks | Thin integration; preserve explicit container derivation. |
-| Mastra/Agno/CrewAI/VoltAgent | Agent-framework adoption | Productized wrappers; evaluate the wrapper, not only the API. |
+| Vercel AI SDK | TypeScript chat/agent apps | **Documented / Observed (local):** first-class wrapper; recall/capture identity contract passed locally. |
+| OpenAI SDK/Agents | Function tools and middleware | **Documented / Reported / Observed (local):** wrapper issues are reports; fail-closed recall/capture contract passed locally. |
+| LangChain/LangGraph | Existing graph/chain stacks | **Documented / Observed (local):** pre/post and graph-node contracts passed; preserve explicit container derivation. |
+| Mastra/Agno/CrewAI/VoltAgent | Agent-framework adoption | **Documented / Observed (local):** Mastra/Agno/CrewAI hook contracts passed; VoltAgent remains source-only. |
 | Microsoft Agent Framework | .NET/Python agents | Supported; a current issue reports Python dedup type problems. |
-| Convex | Backend-integrated memory | Supported, not lab-tested. |
+| Convex | Backend-integrated memory | **Documented / Observed (local):** action/mutation boundary contract passed; real Convex runtime remains untested. |
 | Pipecat/Cartesia | Voice agents | Useful asynchronous memory path; current issue reports Python wrapper bugs. |
 | n8n/Zapier/viaSocket | No/low-code automation | Good for ingest workflows, not a trust boundary. |
-| MCP | Portable `memory`, `recall`, identity/profile context | Current implementation lives in the monorepo; old standalone repo is deprecated. |
-| Coding plugins | Automatic project/user recall and periodic capture | Useful reference architectures; auto-capture and scope deserve review. |
+| MCP | Portable `memory`, `recall`, identity/profile context | **Source-inspected / Observed (local):** current monorepo surface mapped; strict tools and one-time authorized write contract passed. |
+| Coding plugins | Automatic project/user recall and periodic capture | **Source-inspected / Observed (local):** user/project/custom session-hook contract passed; real auto-capture still deserves review. |
 | Memory Router | Drop-in OpenAI-compatible proxy | Delta/full-history and direct API pool controls passed; Router-generated cross-session recall failed. Keep prototype-only. |
 | Memory Graph UI | Explore documents, memories, relationships | Visualization, not evidence of a particular storage algorithm. |
+
+The runnable [framework integration contracts](framework-integrations.md) cover the ten local
+surfaces labeled above. They verify memory-boundary behavior, not compatibility with every
+third-party package version; add the adopted runtime and version to CI before production.
 
 Official integration pages currently include Vercel AI SDK, Microsoft Agent Framework,
 Agno, OpenAI Agents, CrewAI, Convex, LangChain, LangGraph, Mastra, VoltAgent, Cartesia,
@@ -110,7 +116,7 @@ unobserved until this account receives entitlement and a user consents.
 
 ### Self-hosted server
 
-The local server exposes the hosted-style API with encrypted local storage, local or remote
+**Documented / Source-inspected / Observed (local):** the local server exposes the hosted-style API with encrypted local storage, local or remote
 embeddings, and a bring-your-own extraction model. The local edition is single-tenant and
 does not include managed connectors/MCP. A v0.0.5 stopped snapshot, same-directory restart,
 byte-identical clean restore, search/profile recovery, and exact deletion passed for direct
@@ -121,7 +127,7 @@ and no newer release existed for a real upgrade drill. See
 
 ### SMFS
 
-SMFS maps a container to filesystem semantics. The mount uses NFSv3 on macOS or FUSE on
+**Documented / Source-inspected / Observed:** SMFS maps a container to filesystem semantics. The mount uses NFSv3 on macOS or FUSE on
 Linux; the Bash tool provides a virtual shell for serverless agents. `memory.md`/`user.md`
 are memory paths by default, other files use SuperRAG, `profile.md` is virtual, and plain
 `grep` can become semantic. The lab validated the Python Bash tool, including write/read,

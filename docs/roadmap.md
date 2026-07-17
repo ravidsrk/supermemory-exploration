@@ -200,8 +200,8 @@ upgrade rehearsal from the deployed version.
 
 ### Benchmark
 
-- Run two public MemoryBench datasets with authorized direct judge credentials or a reviewed
-  upstream OpenRouter adapter.
+- Expand the passing one-question MemoryBench/OpenRouter wiring smoke to two public datasets;
+  first diagnose its zero-result retrieval and keep exact post-run cleanup.
 - Run the domain suite at realistic memory volume per user/project.
 - Compare memories, hybrid, rerank, rewrite, and aggregate configurations.
 - Compare at least one credible alternative or a simple RAG baseline on the same pipeline.

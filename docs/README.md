@@ -19,11 +19,14 @@ Supermemory over the next six months. It is not a copy of the product documentat
 10. [Ecosystem and source notes](ecosystem.md) — SDKs, plugins, MCP, connectors, SMFS,
    self-hosting, and public repository findings.
 11. [Benchmarks](benchmarks.md) — MemoryBench, MemScore, benchmark caveats, and eval plan.
-12. [Six-month roadmap](roadmap.md) — a staged adoption and retest schedule.
+12. [Framework integration contracts](framework-integrations.md) — runnable hooks for ten
+    framework, MCP, backend, and coding-plugin surfaces.
+13. [Six-month roadmap](roadmap.md) — a staged adoption and retest schedule.
 
 ## Evidence language
 
-Every important conclusion uses one of these labels:
+Narrative behavior claims use one of these labels. Capability tables may place the label next
+to an official/source link in the evidence cell so the underlying contract stays readable:
 
 | Label | Meaning |
 |---|---|

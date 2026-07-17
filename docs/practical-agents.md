@@ -18,6 +18,11 @@ Dreaming matrix and five newest operational implementations are covered by the
 The six eighth-pass agents are covered by the
 [practical-agent expansion evidence](../evidence/2026-07-17-eighth-pass-practical-agent-expansion.md).
 
+The current controllers require an injected authorization ledger for every governed durable
+mutation. Unit tests and synthetic runners use `TestingAuthorizationLedger`; production must
+inject a transactional externally issued ledger such as the SQLite reference or a distributed
+equivalent. Archived hosted observations prove provider behavior, not human identity or approval.
+
 ## Run them
 
 ```bash
@@ -69,6 +74,7 @@ python experiments/run_tool_apprenticeship_agent.py
 python experiments/run_memory_quality_auditor.py
 python experiments/run_least_privilege_worker.py
 python experiments/run_all_provider_readiness_commander.py
+python experiments/run_framework_integration_contract_matrix.py
 ```
 
 Raw traces go to ignored `.runs/` files. They contain bounded experiment details but should

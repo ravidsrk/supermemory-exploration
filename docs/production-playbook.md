@@ -50,6 +50,25 @@ version, and application record ID in metadata.
 Use a stable `customId` for every application-owned document. Record the Supermemory
 document/memory ID in the application so corrections and deletions are precise.
 
+## Durable mutation authorization
+
+**Observed (local):** every governed mutation controller in this lab now requires an injected
+`AuthorizationLedger`. The trusted application grants an exact `(scope, actor, resource hash)`;
+the controller atomically consumes that grant before provider I/O. A fresh controller cannot
+replay a grant already consumed by another process.
+
+[`SqliteAuthorizationLedger`](../src/supermemory_lab/authorization.py) is the single-host
+reference: it uses `BEGIN IMMEDIATE`, a unique exact-grant key, pending/consumed states, full
+synchronous durability, and an HMAC over every row. Protect the database and integrity key
+separately. The HMAC detects row tampering; it does not authenticate the human or workflow that
+issued the grant. Production issuance must come from authenticated application policy, not a
+model response or retrieved memory.
+
+For multiple hosts, replace SQLite behind the same narrow interface with a transactional
+authorization service that provides conditional one-time consume and an immutable audit trail.
+Use `TestingAuthorizationLedger` only in unit tests and synthetic experiment harnesses; its
+`trust_first_use` mode is intentionally not an external approval system.
+
 ## Read policy
 
 Do not call one giant generic search on every turn. Route by intent:
@@ -412,6 +431,8 @@ Measure, because current pricing and provider behavior can change.
 - [ ] Learned routes/tools carry expiry, runtime contract, and bounded fallback.
 - [ ] Multi-scope precedence and fresh-claim promotion are deterministic and tested.
 - [ ] Correction approval is bound to exact content and protected by an external replay ledger.
+- [ ] Production controllers inject a transactional authorization ledger; test-only
+      trust-on-first-use authorization is impossible in deployed configuration.
 - [ ] Multi-agent checkpoints are signed, idempotent, and reconciled with canonical workflow state.
 - [ ] Batch/document completion is not used as a substitute for exact downstream readiness.
 - [ ] Incident conclusions preserve evidence class and explicit unknown state.

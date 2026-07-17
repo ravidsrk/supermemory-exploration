@@ -320,6 +320,11 @@ human evaluation, realistic production corpus, or proof of general 100% accuracy
 quality gates are real domain data, reviewed scoring, realistic per-tenant volume, and an
 alternative on the same pipeline.
 
+**Observed:** a separate patched MemoryBench/OpenRouter smoke completed all six upstream phases
+on one LoCoMo question, but retrieved zero results and scored 0/1. That validates adapter wiring
+and transparent failure reporting only. All 19 ingested documents were deleted and verified
+absent. Larger public-dataset quality claims remain open.
+
 ## Adoption recommendation
 
 | Use case | Recommendation | Why |

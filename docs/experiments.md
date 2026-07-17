@@ -529,6 +529,16 @@ For each run, add a dated evidence note containing:
 
 ## Experiments still needed
 
+The local ten-surface framework matrix and the patched one-question MemoryBench/OpenRouter run
+are now implemented. The former validates scoped recall/capture contracts without installing
+third-party runtimes. The latter completed all phases but retrieved zero context and scored
+incorrect, then deleted and verified all 19 documents. Runbooks:
+
+```bash
+PYTHONPATH=src python3 experiments/run_framework_integration_contract_matrix.py
+integrations/memorybench-openrouter/verify.sh /path/to/clean-memorybench-checkout
+```
+
 - exercise approve/decline/undo on a generated inference with at least two independent parents;
   a larger instant corpus produced two one-parent candidates once and zero on repeat;
 - deliberately expire or revoke one provider credential and repeat the healthy six-channel
@@ -553,4 +563,5 @@ For each run, add a dated evidence note containing:
 - Router outage fail-open behavior and token headers;
 - self-hosted real-version upgrade, queued-ingestion/shutdown recovery, and large-file regressions;
 - SMFS mount concurrency and bidirectional 30-second sync;
-- domain-specific MemoryBench run with a compatible judge key.
+- diagnose the MemoryBench smoke's zero-result retrieval, then run two public datasets with the
+  tested OpenRouter overlay and exact cleanup.

@@ -4,11 +4,12 @@ An evidence-driven field lab for exploring [Supermemory](https://supermemory.ai)
 
 Primary docs entrypoint: [https://supermemory.ai/docs/intro](https://supermemory.ai/docs/intro)
 
-This repository deliberately separates four kinds of knowledge:
+This repository deliberately separates five kinds of knowledge:
 
 - **Documented** — behavior stated by official documentation.
 - **Source-inspected** — behavior visible in public repositories and SDKs.
-- **Observed** — behavior reproduced against the hosted API.
+- **Observed** — behavior reproduced against a hosted or local system.
+- **Reported** — behavior described in an issue or third-party account but not reproduced here.
 - **Inferred** — architecture or product conclusions that still need validation.
 
 ## What this repo is for
@@ -23,7 +24,7 @@ Hands-on exploration of Supermemory product surface, APIs, SDKs, and integration
 ## Status
 
 The field lab includes hosted/self-hosted capability probes, nine authenticated provider
-adapters, 57 reference implementations, 262 offline tests, and live memory/no-memory
+adapters, 58 reference implementations, 282 offline tests, and live memory/no-memory
 experiments. The latest blinded 100-case domain suite scored 100/100 with bounded memory
 versus 10/100 without it, with zero case errors, tenant leaks, or prompt-injection bypasses.
 An exact 600-document ingest/delete audit and an eight-worker four-surface recall challenge
@@ -42,6 +43,7 @@ Start with the
 | `experiments/` | Reproducible live probes and evaluations |
 | `tests/` | Offline contract and architecture tests |
 | `evidence/` | Curated, secret-free observations from live runs |
+| `integrations/` | Reproducible overlays and framework integration contracts |
 | `examples/` | Runnable live agent patterns |
 
 ## Primary sources
@@ -124,6 +126,7 @@ PYTHONPATH=src python3 experiments/run_governed_connector_onboarding.py
 PYTHONPATH=src python3 experiments/run_max_cardinality_capacity_audit.py
 PYTHONPATH=src python3 experiments/run_concurrent_four_surface_recall_challenge.py
 PYTHONPATH=src python3 experiments/run_blinded_domain_100_benchmark.py
+PYTHONPATH=src python3 experiments/run_framework_integration_contract_matrix.py
 # Requires a disposable installed local binary, data directory, and provider-env file:
 PYTHONPATH=src python3 experiments/run_self_host_backup_restore.py \
   --server-binary /path/to/supermemory-server \
@@ -131,7 +134,8 @@ PYTHONPATH=src python3 experiments/run_self_host_backup_restore.py \
   --provider-env /path/to/provider.env
 ```
 
-Live commands create synthetic, isolated `lab:` containers. Raw probe output is ignored under
+Live commands create synthetic, isolated `lab:` containers. Core probes clean their exact
+documents, memories, and Router pools and verify the cleanup path. Raw output is ignored under
 `.runs/`; the agent demo deliberately leaves its containers available for dashboard inspection.
 
 ## License

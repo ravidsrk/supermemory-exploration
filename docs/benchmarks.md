@@ -2,7 +2,7 @@
 
 ## What MemoryBench actually is
 
-[MemoryBench](https://github.com/supermemoryai/memorybench) is an open TypeScript/Bun
+**Documented / Source-inspected:** [MemoryBench](https://github.com/supermemoryai/memorybench) is an open TypeScript/Bun
 framework that standardizes a pipeline:
 
 ```mermaid
@@ -17,7 +17,7 @@ flowchart LR
   M --> R
 ```
 
-The inspected snapshot supports LoCoMo, LongMemEval, and ConvoMem-style datasets and provider
+The pinned inspected snapshot supports LoCoMo, LongMemEval, and ConvoMem-style datasets and provider
 adapters for Supermemory, Mem0, Zep, filesystem, and baseline RAG. It checkpoints stages and
 can serve a local results UI.
 
@@ -66,11 +66,35 @@ These are not necessarily wrong settings, but they define the result. The unimpl
 cleanup also means benchmark containers can accumulate. Use a dedicated organization/key and
 explicit cleanup plan.
 
-The inspected judge integrations expect direct OpenAI, Anthropic, or Google SDK credentials.
-The supplied OpenRouter key is not a drop-in judge configuration in that commit. This lab did
-not silently use unrelated ambient credentials or patch the benchmark and then call it an
-official run. A full benchmark remains pending an authorized compatible judge key or a
-reviewed upstream OpenRouter adapter.
+**Source-inspected:** the unmodified judge integrations expect direct OpenAI, Anthropic, or
+Google SDK credentials; the supplied OpenRouter key is not a drop-in configuration.
+
+**Observed:** the reviewed
+[OpenRouter overlay](../integrations/memorybench-openrouter/README.md) now adds OpenRouter to
+both answering and judging at that exact commit. Four Bun contracts, TypeScript compilation,
+and a live trivial judge control passed. A one-question Supermemory + LoCoMo run then completed
+ingest, indexing, search, answer, evaluate, and report. It retrieved zero results and scored
+incorrect; the 19 ingested documents were bulk-deleted and all 19 were verified absent. This
+is an end-to-end wiring and failure-visibility result, not an official upstream result or a
+memory-quality estimate. See the
+[secret-free run record](../evidence/memorybench-openrouter-smoke.json).
+
+## Implemented MemoryBench/OpenRouter smoke
+
+| Metric | Observed result |
+|---|---:|
+| Upstream commit | `118209a746d97d0d85e5a7234267f0b6962857e9` |
+| Questions / completed phases | 1 / 6 |
+| Ingested / indexed documents | 19 / 19 |
+| Search results / context tokens | 0 / 0 |
+| Accuracy | 0/1 |
+| Ingest / indexing / search | 33,960 / 12,283 / 742 ms |
+| Answer / evaluate / total | 3,641 / 1,904 / 52,530 ms |
+| Cleanup | 19 deleted, 19 verified absent |
+
+The zero-result outcome is useful: a successful orchestration exit did not hide an empty
+retrieval context. Diagnose provider query/threshold/payload behavior before running a larger
+slice, then use at least two datasets and report failures with the quality numbers.
 
 ## Why headline numbers conflict
 
@@ -98,7 +122,7 @@ business value of remembered context.
 
 ## A defensible provider comparison
 
-When a compatible judge key is authorized:
+For a defensible larger comparison:
 
 1. Pin MemoryBench commit, provider SDK version, and answer/judge model snapshots.
 2. Use a fresh dedicated container prefix and record plan/region.
@@ -117,7 +141,9 @@ Example upstream command shape (verify against the pinned CLI help first):
 bun run src/index.ts run \
   --provider supermemory \
   --benchmark longmemeval \
-  --judge gpt-4o \
+  --judge openrouter:openai/gpt-4.1-mini \
+  --answering-model openrouter:openai/gpt-4.1-mini \
+  --concurrency 5 \
   --run-id supermemory-YYYYMMDD
 ```
 
