@@ -1,0 +1,295 @@
+diff --git a/src/cli/index.ts b/src/cli/index.ts
+index b3c29d6..36ff879 100644
+--- a/src/cli/index.ts
++++ b/src/cli/index.ts
+@@ -97,6 +97,7 @@ Available Models
+ 
+ Models can be used for both -j (judge) and -m (answering model).
+ Provider is auto-detected from the model name.
++Use openrouter:<provider/model> for any OpenRouter model.
+ 
+ OpenAI Models:
+ `)
+@@ -127,6 +128,7 @@ Examples:
+   -j sonnet-4.5          Use Claude Sonnet 4.5 as judge
+   -m gemini-2.5-flash    Use Gemini 2.5 Flash for answering
+   -m opus-4.5            Use Claude Opus 4.5 for answering
++  -j openrouter:openai/gpt-4.1-mini  Use OpenRouter for judging
+ 
+ Default answering model: ${DEFAULT_ANSWERING_MODEL}
+ `)
+diff --git a/src/judges/index.ts b/src/judges/index.ts
+index 1d404ca..3a682da 100644
+--- a/src/judges/index.ts
++++ b/src/judges/index.ts
+@@ -2,11 +2,13 @@ import type { Judge, JudgeName } from "../types/judge"
+ import { OpenAIJudge } from "./openai"
+ import { AnthropicJudge } from "./anthropic"
+ import { GoogleJudge } from "./google"
++import { OpenRouterJudge } from "./openrouter"
+ 
+ const judges: Record<JudgeName, new () => Judge> = {
+   openai: OpenAIJudge,
+   anthropic: AnthropicJudge,
+   google: GoogleJudge,
++  openrouter: OpenRouterJudge,
+ }
+ 
+ export function createJudge(name: JudgeName): Judge {
+@@ -21,5 +23,5 @@ export function getAvailableJudges(): JudgeName[] {
+   return Object.keys(judges) as JudgeName[]
+ }
+ 
+-export { OpenAIJudge, AnthropicJudge, GoogleJudge }
++export { OpenAIJudge, AnthropicJudge, GoogleJudge, OpenRouterJudge }
+ export { buildJudgePrompt, parseJudgeResponse, getJudgePrompt } from "./base"
+diff --git a/src/judges/openrouter.test.ts b/src/judges/openrouter.test.ts
+new file mode 100644
+index 0000000..77e3e80
+--- /dev/null
++++ b/src/judges/openrouter.test.ts
+@@ -0,0 +1,27 @@
++import { describe, expect, test } from "bun:test"
++import { createJudge, getAvailableJudges } from "./index"
++
++describe("OpenRouter judge registration", () => {
++  test("is discoverable and validates model aliases without a network request", async () => {
++    expect(getAvailableJudges()).toContain("openrouter")
++    const judge = createJudge("openrouter")
++    await judge.initialize({
++      apiKey: "synthetic-key",
++      model: "openrouter:openai/gpt-4.1-mini",
++    })
++    expect(judge.name).toBe("openrouter")
++    expect(judge.getModel()).toBeDefined()
++  })
++
++  test("rejects missing credentials and non-OpenRouter model aliases", async () => {
++    await expect(
++      createJudge("openrouter").initialize({
++        apiKey: "",
++        model: "openrouter:openai/gpt-4.1-mini",
++      })
++    ).rejects.toThrow()
++    await expect(
++      createJudge("openrouter").initialize({ apiKey: "synthetic-key", model: "gpt-4o" })
++    ).rejects.toThrow()
++  })
++})
+diff --git a/src/judges/openrouter.ts b/src/judges/openrouter.ts
+new file mode 100644
+index 0000000..7643118
+--- /dev/null
++++ b/src/judges/openrouter.ts
+@@ -0,0 +1,51 @@
++import { createOpenAI } from "@ai-sdk/openai"
++import { generateText } from "ai"
++import type { Judge, JudgeConfig, JudgeInput, JudgeResult } from "../types/judge"
++import type { ProviderPrompts } from "../types/prompts"
++import { buildJudgePrompt, parseJudgeResponse, getJudgePrompt } from "./base"
++import { logger } from "../utils/logger"
++import { getModelConfig, ModelConfig, DEFAULT_JUDGE_MODELS } from "../utils/models"
++
++export class OpenRouterJudge implements Judge {
++  name = "openrouter"
++  private modelConfig: ModelConfig | null = null
++  private client: ReturnType<typeof createOpenAI> | null = null
++
++  async initialize(config: JudgeConfig): Promise<void> {
++    if (!config.apiKey) throw new Error("OPENROUTER_API_KEY or OPEN_ROUTER_KEY is required")
++    this.client = createOpenAI({
++      apiKey: config.apiKey,
++      baseURL: config.baseUrl || "https://openrouter.ai/api/v1",
++    })
++    const modelAlias = config.model || DEFAULT_JUDGE_MODELS.openrouter
++    this.modelConfig = getModelConfig(modelAlias)
++    if (this.modelConfig.provider !== "openrouter") {
++      throw new Error("OpenRouter judge models must use openrouter:<provider/model>")
++    }
++    logger.info(
++      `Initialized OpenRouter judge with model: ${this.modelConfig.displayName} (${this.modelConfig.id})`
++    )
++  }
++
++  async evaluate(input: JudgeInput): Promise<JudgeResult> {
++    if (!this.client || !this.modelConfig) throw new Error("Judge not initialized")
++    const params: Record<string, unknown> = {
++      model: this.client(this.modelConfig.id),
++      prompt: buildJudgePrompt(input),
++      maxTokens: this.modelConfig.defaultMaxTokens,
++    }
++    const { text } = await generateText(params as Parameters<typeof generateText>[0])
++    return parseJudgeResponse(text)
++  }
++
++  getPromptForQuestionType(questionType: string, providerPrompts?: ProviderPrompts): string {
++    return getJudgePrompt(questionType, providerPrompts)
++  }
++
++  getModel() {
++    if (!this.client || !this.modelConfig) throw new Error("Judge not initialized")
++    return this.client(this.modelConfig.id)
++  }
++}
++
++export default OpenRouterJudge
+diff --git a/src/orchestrator/phases/answer.ts b/src/orchestrator/phases/answer.ts
+index d9e6df7..36172fb 100644
+--- a/src/orchestrator/phases/answer.ts
++++ b/src/orchestrator/phases/answer.ts
+@@ -43,6 +43,17 @@ function getAnsweringModel(modelAlias: string): {
+         client: createGoogleGenerativeAI({ apiKey: config.googleApiKey }),
+         modelConfig,
+       }
++    case "openrouter":
++      if (!config.openrouterApiKey) {
++        throw new Error("OPENROUTER_API_KEY or OPEN_ROUTER_KEY is required")
++      }
++      return {
++        client: createOpenAI({
++          apiKey: config.openrouterApiKey,
++          baseURL: config.openrouterBaseUrl,
++        }),
++        modelConfig,
++      }
+   }
+ }
+ 
+diff --git a/src/types/judge.ts b/src/types/judge.ts
+index cf8bcb3..185d3e5 100644
+--- a/src/types/judge.ts
++++ b/src/types/judge.ts
+@@ -3,6 +3,7 @@ import type { ProviderPrompts } from "./prompts"
+ export interface JudgeConfig {
+   apiKey: string
+   model?: string
++  baseUrl?: string
+ }
+ 
+ export interface JudgeInput {
+@@ -30,4 +31,4 @@ export interface Judge {
+   getModel(): import("ai").LanguageModel
+ }
+ 
+-export type JudgeName = "openai" | "anthropic" | "google"
++export type JudgeName = "openai" | "anthropic" | "google" | "openrouter"
+diff --git a/src/utils/config.ts b/src/utils/config.ts
+index 8ac1268..bf8a250 100644
+--- a/src/utils/config.ts
++++ b/src/utils/config.ts
+@@ -6,6 +6,8 @@ export interface Config {
+   openaiApiKey: string
+   anthropicApiKey: string
+   googleApiKey: string
++  openrouterApiKey: string
++  openrouterBaseUrl: string
+ }
+ 
+ export const config: Config = {
+@@ -16,6 +18,8 @@ export const config: Config = {
+   openaiApiKey: process.env.OPENAI_API_KEY || "",
+   anthropicApiKey: process.env.ANTHROPIC_API_KEY || "",
+   googleApiKey: process.env.GOOGLE_API_KEY || "",
++  openrouterApiKey: process.env.OPENROUTER_API_KEY || process.env.OPEN_ROUTER_KEY || "",
++  openrouterBaseUrl: process.env.OPENROUTER_BASE_URL || "https://openrouter.ai/api/v1",
+ }
+ 
+ export function getProviderConfig(provider: string): { apiKey: string; baseUrl?: string } {
+@@ -35,7 +39,7 @@ export function getProviderConfig(provider: string): { apiKey: string; baseUrl?:
+   }
+ }
+ 
+-export function getJudgeConfig(judge: string): { apiKey: string; model?: string } {
++export function getJudgeConfig(judge: string): { apiKey: string; model?: string; baseUrl?: string } {
+   switch (judge) {
+     case "openai":
+       return { apiKey: config.openaiApiKey }
+@@ -43,6 +47,8 @@ export function getJudgeConfig(judge: string): { apiKey: string; model?: string
+       return { apiKey: config.anthropicApiKey }
+     case "google":
+       return { apiKey: config.googleApiKey }
++    case "openrouter":
++      return { apiKey: config.openrouterApiKey, baseUrl: config.openrouterBaseUrl }
+     default:
+       throw new Error(`Unknown judge: ${judge}`)
+   }
+diff --git a/src/utils/models.test.ts b/src/utils/models.test.ts
+new file mode 100644
+index 0000000..f17672e
+--- /dev/null
++++ b/src/utils/models.test.ts
+@@ -0,0 +1,15 @@
++import { describe, expect, test } from "bun:test"
++import { getModelConfig, getModelProvider } from "./models"
++
++describe("OpenRouter model aliases", () => {
++  test("preserve the routed provider/model id", () => {
++    const config = getModelConfig("openrouter:anthropic/claude-3.5-sonnet")
++    expect(config.provider).toBe("openrouter")
++    expect(config.id).toBe("anthropic/claude-3.5-sonnet")
++    expect(getModelProvider("openrouter:openai/gpt-4.1-mini")).toBe("openrouter")
++  })
++
++  test("rejects an empty routed model", () => {
++    expect(() => getModelConfig("openrouter:")).toThrow()
++  })
++})
+diff --git a/src/utils/models.ts b/src/utils/models.ts
+index b29ac80..e7495b0 100644
+--- a/src/utils/models.ts
++++ b/src/utils/models.ts
+@@ -1,6 +1,8 @@
++export type ModelProvider = "openai" | "anthropic" | "google" | "openrouter"
++
+ export interface ModelConfig {
+   id: string
+-  provider: "openai" | "anthropic" | "google"
++  provider: ModelProvider
+   displayName: string
+   supportsTemperature: boolean
+   defaultTemperature: number
+@@ -232,11 +234,26 @@ export const DEFAULT_JUDGE_MODELS: Record<string, string> = {
+   openai: "gpt-4o",
+   anthropic: "sonnet-4",
+   google: "gemini-2.5-flash",
++  openrouter: "openrouter:openai/gpt-4.1-mini",
+ }
+ 
+ export function getModelConfig(alias: string): ModelConfig {
+   const lowerAlias = alias.toLowerCase()
+ 
++  if (lowerAlias.startsWith("openrouter:")) {
++    const id = alias.slice("openrouter:".length).trim()
++    if (!id) throw new Error("OpenRouter model aliases require openrouter:<provider/model>")
++    return {
++      id,
++      provider: "openrouter",
++      displayName: `OpenRouter ${id}`,
++      supportsTemperature: false,
++      defaultTemperature: 0,
++      maxTokensParam: "maxTokens",
++      defaultMaxTokens: 1000,
++    }
++  }
++
+   if (MODEL_CONFIGS[lowerAlias]) {
+     return MODEL_CONFIGS[lowerAlias]
+   }
+@@ -326,7 +343,7 @@ export function getModelId(alias: string): string {
+   return getModelConfig(alias).id
+ }
+ 
+-export function getModelProvider(alias: string): "openai" | "anthropic" | "google" {
++export function getModelProvider(alias: string): ModelProvider {
+   return getModelConfig(alias).provider
+ }
+ 
+@@ -334,7 +351,7 @@ export function listAvailableModels(): string[] {
+   return Object.keys(MODEL_CONFIGS)
+ }
+ 
+-export function listModelsByProvider(provider: "openai" | "anthropic" | "google"): string[] {
++export function listModelsByProvider(provider: ModelProvider): string[] {
+   return Object.entries(MODEL_CONFIGS)
+     .filter(([_, config]) => config.provider === provider)
+     .map(([alias]) => alias)

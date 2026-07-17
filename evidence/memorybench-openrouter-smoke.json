@@ -1,0 +1,56 @@
+{
+  "evidenceLabel": "Observed",
+  "observedAt": "2026-07-17T06:36:41Z",
+  "upstream": {
+    "repository": "https://github.com/supermemoryai/memorybench",
+    "commit": "118209a746d97d0d85e5a7234267f0b6962857e9"
+  },
+  "adapter": {
+    "answeringModel": "openrouter:openai/gpt-4.1-mini",
+    "judgeModel": "openrouter:openai/gpt-4.1-mini",
+    "offlineTestsPassed": 4,
+    "typecheckPassed": true,
+    "liveJudgeContract": {
+      "label": "correct",
+      "score": 1,
+      "explanationPresent": true
+    }
+  },
+  "memoryBenchRun": {
+    "runId": "sm-lab-openrouter-20260717",
+    "provider": "supermemory",
+    "benchmark": "locomo",
+    "questionCount": 1,
+    "questionType": "multi-hop",
+    "phasesCompleted": [
+      "ingest",
+      "indexing",
+      "search",
+      "answer",
+      "evaluate",
+      "report"
+    ],
+    "ingestedDocuments": 19,
+    "indexedDocuments": 19,
+    "searchResultCount": 0,
+    "answerCorrect": 0,
+    "accuracy": 0,
+    "latencyMs": {
+      "ingest": 33960,
+      "indexing": 12283,
+      "search": 742,
+      "answer": 3641,
+      "evaluate": 1904,
+      "total": 52530
+    },
+    "contextTokens": 0,
+    "memscore": "0% / 742ms / 0tok"
+  },
+  "cleanup": {
+    "requestedDocuments": 19,
+    "deletedDocuments": 19,
+    "bulkDeleteSucceeded": true,
+    "verifiedAbsent": 19
+  },
+  "interpretation": "The run validates the OpenRouter adapter and end-to-end phase wiring. A one-question run with zero retrieval results cannot support a memory-quality conclusion."
+}
