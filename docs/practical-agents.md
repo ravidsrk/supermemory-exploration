@@ -766,6 +766,64 @@ model cannot format away governance. The signed seven-observation report cited e
 remained `REVIEW`, resisted prior poison, denied wrong authorization/replay, and authorized no
 external action.
 
+## 44. Source-revision citation guardian
+
+Providers: Supermemory + OpenRouter.
+
+Use this for mutable policies, contracts, runbooks, pricing, and other answers where “the
+memory said so” is too weak. The guardian signs exact ordered source chunks, application
+revision, content digest, and validity window. The model proposes prose and exact quotes;
+trusted code proves each quote exists in the current chunk and rechecks the source digest
+before a one-time authorized write. The live V1→V2 replacement invalidated the old answer,
+preserved only current citations, excluded planted stale instructions, and denied replay.
+
+## 45. Governed profile-schema evolution steward
+
+Providers: Supermemory; its hosted bucket suggester is advisory.
+
+Treat profile buckets like database schema, not a model preference. Capture both the
+container-owned and effective organization schema, validate suggested key/description limits,
+permit additive changes only, and bind review to the exact before/after digest. The live run
+received five suggestions, deliberately introduced concurrent schema drift, rejected the old
+plan, then preserved both existing buckets while adding the approved ones. Keep this in an
+offline administrative workflow: the one suggestion call took 25.4 seconds.
+
+## 46. Risk-aware memory continuity gateway
+
+Providers: Supermemory + OpenRouter.
+
+Wrap user-facing recall with a signed, bounded last-known-good profile/hybrid snapshot and an
+explicit risk policy. Standard/low-risk query classes may opt into stale context with an
+application freshness banner; high-risk classes always fail closed. A circuit breaker avoids
+hammering a failing backend, and a half-open probe restores live reads. The hosted-baseline
+drill proved standard stale recall, high-risk no-model failure, open-circuit backend skipping,
+fresh-process cache verification, tamper/query-class denial, and recovery. Do not use stale
+memory for authorization, money, deployment, deletion, health, or legal decisions.
+
+## 47. Adaptive resumable bulk-ingestion controller
+
+Providers: Supermemory.
+
+Build a signed manifest from stable custom IDs, source hashes, and flat metadata. On `429`,
+honor bounded `Retry-After` and reduce batch size; after success, grow it gradually. Persist a
+signed checkpoint after every accepted batch and let a fresh process submit only pending IDs.
+Then query processing state and reconcile the target by custom ID/hash before declaring
+readiness. In the 24-record live run, the exact inventory existed while only 8 were done and
+16 still processing. All 24 later became done/searchable. Acceptance, inventory, and semantic
+readiness are distinct barriers.
+
+## 48. Four-surface memory SLO canary monitor
+
+Providers: Supermemory + optional OpenRouter alert explanation.
+
+Maintain a dedicated synthetic container with exact profile, memory, hybrid, and document
+canaries plus a forbidden tenant marker. Measure hit, leak, error type, result count, and
+client latency; sign the report outside the monitored memory. Healthy runs should not call an
+LLM. Violations may send aggregate metrics—not raw memory—to a no-action explanation. The live
+three-round run passed 12/12 with zero leaks; an injected forbidden result produced a signed
+hard isolation alert. Use a much larger continuous sample before setting production latency
+budgets.
+
 ## Other high-value builds
 
 | Agent | Providers | Memory design |
@@ -814,6 +872,11 @@ external action.
 | Memory quality auditor | Supermemory + OpenRouter | Inventory hashes, deterministic contamination rules, exact quarantine, human contradiction review. |
 | Delegated worker | Scoped Supermemory + OpenRouter | Signed task, least-privilege credential, one receipt, revocation/rate enforcement. |
 | Readiness commander | All eight auxiliary providers + Supermemory | Pair-complete observation portfolio, deterministic control envelope, signed review, no action authority. |
+| Source citation guardian | Supermemory + OpenRouter | Current chunk digest, exact quotes, revision validity, stale-answer refusal. |
+| Profile schema steward | Supermemory | Advisory suggestions, effective-schema snapshot, additive drift-safe update. |
+| Continuity gateway | Supermemory + OpenRouter | Signed stale cache, risk class, circuit breaker, explicit freshness banner. |
+| Bulk ingestion controller | Supermemory | AIMD backpressure, stable IDs, signed resume, processing/inventory barrier. |
+| Memory SLO monitor | Supermemory + OpenRouter | Exact surface canaries, tenant leak alert, signed metrics, no-action explanation. |
 
 ## What not to build
 
@@ -847,3 +910,9 @@ external action.
 - A delegated worker using the organization key when one short-lived container key is enough.
 - A memory intake path where the same model decides sensitivity, consent, and persistence.
 - A model-authored decision/citation envelope that can omit or rewrite trusted control fields.
+- A cited-answer system that trusts a document ID without binding the current chunk digest.
+- A profile-schema bot that lets generated bucket suggestions overwrite existing definitions.
+- An outage fallback that silently labels stale memory as live or serves it to high-risk tasks.
+- A bulk loader that equates HTTP acceptance or exact inventory with semantic readiness.
+- An SLO monitor that writes its report into the measured container or sends raw private
+  memory to an alerting model.

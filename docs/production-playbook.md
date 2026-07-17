@@ -20,6 +20,9 @@ flowchart TD
   A --> O["Telemetry + evaluation log"]
   R --> O
   L --> O
+  R --> K["Signed bounded continuity cache"]
+  S["Synthetic SLO canaries"] --> SM
+  S --> O
 ```
 
 The application server derives the container and owns the canonical record. Supermemory
@@ -101,6 +104,8 @@ Classify operations by whether they belong in the synchronous request path.
 | Memory/profile search | Yes, with timeout/fallback | ~0.6–1.1 s median client wall across two tiny samples |
 | Document/conversation ingestion | No | Tens of seconds to extraction |
 | Batch + Dynamic Dreaming | No | Three-document batches accepted, but exact memory readiness remained pending beyond 60–90 s in repeated small runs |
+| Batch + instant SuperRAG | No | A 24-record run had exact inventory while 8 were done and 16 processing; a later barrier reached 24/24 done/searchable |
+| AI profile-bucket suggestion | No; administrative path | One hosted call returned five suggestions in 25.4 s; apply only through reviewed schema evolution |
 | Mass-forget agent | No | ~5.8 s to >60 s |
 | Connector sync | No | Background and plan/provider-dependent |
 | SMFS semantic search | Tool path, not token-stream hot path | ~10.3 s in one tiny run |
@@ -127,6 +132,12 @@ Choose one response per feature:
 
 Do not silently act as though no memories exist. Absence and retrieval failure are different states.
 
+If using a last-known-good cache, sign container, query class, bounded context, capture time,
+expiry, and content hash. Require explicit stale permission and expose an application-owned
+freshness banner. Never serve stale cache to high-risk classes. Open a circuit after a bounded
+failure count, skip backend calls while open, and recover with a half-open probe. A cache from
+another query class, tenant, expired window, or invalid signature must fail closed.
+
 ### Write outage
 
 Answer generation can often continue. Persist an application outbox record with stable ID,
@@ -148,6 +159,10 @@ the canonical source. Never let a model invent a readiness fallback.
 If the current fact is known, use versioned update. If two sources genuinely disagree, keep
 both as source-backed claims with dates and ask the answer layer to state the conflict. Do not
 force a generated merge into canonical truth.
+
+For mutable source-backed answers, bind the answer to ordered current chunk IDs/hashes and
+exact quotes. Re-read the source digest immediately before persistence or consequential use.
+A document ID alone does not prove the answer still reflects the current revision.
 
 ### Stale learned policy
 
@@ -261,14 +276,19 @@ hold, access, or erasure ledger.
 ## Import, migration, and rollback
 
 For every source record, derive a stable custom ID and source-content hash, then sign a manifest
-before import. Keep resumable checkpoints in a separate control scope. After any timeout,
+before import. Keep resumable checkpoints in a separate control scope. Honor `Retry-After`,
+use multiplicative decrease on throttling/oversized batches, and grow batch size only after
+confirmed success. Refuse partial acknowledgements that do not contain an exact ID per item.
+After any timeout,
 process restart, or lost acknowledgement, enumerate the target and reconcile expected ID/hash
 to actual ID/hash; do not infer completion from request success or search hits.
 
 Rollback must contain explicit provider document IDs, an inventory/manifest digest, expiry,
 and one-time external approval. Use bounded exact bulk deletion, verify every imported ID is
 absent, verify pre-existing controls remain, and emit audit outside the target. Chunk imports
-and checkpoint each confirmed batch before attempting documented cardinality limits.
+and checkpoint each confirmed batch before attempting documented cardinality limits. Poll
+processing state and reconcile status as well as inventory: request acceptance, target
+presence, processing completion, and search readiness are separate barriers.
 
 ## Observability
 
@@ -287,6 +307,11 @@ Record safe metadata for every read:
 For every write, record application identity, `customId`, resulting resource ID, status,
 processing duration, retry count, and deletion linkage. Keep API keys and raw auth headers out
 of logs.
+
+Run exact synthetic canaries through profile, memories, hybrid, and document search in a
+dedicated container. Record misses, forbidden tenant-marker leaks, errors, and client p50/p95
+separately. Sign reports outside the measured memory. Healthy checks should not require an
+LLM; an alerting model should receive metrics and error classes, never raw memory.
 
 ## Evaluation gates
 
@@ -362,4 +387,9 @@ Measure, because current pricing and provider behavior can change.
 - [ ] Model prose cannot author or rewrite trusted campaign, decision, citation, or authorization envelopes.
 - [ ] Tool-derived skills are signed, verified in isolation, and disabled when the live contract drifts.
 - [ ] Memory contamination audits hash raw content and reserve exact quarantine for deterministic high-risk findings.
+- [ ] Mutable-source answers bind current chunk hashes, exact quotes, revision validity, and a pre-persist digest recheck.
+- [ ] Profile bucket changes are additive, effective-schema-aware, drift-checked, reviewed, and replay-safe.
+- [ ] Stale continuity is signed, query-class/risk bounded, visibly labeled, and unavailable to high-risk tasks.
+- [ ] Bulk ingestion honors backpressure, checkpoints every accepted batch, polls processing, and reconciles exact hashes.
+- [ ] Profile/memories/hybrid/documents canaries run outside user data and hard-alert on any tenant marker leak.
 - [ ] Self-hosted backup/restore and version-upgrade drill passes, if applicable.

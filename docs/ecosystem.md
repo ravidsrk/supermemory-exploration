@@ -224,5 +224,20 @@ context usage, motivating multi-dimensional MemScore reporting. That is a health
 against optimizing this deployment around a headline accuracy number—even the vendor argues
 quality alone is insufficient.
 
+The 2026-07-17 recheck pinned the monorepo at
+[`82c03a8`](https://github.com/supermemoryai/supermemory/tree/82c03a87ce1e89302b915e55739c9482209e0408).
+Its refreshed README foregrounds the official
+[research](https://supermemory.ai/research/) claims of 95% Recall@15 at roughly 720 context
+tokens on 500 LongMemEval questions and lower SMFS token use on xAFS. Treat those as vendor
+research until reproduced on the application corpus.
+
+A fresh official-X read returned nine bounded records. Recent product-direction signals
+included a [local voice agent](https://x.com/supermemory/status/2077838827302125582), a
+[Tesla-assistant hackathon build](https://x.com/supermemory/status/2077488434026012774), and a
+[personalized writing agent](https://x.com/supermemory/status/2076637279628730771). They make
+voice, ambient/local assistants, device copilots, and style-personalized generation useful
+prototype categories. They do not prove tenant isolation, consent, latency, or durable recall;
+use the same canary, intake, and source-freshness controls as any other agent.
+
 Review the [API changelog](https://supermemory.ai/changelog/api/) and
 [docs changelog](https://supermemory.ai/docs/changelog/overview) monthly and before upgrades.

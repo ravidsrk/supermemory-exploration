@@ -375,6 +375,41 @@ final design pins the sandbox network contract and makes campaign, decision, act
 citation fields application-owned rather than model-formatted. See the
 [eighth-pass evidence](../evidence/2026-07-17-eighth-pass-practical-agent-expansion.md).
 
+## Ninth-pass resilience, freshness, and operations
+
+Five final hosted runs passed:
+
+- the citation guardian replaced a source revision, rejected the stale V1 snapshot, accepted
+  only exact current V2 quotes, persisted one answer, and denied wrong approval/replay;
+- the profile-schema steward received five valid suggestions, rejected a plan after concurrent
+  drift, preserved both prior buckets, applied the exact additive schema, and routed the new
+  marker without a tenant leak;
+- the continuity gateway served explicitly labeled signed stale context to a standard request,
+  failed high risk closed without an LLM call, skipped the backend while open, rejected a
+  tampered/wrong-class cache, and recovered half-open;
+- the bulk controller injected one `429`, reduced 8→4, resumed a 24-record manifest from a
+  signed 9-record checkpoint, observed exact inventory with 16 documents still processing,
+  then reached 24/24 done and searchable;
+- the SLO monitor ran 12 profile/memories/hybrid/documents canaries at 100% success and zero
+  leaks, then detected a separately injected forbidden result without exposing it to the
+  alerting model.
+
+All ten final containers were deleted. The complete package-aware suite passed 238 tests. The
+single-run latency values are regression anchors, not service-level claims: the SLO probe saw
+806 ms p50 and 1.31 s p95 client wall time, while the asynchronous profile suggestion took
+25.4 seconds. See the
+[ninth-pass evidence](../evidence/2026-07-17-ninth-pass-resilience-and-freshness.md).
+
+Run the five agents with:
+
+```bash
+PYTHONPATH=src python3 experiments/run_source_revision_citation_guardian.py
+PYTHONPATH=src python3 experiments/run_profile_schema_evolution_steward.py
+PYTHONPATH=src python3 experiments/run_memory_outage_continuity_gateway.py
+PYTHONPATH=src python3 experiments/run_adaptive_bulk_ingestion_controller.py
+PYTHONPATH=src python3 experiments/run_memory_slo_canary_monitor.py
+```
+
 ## Disposable self-hosted probe
 
 Follow the official [quickstart](https://supermemory.ai/docs/self-hosting/quickstart) in a

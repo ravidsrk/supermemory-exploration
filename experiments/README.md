@@ -46,6 +46,11 @@ PYTHONPATH=src python3 experiments/run_tool_apprenticeship_agent.py
 PYTHONPATH=src python3 experiments/run_memory_quality_auditor.py
 PYTHONPATH=src python3 experiments/run_least_privilege_worker.py
 PYTHONPATH=src python3 experiments/run_all_provider_readiness_commander.py
+PYTHONPATH=src python3 experiments/run_source_revision_citation_guardian.py
+PYTHONPATH=src python3 experiments/run_profile_schema_evolution_steward.py
+PYTHONPATH=src python3 experiments/run_memory_outage_continuity_gateway.py
+PYTHONPATH=src python3 experiments/run_adaptive_bulk_ingestion_controller.py
+PYTHONPATH=src python3 experiments/run_memory_slo_canary_monitor.py
 ```
 
 The core probe exercises:
@@ -223,3 +228,23 @@ revocation, and checks the hosted `429` plus `Retry-After` contract.
 `run_all_provider_readiness_commander.py` exercises all eight auxiliary provider credentials,
 uses Supermemory as the governed state plane, closes all 28 pairwise portfolio edges, and
 persists a seven-citation `REVIEW` report only after exact external authorization.
+
+`run_source_revision_citation_guardian.py` signs ordered current source chunks, binds answers
+to exact quotes and revision terms, rejects a stale snapshot after document replacement, and
+persists one current cited answer only after exact authorization.
+
+`run_profile_schema_evolution_steward.py` validates hosted AI bucket suggestions, separates
+container-owned from effective schema, rejects a plan after concurrent drift, and applies only
+an additive exact schema with replay denial.
+
+`run_memory_outage_continuity_gateway.py` builds a signed last-known-good profile/hybrid cache,
+serves labeled stale context only to allowed risk classes, fails high-risk recall closed,
+skips an open circuit, rejects tampering/query-class reuse, and recovers half-open.
+
+`run_adaptive_bulk_ingestion_controller.py` injects one explicit `429`, honors `Retry-After`,
+reduces then grows batch size, resumes 24 stable IDs from a signed checkpoint, and separates
+acceptance from exact inventory and processing/search readiness.
+
+`run_memory_slo_canary_monitor.py` probes profile, memories, hybrid, and document search for
+three rounds, signs correctness/latency/isolation metrics, skips the model while healthy, and
+routes only aggregate metrics to a no-action explanation for an injected tenant leak.

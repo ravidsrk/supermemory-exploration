@@ -76,6 +76,13 @@ purpose filters, exact quarantine, `403` scope boundaries, immediate `401` revoc
 `429` plus `Retry-After`, all 28 provider pairs, and a governed all-provider review. See the
 [practical-agent expansion evidence](../evidence/2026-07-17-eighth-pass-practical-agent-expansion.md).
 
+The ninth pass adds exact source-revision citations, governed profile-schema evolution,
+risk-aware stale-memory continuity, resumable backpressure-aware bulk ingestion, and signed
+four-surface memory SLO canaries. It live-proves stale-source refusal, concurrent schema-drift
+denial, high-risk fail-closed outage behavior, a 24-document acceptance/processing distinction,
+and profile/memory/hybrid/document isolation monitoring. See the
+[resilience and freshness evidence](../evidence/2026-07-17-ninth-pass-resilience-and-freshness.md).
+
 ## Update discipline
 
 - Retest the core probe monthly and before a production launch.

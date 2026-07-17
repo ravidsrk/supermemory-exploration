@@ -44,6 +44,8 @@ Delivered:
 - six practical safety/combination systems for uploaded commitments, consent-bound intake,
   tool apprenticeship, contamination quarantine, least-privilege delegation, and governed
   all-provider readiness;
+- five resilience/freshness systems for source-revision citation, additive profile-schema
+  evolution, risk-aware continuity, checkpointed adaptive ingestion, and four-surface SLOs;
 - systematic classification of all 255 auxiliary-provider subsets and live portfolio coverage
   of all 28 provider pairs;
 - a causal sandbox transfer test where memory passed and the stateless candidate failed;
@@ -71,6 +73,10 @@ all project keys out of git and use provider-specific least privilege where avai
 - Add a JSONL dataset schema with facts, updates, expected sources, forbidden tenants, and
   prompt-injection cases.
 - Add repeatable result capture for quality, latency distribution, context tokens, and cost.
+- Schedule exact profile/memories/hybrid/documents canaries in an isolated synthetic container;
+  retain signed latency/miss/leak reports and test one injected outage monthly.
+- Require chunk-digest revision binding for the cited research notebook and implement reviewed,
+  drift-safe profile bucket evolution before cohort rollout.
 - Expand the passing single-/multi-container and `429`/revocation scoped-key probes across the
   remaining documented endpoints and longer windows.
 - Complete approve/decline/undo on a qualifying generated inference. Custom profile buckets,
@@ -216,6 +222,8 @@ On or near the 16th of each month:
 7. Decide whether to upgrade, hold, or roll back.
 8. Exercise one degraded dependency/provider path and verify the agent labels partial state,
    preserves failures, and withholds promotion or action.
+9. Run exact four-surface canaries and inspect processing backlog; hard-alert on any forbidden
+   tenant marker, then compare latency/error budgets with the prior month.
 
 ## Scorecard
 
@@ -260,6 +268,11 @@ On or near the 16th of each month:
 | Memory quality | Critical contamination removed without model seeing raw sensitive content | Secret/injection quarantined; contradiction retained for review |
 | Delegated least privilege | Cross-scope denied; revocation/rate window enforced | `403` read/write, `401` revoked, `[200,200,429]` plus `Retry-After` passed |
 | Provider-combination coverage | All subsets classified; every provider pair exercised | 255 subsets classified; 28/28 live portfolio pairs; all-provider review passed |
+| Source freshness | Current citations cannot survive a source replacement | V1 snapshot became stale; V2 exact quote/digest persisted once; poison/replay denied |
+| Profile schema evolution | Existing/effective buckets survive reviewed additive change | Five suggestions validated; concurrent drift denied; initial/concurrent/new buckets retained |
+| Recall continuity | Stale use is explicit/risk-bounded; high-risk fails closed | Signed restart cache, query-class/tamper denial, circuit skip, no-model high-risk failure, and recovery passed |
+| Bulk backpressure/readiness | Rate response, resume, processing, and exact inventory are distinct | Injected 429 reduced 8→4; signed 9/24 resume reached 24/24 done/searchable |
+| Memory SLO | Profile/memory/hybrid/document correctness and isolation stay visible | 12/12 small canary run, zero leaks; injected forbidden result produced signed alert |
 | Self-host durability | Restore and upgrade | Fresh run passed; durability/upgrade pending |
 | SMFS maturity | Consistent read/search/profile | Read/search passed; profile/list quirks observed |
 

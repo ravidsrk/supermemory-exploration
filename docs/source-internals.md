@@ -2,10 +2,13 @@
 
 Inspected on 2026-07-16 and rechecked on 2026-07-17:
 
-- [supermemory monorepo at `8d92633`](https://github.com/supermemoryai/supermemory/tree/8d926332ab23aa5785def636aca9d0a52fea4a65)
+- [supermemory monorepo at `82c03a8`](https://github.com/supermemoryai/supermemory/tree/82c03a87ce1e89302b915e55739c9482209e0408)
 - [MemoryBench at `118209a`](https://github.com/supermemoryai/memorybench/tree/118209a746d97d0d85e5a7234267f0b6962857e9)
 
-The Supermemory commit was authored on the inspection date. The public tree contains clients,
+The Supermemory commit was current at the second recheck. Since the prior `8d92633` inspection,
+the visible changes were README research positioning and removal of a Pro-plan banner from
+Claude Code/OpenCode guidance; the inspected API validation contracts did not change. The
+public tree contains clients,
 docs, integrations, middleware, MCP, browser extension, and memory-graph packages; it does not
 expose the hosted ingestion/search backend. Backend architecture claims therefore remain
 documented or inferred, not source-verified.
@@ -88,6 +91,20 @@ v4 memory writes contributed backing/administrative documents. Both are reasons 
 the wire parser while keeping document and memory domain models separate. The ten-record
 migration run used stable custom IDs/source hashes, fresh-process reconciliation, and exact-ID
 rollback; it did not exercise file or cardinality boundaries.
+
+The ninth pass exercised `GET /v3/documents/processing` directly. Immediately after a
+checkpointed 24-document load, exact target inventory existed but only 8 records were `done`
+and 16 were processing. A later barrier reached 24/24 done. The source schema in
+[`packages/validation/api.ts`](https://github.com/supermemoryai/supermemory/blob/82c03a87ce1e89302b915e55739c9482209e0408/packages/validation/api.ts)
+returns bounded document identity/status fields plus
+`totalCount`; the web hook polls it every five seconds and refreshes document views when IDs
+leave the processing set. That source behavior supports the lab rule that acceptance,
+inventory, and semantic readiness are separate states.
+
+The same validation package exposes current profile-bucket suggestion and container schema
+shapes. The hosted suggester returned five candidates in one 25.4-second call. Generated
+descriptions are input to an additive, drift-checked administrative plan—not an automatic
+runtime mutation.
 
 The upstream tree contains migration guidance and a Mem0 migration script. Treat scripts as
 starting points: add signed manifests, checkpoints, target reconciliation, and exact rollback

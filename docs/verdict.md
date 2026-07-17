@@ -196,6 +196,40 @@ produced two inferred-review candidates once but zero on repeat; all eight dynam
 jobs remained pending in both bounded runs. Candidate generation and Dreaming completion are
 operator/background signals, not scheduling primitives.
 
+The 24-record adaptive run made the boundary quantitative: after all response IDs were
+accepted, exact inventory already existed, but only 8 records were done and 16 remained in the
+processing endpoint. The final barrier reached 24/24 done and searchable. Build bulk ingestion
+around stable IDs, backpressure, signed checkpoints, processing state, and reconciliation—not
+one HTTP success flag.
+
+### Mutable sources require revision-bound citations
+
+Document identity alone is insufficient for policies and other changing truth. A live V1→V2
+replacement invalidated the signed old snapshot before persistence; only exact quotes from the
+current chunk digest survived. Use source revision, chunk hashes, effective/expiry window, and
+a pre-use digest recheck. The model may write prose, but it should not invent source identity.
+
+### Profile buckets are schema, and generated suggestions are advisory
+
+Hosted suggestions can accelerate taxonomy design, but organization-effective keys,
+container-owned definitions, concurrent changes, and existing data make this a migration
+problem. The additive steward passed only after rejecting a drifted plan and preserving every
+existing bucket. Run it as reviewed administration, not on an agent response path.
+
+### Continuity must expose stale and high-risk states
+
+A signed bounded cache can keep low-risk chat useful during an outage, but only with exact
+tenant/query-class binding, short expiry, and a visible stale banner. High-risk recall should
+fail closed without calling the model. Circuit breaking and half-open recovery passed in the
+injected outage drill; actual service availability remains unmeasured.
+
+### Memory needs its own correctness and isolation SLO
+
+The first four-surface canary run passed 12/12 with zero leaks, then a synthetic forbidden
+result triggered a signed alert. This is the right operating primitive, not an SLA result.
+Continuously probe profile, memories, hybrid, and documents from a dedicated container; never
+send raw recalled memory to an alerting model.
+
 ### Tool economics and incident certainty need explicit unknown states
 
 One tool portfolio exposed comparable costs for Exa and Monid but not Composio. Treating the
@@ -289,6 +323,11 @@ the next gate remains the blinded 100-case suite at realistic corpus volume.
 | Project Memory OS | **Pilot as recovery/briefing state** | Signed chain and verified artifact passed; keep workflow coordination transactional. |
 | Valid-dissent council | **Adopt the dissent-preservation invariant** | Minority evidence/falsifier survived restart; calibration and independence remain unproven. |
 | Batch migration reconciler | **Pilot before large migration** | Idempotent replay, exact reconcile, and rollback passed at ten records; boundaries remain open. |
+| Source-revision citation guardian | **Adopt for mutable governed knowledge** | Current chunk/digest/quote enforcement rejected stale V1 and persisted exact V2 once. |
+| Profile-schema steward | **Adopt as reviewed administration** | Suggestions were useful, but only additive effective-schema/drift control made application safe. |
+| Risk-aware continuity gateway | **Pilot for low-risk UX** | Signed stale/restart/circuit behavior passed; high risk failed closed; real outage SLO is unknown. |
+| Adaptive bulk-ingestion controller | **Adopt the checkpoint/readiness pattern** | Injected backpressure and 24-record resume/reconciliation passed; documented maximum remains untested. |
+| Four-surface SLO monitor | **Adopt canaries, calibrate thresholds** | Small healthy run and injected leak detection passed; more volume/regions are required for budgets. |
 | Meeting commitment steward | **Adopt for reviewable extraction** | File/chunk provenance, exact approval, replay denial, and fresh-process recall passed; humans still own commitments. |
 | Consent-aware memory intake | **Adopt as the write boundary** | Purpose, category, sensitivity, retention, and replay controls passed; model classification remained advisory. |
 | Tool apprenticeship | **Pilot for read procedures** | Two-provider episodes and isolated verification passed; contract drift correctly disabled execution. |
