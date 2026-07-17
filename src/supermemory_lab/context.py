@@ -91,11 +91,27 @@ def render_search_context(
         if not isinstance(result, Mapping):
             continue
         content = _memory_text(result)
-        if not content:
-            continue
         result_id = result.get("id") or result.get("documentId") or "unknown"
         score = result.get("similarity", result.get("score"))
         score_text = f", score={score:.3f}" if isinstance(score, (int, float)) else ""
-        lines.append(f"[{index}] id={result_id}{score_text}\n{content}")
+        if content:
+            lines.append(f"[{index}] id={result_id}{score_text}\n{content}")
+            continue
+        chunks = result.get("chunks")
+        chunks = chunks if isinstance(chunks, list) else []
+        for chunk_index, chunk in enumerate(chunks, start=1):
+            chunk_content = _memory_text(chunk)
+            if not chunk_content:
+                continue
+            chunk_score = chunk.get("score") if isinstance(chunk, Mapping) else None
+            chunk_score_text = (
+                f", chunk_score={chunk_score:.3f}"
+                if isinstance(chunk_score, (int, float))
+                else ""
+            )
+            lines.append(
+                f"[{index}.{chunk_index}] id={result_id}{score_text}{chunk_score_text}\n"
+                f"{chunk_content}"
+            )
     lines.append("</retrieved-memory>")
     return "\n\n".join(lines)[:max_chars]

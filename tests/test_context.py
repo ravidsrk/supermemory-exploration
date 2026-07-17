@@ -1,6 +1,6 @@
 import unittest
 
-from supermemory_lab.context import render_profile_context
+from supermemory_lab.context import render_profile_context, render_search_context
 
 
 class ContextRenderingTests(unittest.TestCase):
@@ -32,6 +32,28 @@ class ContextRenderingTests(unittest.TestCase):
             {"profile": {"static": ["x" * 10_000]}}, max_chars=500
         )
         self.assertEqual(len(rendered), 500)
+
+    def test_search_context_renders_nested_document_chunks(self) -> None:
+        rendered = render_search_context(
+            {
+                "results": [
+                    {
+                        "documentId": "source-one",
+                        "score": 0.9,
+                        "chunks": [
+                            {
+                                "content": "Exact nested source evidence",
+                                "score": 0.8,
+                            }
+                        ],
+                    }
+                ]
+            }
+        )
+
+        self.assertIn("id=source-one", rendered)
+        self.assertIn("Exact nested source evidence", rendered)
+        self.assertIn("chunk_score=0.800", rendered)
 
 
 if __name__ == "__main__":

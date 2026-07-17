@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ravidsrk/supermemory-exploration/benchmarks/domain-100-case.schema.json",
+  "title": "Blinded Supermemory domain benchmark case",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "category",
+    "question",
+    "search_surface",
+    "required_answer_terms",
+    "forbidden_answer_terms",
+    "required_evidence_terms",
+    "forbidden_evidence_terms",
+    "retrieval_query"
+  ],
+  "properties": {
+    "name": {"type": "string", "minLength": 1},
+    "category": {"type": "string", "minLength": 1},
+    "question": {"type": "string", "minLength": 1},
+    "search_surface": {
+      "type": "string",
+      "enum": ["memories", "hybrid", "documents"]
+    },
+    "required_answer_terms": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "forbidden_answer_terms": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "required_evidence_terms": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "forbidden_evidence_terms": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "retrieval_query": {"type": "string"}
+  }
+}
