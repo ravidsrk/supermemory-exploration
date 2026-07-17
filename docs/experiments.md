@@ -338,6 +338,43 @@ and malformed project proposals created no checkpoints. See the
 [seventh-pass evidence](../evidence/2026-07-16-seventh-pass-deep-operations.md) for exact run
 IDs, source contracts, implementation boundaries, and unresolved gaps.
 
+## Eighth-pass practical agent expansion
+
+```bash
+PYTHONPATH=src python3 experiments/run_meeting_commitment_steward.py
+PYTHONPATH=src python3 experiments/run_memory_intake_firewall.py
+PYTHONPATH=src python3 experiments/run_tool_apprenticeship_agent.py
+PYTHONPATH=src python3 experiments/run_memory_quality_auditor.py
+PYTHONPATH=src python3 experiments/run_least_privilege_worker.py
+PYTHONPATH=src python3 experiments/run_all_provider_readiness_commander.py
+```
+
+Final observed outcomes on 2026-07-17:
+
+- a real Markdown upload produced ordered chunks, a temporary HTTPS file URL, two exact
+  owner/date commitments, a fresh-process due brief, wrong-approval/replay denial, and complete
+  cleanup; the URL itself was never serialized;
+- the intake firewall stored one expiring preference and one purpose-filtered conversation,
+  while denying or reviewing secret, health, implicit, and purpose-expanded writes;
+- the tool apprentice recorded two signed read episodes, passed 4/4 egress-blocked checks,
+  promoted one skill, ignored unsigned poison, and disabled it on simulated contract drift;
+- the quality auditor found canonical contradiction, injection, missing provenance, and secret
+  classes, quarantined exactly two critical records, and left the contradiction for review;
+- the delegated worker received one container key: other-container read/write returned `403`,
+  revocation returned `401`, and a two-request key returned `[200, 200, 429]` with
+  `Retry-After`;
+- the combination harness enumerated 255 subsets, mapped 28 pairs, identified four prior
+  pairwise gaps, and closed them in an all-provider run whose seven-citation report stayed
+  `REVIEW` with no action authority;
+- cleanup passed for every final run and the complete package-aware offline suite passed 208
+  tests.
+
+Failed attempts also remained safe. An invalid SuperServe network shape returned `400` before
+execution; the first all-provider report omitted model-authored markers and wrote nothing. The
+final design pins the sandbox network contract and makes campaign, decision, action, and
+citation fields application-owned rather than model-formatted. See the
+[eighth-pass evidence](../evidence/2026-07-17-eighth-pass-practical-agent-expansion.md).
+
 ## Disposable self-hosted probe
 
 Follow the official [quickstart](https://supermemory.ai/docs/self-hosting/quickstart) in a
@@ -420,9 +457,11 @@ For each run, add a dated evidence note containing:
   instrumentation; instant candidate generation was non-deterministic and dynamic stayed pending;
 - batch file upload, 600-document ingest, and 100-ID bulk-delete/cardinality boundaries;
 - repeat the retrieval grid on a domain corpus with at least 100 blinded queries;
-- file upload and 50 MB boundary behavior;
+- file upload formats and the exact 50 MB rejection boundary beyond the passing Markdown path;
 - connector sync/update/delete on an entitled plan;
-- expanded scoped-key endpoint/rate-limit matrix beyond the passing read/write/revoke probe;
+- expanded scoped-key endpoint matrix beyond passing single/multi-scope read/write, revocation,
+  and `429`/`Retry-After` controls;
+- higher-order provider degradation/order matrices beyond complete pair coverage;
 - model-router holdouts, exploration/expiry, and repeated end-to-end economics;
 - temporal recall across timezones, recurrence, corrections, and larger corpora;
 - dependency guardian fail-closed controls using known-vulnerable and ambiguous packages;

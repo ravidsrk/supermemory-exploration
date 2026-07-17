@@ -1,6 +1,6 @@
 # Current source inspection
 
-Inspected on 2026-07-16:
+Inspected on 2026-07-16 and rechecked on 2026-07-17:
 
 - [supermemory monorepo at `8d92633`](https://github.com/supermemoryai/supermemory/tree/8d926332ab23aa5785def636aca9d0a52fea4a65)
 - [MemoryBench at `118209a`](https://github.com/supermemoryai/memorybench/tree/118209a746d97d0d85e5a7234267f0b6962857e9)
@@ -106,6 +106,7 @@ product-wide verdict.
 
 - [Reported middleware outage behavior](https://github.com/supermemoryai/supermemory/issues/1287)
 - [Reported Python SDK dedup parsing failure](https://github.com/supermemoryai/supermemory/issues/1266)
+- [Reported macOS self-hosted process wedge](https://github.com/supermemoryai/supermemory/issues/1296)
 
 ## MemoryBench internals and caveats
 

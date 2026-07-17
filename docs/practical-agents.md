@@ -15,6 +15,8 @@ six are covered by the
 [sixth-pass deep-agent evidence](../evidence/2026-07-16-sixth-pass-deep-agents.md). The
 Dreaming matrix and five newest operational implementations are covered by the
 [seventh-pass evidence](../evidence/2026-07-16-seventh-pass-deep-operations.md).
+The six eighth-pass agents are covered by the
+[practical-agent expansion evidence](../evidence/2026-07-17-eighth-pass-practical-agent-expansion.md).
 
 ## Run them
 
@@ -61,6 +63,12 @@ python experiments/run_contract_drift_sentinel.py
 python experiments/run_project_memory_os.py
 python experiments/run_adversarial_dissent_council.py
 python experiments/run_migration_reconciler.py
+python experiments/run_meeting_commitment_steward.py
+python experiments/run_memory_intake_firewall.py
+python experiments/run_tool_apprenticeship_agent.py
+python experiments/run_memory_quality_auditor.py
+python experiments/run_least_privilege_worker.py
+python experiments/run_all_provider_readiness_commander.py
 ```
 
 Raw traces go to ignored `.runs/` files. They contain bounded experiment details but should
@@ -690,6 +698,74 @@ only the ten imports while retaining a pre-existing target document. Extend this
 checkpoints and backpressure before testing the documented 600-document ingest and 100-ID
 delete boundaries.
 
+## 38. Uploaded-meeting commitment steward
+
+Providers: Supermemory + OpenRouter.
+
+The steward uploads a real Markdown meeting artifact, waits for processing, reads ordered
+chunks and a temporary file URL, then extracts only exact `{owner} will <action> by
+YYYY-MM-DD` commitments with verbatim chunk evidence. Trusted code validates owner, due-date
+window, signed plan, exact authorization, and replay state before writing temporal memories.
+The live run produced two cited commitments, denied wrong approval and replay, reconstructed
+the due brief in a fresh process, and never persisted the temporary URL.
+
+## 39. Consent-aware memory intake firewall
+
+Providers: Supermemory + OpenRouter.
+
+This write-side boundary binds subject, purpose, categories, durability, sensitivity, and
+maximum retention into a signed consent grant. Secret-like content and purpose expansion are
+denied deterministically; health and implicit inferences require review. The model is advisory
+classification only. The live run stored one expiring preference and one purpose-filtered
+conversation, rejected four unsafe/unauthorized cases, denied replay, and kept denied content
+out of both tenant and cross-tenant reads.
+
+## 40. Episodic-to-procedural tool apprentice
+
+Providers: Supermemory + Monid + Composio + SuperServe + OpenRouter.
+
+The apprentice records signed read-tool episodes from two independent routes, verifies a
+candidate procedure in an egress-denied sandbox, and promotes a reusable skill only when the
+current tool contracts still match. Unsigned memory cannot become executable procedure. The
+live run learned Monid and Composio Hacker News routes, passed 4/4 sandbox checks, ignored an
+unsigned poison skill, and disabled execution when a simulated method drifted.
+
+## 41. Memory contamination and quality auditor
+
+Providers: Supermemory + OpenRouter explanation only.
+
+The auditor inventories actual documents and memories, hashes raw content, and applies
+deterministic rules for secret patterns, instruction injection, missing provenance, orphaned
+sources, stale expiry, duplicates, and canonical-key contradictions. Only exact high-risk IDs
+can be quarantined from a signed snapshot; contradictions stay for human review. The live run
+quarantined exactly the secret and injection records while retaining safe and conflicting
+records, and exposed no sensitive raw text to the model or trace.
+
+## 42. Least-privilege delegated memory worker
+
+Providers: Supermemory scoped key + OpenRouter.
+
+An expiring signed task fixes one container, query, marker, context cap, and the two allowed
+operations: read memory and write one receipt. The live hosted key denied cross-container read
+and write with `403`, produced a signed receipt, rejected wrong authorization and replay,
+returned `401` immediately after revocation, and enforced a two-request window as
+`[200, 200, 429]` with `Retry-After`. The worker never received external action authority.
+
+## 43. All-provider readiness commander
+
+Providers: Supermemory + OpenRouter + Context.dev + Exa + ScrapeCreators + Monid + Composio +
+SuperServe + Vercel.
+
+The combination map enumerates all 255 non-empty subsets of the eight auxiliary providers and
+assigns roles, viable archetypes, action surfaces, and required controls. This is design-space
+classification, not a claim that 255 workflows ran live. Portfolio analysis found four
+untested provider pairs; one governed all-provider run exercised every credential and closed
+all 28 pairwise edges. It used only public/read-only observations, contract inspection, and an
+egress-denied verifier. Application code owns the campaign/decision/citation envelope; the
+model cannot format away governance. The signed seven-observation report cited every source,
+remained `REVIEW`, resisted prior poison, denied wrong authorization/replay, and authorized no
+external action.
+
 ## Other high-value builds
 
 | Agent | Providers | Memory design |
@@ -732,6 +808,12 @@ delete boundaries.
 | Project Memory OS | Supermemory + OpenRouter + SuperServe | Scoped context, signed state chain, verified artifact gate, restart recovery. |
 | Valid-dissent council | Three OpenRouter families + Supermemory | Evidence-bound minority preservation, falsifiers, whole-proposal staleness. |
 | Migration reconciler | Supermemory | Signed manifest, stable IDs/hashes, fresh resume, exact rollback. |
+| Meeting commitment steward | Supermemory + OpenRouter | Uploaded source, exact chunk quote, signed commitment plan, temporal due brief. |
+| Consent intake firewall | Supermemory + OpenRouter | Purpose/category/retention grant, deterministic sensitivity gate, replay-safe write. |
+| Tool apprentice | Monid + Composio + SuperServe + OpenRouter + Supermemory | Signed episodes, isolated verification, contract revalidation, non-executable unsigned memory. |
+| Memory quality auditor | Supermemory + OpenRouter | Inventory hashes, deterministic contamination rules, exact quarantine, human contradiction review. |
+| Delegated worker | Scoped Supermemory + OpenRouter | Signed task, least-privilege credential, one receipt, revocation/rate enforcement. |
+| Readiness commander | All eight auxiliary providers + Supermemory | Pair-complete observation portfolio, deterministic control envelope, signed review, no action authority. |
 
 ## What not to build
 
@@ -762,3 +844,6 @@ delete boundaries.
 - A council that summarizes away valid minority dissent.
 - A migration job that assumes acknowledgement means exactly-once import or rolls back by query.
 - A workflow that blocks on Dreaming or inferred-review candidate generation.
+- A delegated worker using the organization key when one short-lived container key is enough.
+- A memory intake path where the same model decides sensitivity, consent, and persistence.
+- A model-authored decision/citation envelope that can omit or rewrite trusted control fields.

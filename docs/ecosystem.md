@@ -195,6 +195,7 @@ response diagnostic headers directly; product pages can lag implementation.
 These are **open issue reports observed on 2026-07-16**, not reproduced facts. They identify
 where a production proof should focus:
 
+- [#1296](https://github.com/supermemoryai/supermemory/issues/1296): self-hosted macOS process allegedly wedges and resists termination.
 - [#1293](https://github.com/supermemoryai/supermemory/issues/1293): self-hosted v0.0.5 upgrade profile-bucket migration.
 - [#1291](https://github.com/supermemoryai/supermemory/issues/1291): document ingestion after v0.0.3 → v0.0.5 upgrade.
 - [#1287](https://github.com/supermemoryai/supermemory/issues/1287): OpenAI middleware allegedly fails closed on API outage.

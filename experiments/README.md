@@ -40,6 +40,12 @@ PYTHONPATH=src python3 experiments/run_contract_drift_sentinel.py
 PYTHONPATH=src python3 experiments/run_project_memory_os.py
 PYTHONPATH=src python3 experiments/run_adversarial_dissent_council.py
 PYTHONPATH=src python3 experiments/run_migration_reconciler.py
+PYTHONPATH=src python3 experiments/run_meeting_commitment_steward.py
+PYTHONPATH=src python3 experiments/run_memory_intake_firewall.py
+PYTHONPATH=src python3 experiments/run_tool_apprenticeship_agent.py
+PYTHONPATH=src python3 experiments/run_memory_quality_auditor.py
+PYTHONPATH=src python3 experiments/run_least_privilege_worker.py
+PYTHONPATH=src python3 experiments/run_all_provider_readiness_commander.py
 ```
 
 The core probe exercises:
@@ -193,3 +199,27 @@ persisted, and stale on evidence change without becoming action authority.
 simulates acknowledgement loss, resumes from a separate checkpoint, reconciles exact
 inventory, and performs approval-bound exact-ID rollback while retaining a pre-existing
 control document.
+
+`run_meeting_commitment_steward.py` uploads a bounded meeting file, waits for processing,
+extracts exact chunk-cited owner/date commitments, binds their write to a signed approval,
+and rebuilds the due brief from a fresh process without persisting its temporary file URL.
+
+`run_memory_intake_firewall.py` applies signed subject/purpose/category/retention consent,
+deterministic secret and sensitivity policy, purpose-filtered ingestion, exact authorization,
+and replay denial before any durable memory write.
+
+`run_tool_apprenticeship_agent.py` turns signed Monid/Composio read episodes into a procedure
+only after egress-denied verification, then reloads it in a fresh process and disables it when
+the current tool contract differs.
+
+`run_memory_quality_auditor.py` inventories actual memory state, detects contamination without
+putting raw sensitive content in the signed snapshot or model prompt, and permits exact
+quarantine only for deterministic secret/injection findings.
+
+`run_least_privilege_worker.py` issues one short-lived container-scoped key, proves denied
+cross-scope read/write, runs one signed recall/receipt task, proves replay denial and immediate
+revocation, and checks the hosted `429` plus `Retry-After` contract.
+
+`run_all_provider_readiness_commander.py` exercises all eight auxiliary provider credentials,
+uses Supermemory as the governed state plane, closes all 28 pairwise portfolio edges, and
+persists a seven-citation `REVIEW` report only after exact external authorization.

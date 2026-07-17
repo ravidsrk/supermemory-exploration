@@ -41,6 +41,11 @@ Delivered:
 - five deep operational implementations for actual-inventory transparency/erasure, contract
   drift, signed long-horizon project state, valid-dissent preservation, and resumable migration,
   plus a larger matched Dreaming/review matrix;
+- six practical safety/combination systems for uploaded commitments, consent-bound intake,
+  tool apprenticeship, contamination quarantine, least-privilege delegation, and governed
+  all-provider readiness;
+- systematic classification of all 255 auxiliary-provider subsets and live portfolio coverage
+  of all 28 provider pairs;
 - a causal sandbox transfer test where memory passed and the stateless candidate failed;
 - a three-case support benchmark scoring 3/3 with memory and 0/3 without it;
 - profile-versus-search read-after-write evidence and explicit polling barriers;
@@ -66,8 +71,8 @@ all project keys out of git and use provider-specific least privilege where avai
 - Add a JSONL dataset schema with facts, updates, expected sources, forbidden tenants, and
   prompt-injection cases.
 - Add repeatable result capture for quality, latency distribution, context tokens, and cost.
-- Expand the passing single- and multi-container scoped-key probes with endpoint and rate-limit
-  cases.
+- Expand the passing single-/multi-container and `429`/revocation scoped-key probes across the
+  remaining documented endpoints and longer windows.
 - Complete approve/decline/undo on a qualifying generated inference. Custom profile buckets,
   filter operators, rerank/rewrite, expiry, merge, batch ingestion, both Dreaming modes, and
   one non-deterministic one-parent candidate observation now have executable coverage. Repeat
@@ -250,6 +255,11 @@ On or near the 16th of each month:
 | Long-horizon project state | Valid chain survives restart; completion requires verified artifact | Four-state signed chain, forged denial, sandbox 4/4, and fresh completion passed |
 | Valid dissent | Minority evidence/falsifier survives proposal persistence | `HOLD/PILOT/HOLD` all valid; minority persisted; changed evidence stale |
 | Batch migration | Retry/restart reconcile exactly; rollback retains pre-existing data | 10/10 import, same-ID replay, exact reconciliation, approval-bound rollback passed |
+| Uploaded commitment extraction | Every commitment has owner/date/exact source quote | Two commitments passed; wrong approval/replay denied; temporary URL not persisted |
+| Consent-bound intake | No write outside subject/purpose/category/sensitivity/retention grant | Safe dynamic/document writes passed; four unsafe cases withheld |
+| Memory quality | Critical contamination removed without model seeing raw sensitive content | Secret/injection quarantined; contradiction retained for review |
+| Delegated least privilege | Cross-scope denied; revocation/rate window enforced | `403` read/write, `401` revoked, `[200,200,429]` plus `Retry-After` passed |
+| Provider-combination coverage | All subsets classified; every provider pair exercised | 255 subsets classified; 28/28 live portfolio pairs; all-provider review passed |
 | Self-host durability | Restore and upgrade | Fresh run passed; durability/upgrade pending |
 | SMFS maturity | Consistent read/search/profile | Read/search passed; profile/list quirks observed |
 

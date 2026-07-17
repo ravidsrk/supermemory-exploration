@@ -9,7 +9,7 @@ SDKs, and live probes. “Maturity” is a lab judgment, not a vendor status lab
 | Capability | Practical use | Evidence | Maturity judgment |
 |---|---|---|---|
 | Add text, URL, or file | Knowledge ingestion and extraction | [Add document](https://supermemory.ai/docs/api-reference/ingest/add-document); hosted text probe | Core |
-| Batch/file upload | Bulk knowledge loading; current OpenAPI accepts 1–600 documents | [Current OpenAPI](https://api.supermemory.ai/v3/openapi); hosted three-document batch | Core; 3/3 accepted live, file/boundary behavior pending |
+| Batch/file upload | Bulk knowledge loading; current OpenAPI accepts 1–600 documents and files up to 50 MB | [Current OpenAPI](https://api.supermemory.ai/v3/openapi); hosted batch and Markdown multipart runs | Core; 3/3 batch plus file/chunks/temporary URL passed live; exact size/format boundaries pending |
 | Structured conversation upsert | Preserve roles and append a conversation by ID | [Conversation endpoint](https://supermemory.ai/docs/api-reference/ingest/ingest-or-update-conversation); hosted probe | Core |
 | `customId` upsert | Stable application identity for a document | Hosted probe; same document ID returned | Core, extraction semantics need regression tests |
 | `dreaming=dynamic` | Group related content before memory creation | [Adding memories](https://supermemory.ai/docs/add-memories); repeated hosted batch probe | Asynchronous enrichment: small batches remained `dreaming` beyond 60–90 s and lacked the exact extracted fact in the extra check; use a direct confirmed-fact readiness fallback |
@@ -22,7 +22,7 @@ SDKs, and live probes. “Maturity” is a lab judgment, not a vendor status lab
 | Memory expiry (`forgetAfter`) | Lease temporary context and cancel through versioned update | Current [OpenAPI](https://api.supermemory.ai/v3/openapi); hosted expiry/cancel probe | Core; explicit forget and expiry had different recovery behavior |
 | Memory history/list | Inspect current administrative inventory and mutation lineage | [Current OpenAPI](https://api.supermemory.ai/v3/openapi); hosted unfiltered three-version correction probe | Top-level entries represent current truth; the observed latest v3 entry nested history `[1, 2, 3]` with valid parent/root continuity. This corrects the earlier latest-only interpretation; test pagination/export and do not treat it as a compliance signature. |
 | Document lifecycle | List, get, chunks, update, delete, processing state | [Document operations](https://supermemory.ai/docs/document-operations); hosted probe | Core |
-| Exact document chunks/file URL | Export ordered source chunks or obtain a temporary original-file URL | [Current OpenAPI](https://api.supermemory.ai/v3/openapi); chunk client contract tests | Useful for transparent export and citation inspection; file URL was wrapped but not live-tested. |
+| Exact document chunks/file URL | Export ordered source chunks or obtain a temporary original-file URL | [Current OpenAPI](https://api.supermemory.ai/v3/openapi); hosted meeting-file run | Ordered chunk citation and temporary HTTPS URL passed. Official changelog says URLs expire after 24 hours; never persist them in memory, prompts, traces, or logs. |
 | Bulk exact document delete | Roll back a known import set without semantic selection | [Current OpenAPI](https://api.supermemory.ai/v3/openapi); hosted ten-ID rollback | Core for migration recovery; wrapper accepts 1–100 unique exact IDs only. Do not expose container-wide selectors to a model. |
 | Organization settings/bucket suggestion | Inspect processing configuration and propose profile organization | [Current OpenAPI](https://api.supermemory.ai/v3/openapi) | Settings read is wrapped; account-wide model/settings mutation and generated bucket application were deliberately not exercised in isolated runs. |
 
@@ -48,7 +48,7 @@ SDKs, and live probes. “Maturity” is a lab judgment, not a vendor status lab
 | Capability | Notes |
 |---|---|
 | Container tags | Strict namespace, current v4 singular field, 100 characters, pattern `^[a-zA-Z0-9_:-]+$`. A negative-control search returned zero. |
-| Scoped keys | One- or multi-container key, expiry and rate-window controls, restricted endpoint set. Hosted single-scope and three-scope reads, cross-tenant denial, and immediate revocation were observed. Current authentication prose still shows the singular form. Prefer scoped keys in user-facing or sandboxed agents. |
+| Scoped keys | One- or multi-container key, expiry and rate-window controls, restricted endpoint set. Hosted single-scope and three-scope reads, cross-tenant denial, and immediate revocation were observed. A delegated-worker key returned `403` for cross-scope read/write, `401` after revocation, and `[200,200,429]` with `Retry-After` at a two-request limit. Current authentication prose still shows the singular form. Prefer one short-lived container per user-facing or sandboxed worker. |
 | Per-container entity context | Steers extraction for a domain or tenant. Treat it as processing configuration, not an authorization policy. |
 | Organization context/filter prompt | Shapes extraction and relevance for new content. Existing content is not retroactively rebuilt. |
 | Chunk size/settings | Organization-level ingestion tuning. Changing embedding dimension in self-hosting requires a new data directory. |

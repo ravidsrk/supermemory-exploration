@@ -289,6 +289,12 @@ the next gate remains the blinded 100-case suite at realistic corpus volume.
 | Project Memory OS | **Pilot as recovery/briefing state** | Signed chain and verified artifact passed; keep workflow coordination transactional. |
 | Valid-dissent council | **Adopt the dissent-preservation invariant** | Minority evidence/falsifier survived restart; calibration and independence remain unproven. |
 | Batch migration reconciler | **Pilot before large migration** | Idempotent replay, exact reconcile, and rollback passed at ten records; boundaries remain open. |
+| Meeting commitment steward | **Adopt for reviewable extraction** | File/chunk provenance, exact approval, replay denial, and fresh-process recall passed; humans still own commitments. |
+| Consent-aware memory intake | **Adopt as the write boundary** | Purpose, category, sensitivity, retention, and replay controls passed; model classification remained advisory. |
+| Tool apprenticeship | **Pilot for read procedures** | Two-provider episodes and isolated verification passed; contract drift correctly disabled execution. |
+| Memory quality auditor | **Adopt deterministic critical checks** | Exact secret/injection quarantine passed; contradictions correctly remained human-reviewed. |
+| Scoped delegated worker | **Adopt the least-privilege pattern** | Hosted `403`, `401`, `429`, `Retry-After`, receipt, and replay controls passed. |
+| All-provider readiness commander | **Pilot as human-reviewed synthesis** | 255 subsets classified and 28/28 pairs covered; one live all-provider report cited every observation and authorized no action. |
 | Sandboxed coding/debug agent | **Pilot with strict sandbox policy** | Memory-backed transfer passed where stateless failed; template and egress must be explicit. |
 | Release-memory copilot | **Adopt read-only first** | Snapshot/history fit well; mutations remain approval-gated. |
 | Temporary incident context | **Pilot** | Expiry/cancel worked; keep canonical incident state and verify disappearance. |

@@ -356,4 +356,10 @@ Measure, because current pricing and provider behavior can change.
 - [ ] Mastery or user scoring changes only from independently verified evidence, never the teaching model.
 - [ ] Change advice is bound to current health and cannot execute deployment or override live gates.
 - [ ] Legal holds invalidate prior deletion plans; exact approval, replay denial, absence verification, and external audit pass.
+- [ ] Memory intake is bound to explicit subject, purpose, category, sensitivity, durability, and retention policy.
+- [ ] Uploaded-source URLs are treated as temporary credentials and never stored in prompts, memory, traces, or logs.
+- [ ] Delegated workers use expiring container-scoped keys; cross-scope denial, revocation, and `429` handling are tested.
+- [ ] Model prose cannot author or rewrite trusted campaign, decision, citation, or authorization envelopes.
+- [ ] Tool-derived skills are signed, verified in isolation, and disabled when the live contract drifts.
+- [ ] Memory contamination audits hash raw content and reserve exact quarantine for deterministic high-risk findings.
 - [ ] Self-hosted backup/restore and version-upgrade drill passes, if applicable.

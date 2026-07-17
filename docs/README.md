@@ -69,6 +69,13 @@ migration with exact reconciliation and rollback. It also restores a healthy six
 research path after detecting stale process credentials. See the
 [deep operations evidence](../evidence/2026-07-16-seventh-pass-deep-operations.md).
 
+The eighth pass adds file-upload meeting commitments, consent-bound memory intake, verified
+tool apprenticeship, contamination auditing, a truly scoped delegated worker, and systematic
+eight-provider combination coverage. It live-tests file/chunk/temporary-URL behavior,
+purpose filters, exact quarantine, `403` scope boundaries, immediate `401` revocation,
+`429` plus `Retry-After`, all 28 provider pairs, and a governed all-provider review. See the
+[practical-agent expansion evidence](../evidence/2026-07-17-eighth-pass-practical-agent-expansion.md).
+
 ## Update discipline
 
 - Retest the core probe monthly and before a production launch.

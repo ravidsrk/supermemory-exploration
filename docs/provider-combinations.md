@@ -118,6 +118,24 @@ of providers.
 | Contract governance | OpenAPI/changelog/issues/provider signals | OpenRouter | Proposal only | Upgrade sentinel | Canonical schema diff, report labels, targeted tests, snapshot freshness |
 | Project recovery | Signed scoped checkpoints + verified artifact | OpenRouter | Sandbox assessment only | Project Memory OS | State machine, signatures, external authorization, artifact digest |
 | Batch portability | Signed source manifest + target inventory | OpenRouter explanation only | Exact bulk delete | Migration reconciler | Stable IDs/hashes, fresh resume, one-to-one reconcile, approval-bound rollback |
+| Consent-bound intake | User request + signed grant | OpenRouter advisory only | Bounded memory write | Intake firewall | Subject, purpose, category, sensitivity, retention, exact approval |
+| Delegated memory work | One signed task + scoped recall | OpenRouter | One receipt write | Least-privilege worker | Single container, expiry, rate limit, revocation, replay denial |
+| Cross-provider readiness | Seven normalized observations | OpenRouter | Sandbox verification only | Readiness commander | Pair coverage, deterministic envelope, exact citations, human review |
+
+### Exhaustive subset classification and pair coverage
+
+[`provider_permutations.py`](../src/supermemory_lab/provider_permutations.py) enumerates all
+`2^8 - 1 = 255` non-empty subsets of OpenRouter, Context.dev, Exa, ScrapeCreators, Monid,
+Composio, SuperServe, and Vercel. Every subset receives a stable role map, candidate agent
+archetype, action-surface flag, and control requirements. Supermemory is intentionally the
+state plane in every row rather than a ninth toggle.
+
+This classification is not 255 live executions. The stronger empirical claim is pairwise:
+the pre-eighth-pass portfolio covered 24 of 28 provider pairs. Missing were
+ScrapeCreators+SuperServe, ScrapeCreators+Vercel, Monid+Vercel, and Composio+Vercel. The live
+all-provider commander exercised those four edges and all other credentials in one governed
+run, leaving zero pairwise gaps. Pair coverage proves integration contact, not correctness for
+every ordering, payload, failure mode, or higher-order workflow.
 
 ## Invalid or risky combinations
 
@@ -157,6 +175,12 @@ of providers.
 | SuperServe | Yes | Sandboxed debugging; release triage; dependency guardian; incident forensics |
 | Vercel | Yes, read-only | Release memory; release-triage rehearsal; incident forensics |
 
+The eighth-pass commander used all eight auxiliary providers together: official-page read,
+primary-domain search, public X read, dynamic-tool discovery, pinned integration-contract
+inspection, read-only live-ops identity verification, egress-denied compute, and model
+synthesis. Supermemory hashed prior context, signed the observation snapshot, and persisted one
+human-authorized review. All 28 pairs are now represented by a live workflow portfolio.
+
 The sixth due-diligence run exercised credential degradation: Exa, Monid, and Composio
 returned 401, the agent retained their failures, continued with three healthy publisher
 channels, labeled the report partial, and withheld promotion. The seventh sentinel found that
@@ -170,5 +194,5 @@ credentials, natural-time queries, learned model fallbacks, signed restart recov
 readiness fallback, abstaining incident analysis, and cross-tool economics are now in the lab.
 The next valuable coverage is a qualifying generated-inference review transition, connector
 sync/update/delete on an entitled plan, deliberate healthy/degraded provider campaigns, batch
-and bulk-delete boundaries, larger blinded datasets, and sustained cost/latency tracking—not
-arbitrary provider subsets.
+and bulk-delete boundaries, higher-order failure matrices, larger blinded datasets, and
+sustained cost/latency tracking—not merely executing arbitrary subsets without a use case.
