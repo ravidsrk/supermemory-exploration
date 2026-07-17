@@ -4,9 +4,11 @@ import unittest
 from supermemory_lab.authorization import TestingAuthorizationLedger
 
 from supermemory_lab.exact_deletion_controller import (
+    AmbiguousDeletionError,
     DeletionAuthorization,
     ExactDeletionController,
 )
+from supermemory_lab.http import ApiError
 
 
 class FakeMemory:
@@ -22,6 +24,25 @@ class FakeMemory:
             "deletedCount": deleted,
             "errors": [] if not self.fail_partial else [{"id": document_ids[-1]}],
         }
+
+    def get_document(self, document_id):
+        return {"id": document_id}
+
+
+class AckLossMemory(FakeMemory):
+    def __init__(self):
+        super().__init__()
+        self.deleted = set()
+
+    def bulk_delete_documents(self, document_ids):
+        self.calls.append(list(document_ids))
+        self.deleted.update(document_ids)
+        raise TimeoutError("response lost after commit")
+
+    def get_document(self, document_id):
+        if document_id in self.deleted:
+            raise ApiError("GET", f"/v3/documents/{document_id}", 404, "not found")
+        return {"id": document_id}
 
 
 class ExactDeletionControllerTests(unittest.TestCase):
@@ -105,11 +126,26 @@ class ExactDeletionControllerTests(unittest.TestCase):
                 document_ids=["same", "same"],
             )
         memory.fail_partial = True
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(AmbiguousDeletionError):
             controller.apply(
                 plan,
                 DeletionAuthorization(plan.plan_hash, plan.source_manifest_hash, "owner"),
             )
+
+    def test_lost_success_response_is_reconciled_before_checkpoint(self):
+        memory = AckLossMemory()
+        saved = []
+        controller = self.controller(memory, checkpoint_sink=saved.append)
+        plan = self.plan(controller, 101)
+
+        completed = controller.apply(
+            plan,
+            DeletionAuthorization(plan.plan_hash, plan.source_manifest_hash, "owner"),
+        )
+
+        self.assertTrue(completed.complete)
+        self.assertEqual(len(saved), 2)
+        self.assertEqual(len(completed.deleted_document_ids), 101)
 
 
 if __name__ == "__main__":

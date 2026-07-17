@@ -7,6 +7,7 @@ import json
 from typing import Any, Callable, Dict, Optional, Protocol, Sequence, Tuple
 
 from .authorization import AuthorizationLedger, consume_authorization
+from .http import ApiError
 
 
 def _canonical(value: Any) -> str:
@@ -20,6 +21,13 @@ def _digest(value: Any) -> str:
 class ExactDeletionMemory(Protocol):
     def bulk_delete_documents(self, document_ids: Sequence[str]) -> Dict[str, Any]:
         ...
+
+    def get_document(self, document_id: str) -> Dict[str, Any]:
+        ...
+
+
+class AmbiguousDeletionError(RuntimeError):
+    """Deletion outcome could not be reconciled after a bad acknowledgement."""
 
 
 @dataclass(frozen=True)
@@ -70,6 +78,24 @@ class ExactDeletionController:
         return hmac.new(
             self._key, _canonical(value).encode("utf-8"), hashlib.sha256
         ).hexdigest()
+
+    def _confirmed_absent(self, document_ids: Sequence[str]) -> Tuple[str, ...]:
+        absent = []
+        for document_id in document_ids:
+            try:
+                self._memory.get_document(document_id)
+            except ApiError as error:
+                if error.status in {404, 410}:
+                    absent.append(document_id)
+                    continue
+                raise AmbiguousDeletionError(
+                    "exact deletion reconciliation failed on a provider error"
+                ) from error
+            except Exception as error:
+                raise AmbiguousDeletionError(
+                    "exact deletion reconciliation could not determine document state"
+                ) from error
+        return tuple(absent)
 
     def build_plan(
         self,
@@ -189,15 +215,23 @@ class ExactDeletionController:
         pending = [item for item in plan.document_ids if item not in set(deleted)]
         while pending:
             batch = pending[:100]
-            response = self._memory.bulk_delete_documents(batch)
-            errors = response.get("errors")
-            if (
-                response.get("success") is not True
-                or int(response.get("deletedCount") or 0) != len(batch)
-                or (isinstance(errors, list) and errors)
-            ):
-                raise RuntimeError("exact bulk deletion was partial or unsuccessful")
-            deleted.extend(batch)
+            try:
+                response = self._memory.bulk_delete_documents(batch)
+            except Exception:
+                confirmed = self._confirmed_absent(batch)
+            else:
+                errors = response.get("errors")
+                acknowledged = (
+                    response.get("success") is True
+                    and int(response.get("deletedCount") or 0) == len(batch)
+                    and not (isinstance(errors, list) and errors)
+                )
+                confirmed = tuple(batch) if acknowledged else self._confirmed_absent(batch)
+            if not confirmed:
+                raise AmbiguousDeletionError(
+                    "exact bulk deletion was unsuccessful and no absence was confirmed"
+                )
+            deleted.extend(confirmed)
             batches += 1
             completed_this_call += 1
             latest = self._checkpoint(plan, deleted, batches)
