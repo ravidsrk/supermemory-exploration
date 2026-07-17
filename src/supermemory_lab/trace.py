@@ -4,48 +4,14 @@ from contextlib import contextmanager
 from datetime import datetime, timezone
 import json
 from pathlib import Path
-import re
 import time
 from typing import Any, Callable, Dict, Iterator, List, Mapping, Optional
 
-
-_SECRET_KEY_PARTS = ("authorization", "api_key", "apikey", "password", "secret", "token")
-_SAFE_TOKEN_COUNT_KEYS = {
-    "prompttokens",
-    "completiontokens",
-    "totaltokens",
-    "tokensprocessed",
-    "estimatedcontexttokens",
-    "meanestimatedcontexttokens",
-}
-_SECRET_VALUE = re.compile(
-    r"(?:sk-or-v1|sm|ss_live|monid_live|ctxt_secret|vcp|ak)_[A-Za-z0-9_-]{8,}"
-)
+from .redaction import redact
 
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
-
-
-def redact(value: Any, key: str = "") -> Any:
-    lowered = key.lower()
-    normalized = re.sub(r"[^a-z]", "", lowered)
-    safe_token_count = isinstance(value, (int, float)) and (
-        normalized in _SAFE_TOKEN_COUNT_KEYS
-        or normalized.endswith("tokens")
-        or normalized.endswith("pricepertoken")
-    )
-    if not safe_token_count and (
-        lowered == "key" or any(part in lowered for part in _SECRET_KEY_PARTS)
-    ):
-        return "[REDACTED]"
-    if isinstance(value, Mapping):
-        return {str(k): redact(v, str(k)) for k, v in value.items()}
-    if isinstance(value, list):
-        return [redact(item) for item in value[:100]]
-    if isinstance(value, str):
-        return _SECRET_VALUE.sub("[REDACTED]", value)[:8_000]
-    return value
 
 
 class RunTrace:

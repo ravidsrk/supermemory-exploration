@@ -1,22 +1,24 @@
 """Configuration loading that never logs or serializes credentials."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import os
 from pathlib import Path
 from typing import Dict, Optional
 
+from .redaction import register_secrets
+
 
 @dataclass(frozen=True)
 class LabConfig:
-    supermemory_api_key: str
-    openrouter_api_key: Optional[str] = None
-    exa_api_key: Optional[str] = None
-    composio_api_key: Optional[str] = None
-    context_dev_api_key: Optional[str] = None
-    scrapecreators_api_key: Optional[str] = None
-    superserve_api_key: Optional[str] = None
-    monid_api_key: Optional[str] = None
-    vercel_token: Optional[str] = None
+    supermemory_api_key: str = field(repr=False)
+    openrouter_api_key: Optional[str] = field(default=None, repr=False)
+    exa_api_key: Optional[str] = field(default=None, repr=False)
+    composio_api_key: Optional[str] = field(default=None, repr=False)
+    context_dev_api_key: Optional[str] = field(default=None, repr=False)
+    scrapecreators_api_key: Optional[str] = field(default=None, repr=False)
+    superserve_api_key: Optional[str] = field(default=None, repr=False)
+    monid_api_key: Optional[str] = field(default=None, repr=False)
+    vercel_token: Optional[str] = field(default=None, repr=False)
     supermemory_base_url: str = "https://api.supermemory.ai"
     openrouter_base_url: str = "https://openrouter.ai/api/v1"
     openrouter_model: str = "openai/gpt-4.1-mini"
@@ -55,7 +57,7 @@ def load_config(env_file: str = ".env.local") -> LabConfig:
         )
 
     openrouter_key = value("OPENROUTER_API_KEY") or value("OPEN_ROUTER_KEY")
-    return LabConfig(
+    config = LabConfig(
         supermemory_api_key=supermemory_key,
         openrouter_api_key=openrouter_key,
         exa_api_key=value("EXA_API_KEY"),
@@ -76,3 +78,17 @@ def load_config(env_file: str = ".env.local") -> LabConfig:
         openrouter_model=value("OPENROUTER_MODEL", "openai/gpt-4.1-mini")
         or "openai/gpt-4.1-mini",
     )
+    register_secrets(
+        (
+            config.supermemory_api_key,
+            config.openrouter_api_key,
+            config.exa_api_key,
+            config.composio_api_key,
+            config.context_dev_api_key,
+            config.scrapecreators_api_key,
+            config.superserve_api_key,
+            config.monid_api_key,
+            config.vercel_token,
+        )
+    )
+    return config

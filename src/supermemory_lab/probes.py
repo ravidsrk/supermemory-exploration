@@ -14,6 +14,7 @@ from .client import SupermemoryClient
 from .config import LabConfig, load_config
 from .http import JsonObject, UrlLibTransport
 from .openrouter import OpenRouterClient
+from .redaction import redact
 from .router import MemoryRouterClient
 
 
@@ -22,19 +23,7 @@ def _utc_now() -> str:
 
 
 def _redact(value: Any, key: str = "") -> Any:
-    lowered = key.lower()
-    if lowered in {"key", "secret", "password"} or any(
-        secret_key in lowered
-        for secret_key in ("authorization", "api_key", "apikey", "token")
-    ):
-        return "[REDACTED]"
-    if isinstance(value, Mapping):
-        return {str(k): _redact(v, str(k)) for k, v in value.items()}
-    if isinstance(value, list):
-        return [_redact(item) for item in value[:100]]
-    if isinstance(value, str):
-        return value[:4_000]
-    return value
+    return redact(value, key, max_string_chars=4_000)
 
 
 def _summarize_search(response: Mapping[str, Any]) -> JsonObject:
@@ -136,15 +125,15 @@ class ProbeRecorder:
                 "status": "error",
                 "wallTimeMs": elapsed,
                 "errorType": type(error).__name__,
-                "error": str(error)[:1_000],
+                "error": _redact(str(error))[:1_000],
             }
             print(f"[error] {name}: {type(error).__name__}", flush=True)
             return None
 
-    def write(self) -> Path:
+    def write(self, directory: str = ".runs") -> Path:
         self.report["finishedAt"] = _utc_now()
-        output_dir = Path(".runs")
-        output_dir.mkdir(exist_ok=True)
+        output_dir = Path(directory)
+        output_dir.mkdir(parents=True, exist_ok=True)
         path = output_dir / f"{self.report['runId']}.json"
         path.write_text(json.dumps(self.report, indent=2, sort_keys=True) + "\n")
         return path

@@ -1,6 +1,11 @@
+from pathlib import Path
+import tempfile
 import unittest
 
+from supermemory_lab.config import LabConfig
 from supermemory_lab.probes import _redact, _summarize_search
+from supermemory_lab.probes import ProbeRecorder
+from supermemory_lab.redaction import register_secret
 
 
 class ProbeSafetyTests(unittest.TestCase):
@@ -37,6 +42,21 @@ class ProbeSafetyTests(unittest.TestCase):
         self.assertEqual(summary["resultCount"], 2)
         self.assertEqual(summary["results"][0]["kind"], "memory")
         self.assertEqual(summary["results"][1]["kind"], "chunk")
+
+    def test_configuration_repr_and_probe_errors_never_expose_credentials(self) -> None:
+        credential = "unprefixed-credential-value-123456"
+        register_secret(credential)
+        config = LabConfig(supermemory_api_key=credential, exa_api_key=credential)
+        self.assertNotIn(credential, repr(config))
+
+        with tempfile.TemporaryDirectory() as temporary:
+            recorder = ProbeRecorder("redaction-regression")
+            recorder.capture(
+                "failing-operation",
+                lambda: (_ for _ in ()).throw(RuntimeError(credential)),
+            )
+            path = recorder.write(directory=temporary)
+            self.assertNotIn(credential, Path(path).read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":
