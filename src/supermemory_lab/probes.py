@@ -481,6 +481,10 @@ def run_core(config: LabConfig, *, with_llm: bool = False) -> Path:
             expected_error=True,
         )
 
+    recorder.capture(
+        "delete_core_container_cleanup", lambda: client.delete_container(container)
+    )
+
     path = recorder.write()
     print(f"Raw secret-free run written to {path}", flush=True)
     return path
@@ -543,6 +547,9 @@ def run_web_crawler(config: LabConfig) -> Path:
                         f"delete_crawler_document_{index}",
                         lambda document_id=document_id: client.delete_document(document_id),
                     )
+        recorder.capture(
+            "delete_crawler_container_cleanup", lambda: client.delete_container(container)
+        )
 
     path = recorder.write()
     print(f"Raw secret-free run written to {path}", flush=True)
@@ -659,6 +666,10 @@ def run_memory_router(config: LabConfig) -> Path:
                 }
             ],
         ),
+    )
+
+    recorder.capture(
+        "delete_router_user_pool_cleanup", lambda: memory.delete_container(user_id)
     )
 
     path = recorder.write()
