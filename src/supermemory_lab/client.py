@@ -631,6 +631,48 @@ class SupermemoryClient:
             ),
         )
 
+    def get_connection(self, connection_id: str) -> JsonObject:
+        if not connection_id.strip():
+            raise ValueError("connection_id is required")
+        return self._transport.request(
+            "GET", f"/v3/connections/{quote(connection_id, safe='')}"
+        )
+
+    def fetch_connection_resources(
+        self,
+        connection_id: str,
+        *,
+        page: int = 1,
+        per_page: int = 30,
+        parent_id: Optional[str] = None,
+    ) -> JsonObject:
+        if not connection_id.strip() or page < 1 or not 1 <= per_page <= 100:
+            raise ValueError("resource request identity/pagination is invalid")
+        query_values = [("page", str(page)), ("per_page", str(per_page))]
+        if parent_id is not None:
+            if not parent_id.strip():
+                raise ValueError("parent_id must be non-empty when provided")
+            query_values.append(("parent_id", parent_id))
+        return self._transport.request(
+            "GET",
+            f"/v3/connections/{quote(connection_id, safe='')}/resources?"
+            + urlencode(query_values),
+        )
+
+    def configure_connection_resources(
+        self, connection_id: str, resources: Sequence[Mapping[str, Any]]
+    ) -> JsonObject:
+        if not connection_id.strip() or not resources:
+            raise ValueError("connection and at least one selected resource are required")
+        normalized = [dict(resource) for resource in resources]
+        if any(not resource for resource in normalized):
+            raise ValueError("selected resources must be non-empty objects")
+        return self._transport.request(
+            "POST",
+            f"/v3/connections/{quote(connection_id, safe='')}/configure",
+            {"resources": normalized},
+        )
+
     def list_connection_documents(
         self, provider: str, *, container_tags: Sequence[str]
     ) -> JsonObject:
@@ -640,9 +682,17 @@ class SupermemoryClient:
             {"containerTags": list(container_tags)},
         )
 
-    def delete_connection(self, connection_id: str) -> JsonObject:
+    def delete_connection(
+        self, connection_id: str, *, delete_documents: bool = True
+    ) -> JsonObject:
+        if not connection_id.strip():
+            raise ValueError("connection_id is required")
         return self._transport.request(
-            "DELETE", f"/v3/connections/{quote(connection_id, safe='')}"
+            "DELETE",
+            f"/v3/connections/{quote(connection_id, safe='')}?"
+            + urlencode(
+                {"deleteDocuments": "true" if delete_documents else "false"}
+            ),
         )
 
     def create_memories(

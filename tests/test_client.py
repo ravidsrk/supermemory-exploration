@@ -432,6 +432,44 @@ class SupermemoryClientTests(unittest.TestCase):
             },
         )
 
+    def test_connection_resource_lifecycle_uses_exact_quoted_identity(self) -> None:
+        transport = RecordingTransport()
+        client = SupermemoryClient(transport)
+
+        client.get_connection("conn/id")
+        client.fetch_connection_resources(
+            "conn/id", page=2, per_page=100, parent_id="parent/id"
+        )
+        client.configure_connection_resources(
+            "conn/id", [{"id": 7, "name": "org/repo", "defaultBranch": "main"}]
+        )
+        client.delete_connection("conn/id", delete_documents=False)
+
+        self.assertEqual(
+            transport.calls[0][0:2], ("GET", "/v3/connections/conn%2Fid")
+        )
+        self.assertEqual(
+            transport.calls[1][0:2],
+            (
+                "GET",
+                "/v3/connections/conn%2Fid/resources?page=2&per_page=100&parent_id=parent%2Fid",
+            ),
+        )
+        self.assertEqual(
+            transport.calls[2],
+            (
+                "POST",
+                "/v3/connections/conn%2Fid/configure",
+                {"resources": [{"id": 7, "name": "org/repo", "defaultBranch": "main"}]},
+            ),
+        )
+        self.assertEqual(
+            transport.calls[3][0:2],
+            ("DELETE", "/v3/connections/conn%2Fid?deleteDocuments=false"),
+        )
+        with self.assertRaises(ValueError):
+            client.configure_connection_resources("conn", [])
+
     def test_scoped_key_lifecycle_uses_container_and_key_id(self) -> None:
         transport = RecordingTransport()
         client = SupermemoryClient(transport)
