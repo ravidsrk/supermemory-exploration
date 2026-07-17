@@ -1,6 +1,8 @@
 from dataclasses import replace
 import unittest
 
+from supermemory_lab.authorization import TestingAuthorizationLedger
+
 from supermemory_lab.exact_deletion_controller import (
     DeletionAuthorization,
     ExactDeletionController,
@@ -27,6 +29,7 @@ class ExactDeletionControllerTests(unittest.TestCase):
         return ExactDeletionController(
             memory,
             signing_key=b"0123456789abcdef0123456789abcdef",
+            authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
             **kwargs,
         )
 

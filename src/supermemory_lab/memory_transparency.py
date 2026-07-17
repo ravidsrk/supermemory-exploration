@@ -6,6 +6,7 @@ import hmac
 import json
 from typing import Any, Dict, List, Mapping, Protocol, Sequence, Tuple
 
+from .authorization import AuthorizationLedger, consume_authorization
 from .openrouter import LanguageModel
 
 
@@ -117,6 +118,7 @@ class MemoryTransparencyAgent:
         container_tag: str,
         subject: str,
         signing_key: bytes,
+        authorization_ledger: AuthorizationLedger,
         max_resources: int = 100,
     ) -> None:
         if not signing_key:
@@ -128,6 +130,7 @@ class MemoryTransparencyAgent:
         self._container_tag = container_tag
         self._subject = subject
         self._key = signing_key
+        self._authorization_ledger = authorization_ledger
         self._max_resources = max_resources
         self.audit_events: List[Mapping[str, Any]] = []
         self._applied_plans: set = set()
@@ -355,6 +358,12 @@ class MemoryTransparencyAgent:
             or authorization.inventory_hash != plan.inventory_hash
         ):
             raise PermissionError("authorization does not match the exact erasure plan")
+        consume_authorization(
+            self._authorization_ledger,
+            scope="memory-transparency.erase",
+            actor=authorization.actor,
+            resource_hash=plan.plan_hash,
+        )
         if plan.plan_hash in self._applied_plans:
             raise RuntimeError("erasure approval replay denied")
         current = self.build_export()

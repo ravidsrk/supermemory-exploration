@@ -8,6 +8,7 @@ from itertools import combinations
 import json
 from typing import Any, Dict, Iterable, Mapping, Protocol, Sequence, Tuple
 
+from .authorization import AuthorizationLedger, consume_authorization
 from .openrouter import LanguageModel
 
 
@@ -253,6 +254,7 @@ class AllProviderReadinessCommander:
         *,
         container_tag: str,
         signing_key: bytes,
+        authorization_ledger: AuthorizationLedger,
     ) -> None:
         if len(signing_key) < 16:
             raise ValueError("signing_key must contain at least 16 bytes")
@@ -260,6 +262,7 @@ class AllProviderReadinessCommander:
         self._llm = llm
         self._container_tag = container_tag
         self._key = signing_key
+        self._authorization_ledger = authorization_ledger
         self._persisted: set[str] = set()
 
     def _sign(self, value: Any) -> str:
@@ -442,6 +445,12 @@ class AllProviderReadinessCommander:
             or not authorization.actor.strip()
         ):
             raise PermissionError("authorization does not match exact readiness report")
+        consume_authorization(
+            self._authorization_ledger,
+            scope="provider-readiness.persist",
+            actor=authorization.actor,
+            resource_hash=report.report_hash,
+        )
         if report.report_hash in self._persisted:
             raise RuntimeError("readiness report replay denied")
         result = self._memory.create_memories(

@@ -1,6 +1,8 @@
 import unittest
 from typing import Any, Dict, List, Mapping, Sequence
 
+from supermemory_lab.authorization import TestingAuthorizationLedger
+
 from supermemory_lab.memory_transparency import (
     ErasureAuthorization,
     MemoryTransparencyAgent,
@@ -77,6 +79,7 @@ class MemoryTransparencyTests(unittest.TestCase):
             container_tag="user:one",
             subject="subject-one",
             signing_key=b"secret",
+            authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
         )
 
     def test_export_contains_sources_current_memory_and_history(self) -> None:

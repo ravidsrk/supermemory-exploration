@@ -2,6 +2,8 @@ import unittest
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Mapping, Sequence
 
+from supermemory_lab.authorization import TestingAuthorizationLedger
+
 from supermemory_lab.retention_controller import (
     LegalHoldAuthorization,
     LegalHoldRetentionController,
@@ -78,6 +80,7 @@ class RetentionControllerTests(unittest.TestCase):
             container_tag="retention:1",
             allowed_retention_classes=["support", "marketing"],
             audit_sink=audit,
+            authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
         )
 
     def test_preview_partitions_exact_latest_inventory(self) -> None:

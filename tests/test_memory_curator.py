@@ -2,6 +2,8 @@ import unittest
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List
 
+from supermemory_lab.authorization import TestingAuthorizationLedger
+
 from supermemory_lab.memory_curator import (
     CurationApproval,
     CurationEvidence,
@@ -63,6 +65,7 @@ class GovernedMemoryCuratorTests(unittest.TestCase):
             memory,
             llm,
             container_tag="account:1",
+            authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
             max_evidence_age=timedelta(days=2),
             now=NOW,
         )

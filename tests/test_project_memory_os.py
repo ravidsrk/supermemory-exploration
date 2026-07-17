@@ -2,6 +2,8 @@ import unittest
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Mapping, Sequence
 
+from supermemory_lab.authorization import TestingAuthorizationLedger
+
 from supermemory_lab.project_memory_os import (
     ArtifactVerification,
     ProjectMemoryOS,
@@ -49,6 +51,7 @@ class ProjectMemoryOSTests(unittest.TestCase):
             user_container="user:one",
             project_id="p1",
             signing_key=b"0123456789abcdef",
+            authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
         )
 
     def apply(self, agent: ProjectMemoryOS, target: str, artifact=None) -> None:

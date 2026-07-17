@@ -7,6 +7,8 @@ import json
 import re
 from typing import Any, Dict, List, Mapping, Protocol, Sequence, Tuple
 
+from .authorization import AuthorizationLedger, consume_authorization
+
 
 _KEY = re.compile(r"^[a-z0-9][a-z0-9_-]{0,63}$")
 
@@ -73,6 +75,7 @@ class GovernedProfileSchemaSteward:
         *,
         container_tag: str,
         signing_key: bytes,
+        authorization_ledger: AuthorizationLedger,
         max_own_buckets: int = 50,
     ) -> None:
         if len(signing_key) < 16:
@@ -82,6 +85,7 @@ class GovernedProfileSchemaSteward:
         self._memory = memory
         self._container_tag = container_tag
         self._key = signing_key
+        self._authorization_ledger = authorization_ledger
         self._max_own_buckets = max_own_buckets
         self._applied: set[str] = set()
 
@@ -254,6 +258,12 @@ class GovernedProfileSchemaSteward:
             or not authorization.actor.strip()
         ):
             raise PermissionError("authorization does not match the exact schema plan")
+        consume_authorization(
+            self._authorization_ledger,
+            scope="profile-schema.apply",
+            actor=authorization.actor,
+            resource_hash=plan.plan_hash,
+        )
         if plan.plan_hash in self._applied:
             raise RuntimeError("profile schema plan replay denied")
         current = self.capture()

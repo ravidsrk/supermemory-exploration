@@ -2,6 +2,8 @@ import dataclasses
 from datetime import datetime, timedelta, timezone
 import unittest
 
+from supermemory_lab.authorization import TestingAuthorizationLedger
+
 from supermemory_lab.citation_guardian import (
     CitationAuthorization,
     SourceRevisionCitationGuardian,
@@ -52,6 +54,7 @@ class CitationGuardianTests(unittest.TestCase):
             FakeLLM(answers),
             container_tag="policy",
             signing_key=b"0123456789abcdef0123456789abcdef",
+            authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
         )
 
     def snapshot(self, guardian, revision="V1", required=("REVISION=V1",), forbidden=()):

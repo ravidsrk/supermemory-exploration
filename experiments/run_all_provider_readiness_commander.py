@@ -7,6 +7,7 @@ import secrets
 from typing import Any, Dict, Mapping, Optional
 
 from supermemory_lab.config import load_config
+from supermemory_lab.authorization import TestingAuthorizationLedger
 from supermemory_lab.live import build_live_clients
 from supermemory_lab.provider_permutations import (
     ALL_PROVIDER_COMMANDER,
@@ -76,6 +77,7 @@ def main() -> None:
         clients.llm,
         container_tag=workspace,
         signing_key=secrets.token_bytes(32),
+        authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
     )
     observations = []
     cleanup: Dict[str, Any] = {}

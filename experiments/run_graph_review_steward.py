@@ -7,6 +7,7 @@ import time
 from typing import Any, Dict, List, Mapping
 
 from supermemory_lab.config import load_config
+from supermemory_lab.authorization import TestingAuthorizationLedger
 from supermemory_lab.graph_review_steward import (
     GraphReviewSteward,
     ReviewAuthorization,
@@ -133,7 +134,10 @@ def main() -> None:
         )
 
         steward = GraphReviewSteward(
-            clients.memory, clients.llm, container_tag=workspace
+            clients.memory,
+            clients.llm,
+            container_tag=workspace,
+            authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
         )
         audit = trace.capture(
             "audit_complete_history",
@@ -254,7 +258,15 @@ def main() -> None:
             undone = trace.capture(
                 "undo_human_review",
                 "supermemory",
-                lambda: steward.undo_review(candidate, reviewer="synthetic-owner"),
+                lambda: steward.undo_review(
+                    candidate,
+                    ReviewAuthorization(
+                        candidate.memory_id,
+                        candidate.snapshot_hash,
+                        "undo",
+                        "synthetic-owner",
+                    ),
+                ),
                 summarize=lambda value: {
                     "reviewStatus": value.get("reviewStatus"),
                     "isInference": value.get("isInference"),

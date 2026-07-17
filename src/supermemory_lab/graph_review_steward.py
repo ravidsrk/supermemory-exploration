@@ -4,6 +4,11 @@ from dataclasses import dataclass
 import hashlib
 from typing import Any, Dict, List, Mapping, Protocol, Sequence, Tuple
 
+from .authorization import (
+    AuthorizationLedger,
+    authorization_resource,
+    consume_authorization,
+)
 from .openrouter import LanguageModel
 
 
@@ -93,6 +98,7 @@ class GraphReviewSteward:
         llm: LanguageModel,
         *,
         container_tag: str,
+        authorization_ledger: AuthorizationLedger,
         minimum_approve_parents: int = 2,
     ) -> None:
         if minimum_approve_parents < 1:
@@ -100,6 +106,7 @@ class GraphReviewSteward:
         self._memory = memory
         self._llm = llm
         self._container_tag = container_tag
+        self._authorization_ledger = authorization_ledger
         self._minimum_approve_parents = minimum_approve_parents
         self._reviewed: Dict[str, str] = {}
 
@@ -235,6 +242,14 @@ class GraphReviewSteward:
             or authorization.snapshot_hash != candidate.snapshot_hash
         ):
             raise PermissionError("review authorization does not match candidate snapshot")
+        consume_authorization(
+            self._authorization_ledger,
+            scope="graph-review.apply",
+            actor=authorization.reviewer,
+            resource_hash=authorization_resource(
+                candidate.snapshot_hash, authorization.action
+            ),
+        )
         if candidate.memory_id in self._reviewed:
             raise RuntimeError("candidate was already reviewed by this steward")
         if (
@@ -251,11 +266,25 @@ class GraphReviewSteward:
         self._reviewed[candidate.memory_id] = authorization.action
         return result
 
-    def undo_review(self, candidate: InferenceCandidate, *, reviewer: str) -> Dict[str, Any]:
-        if not reviewer.strip():
+    def undo_review(
+        self, candidate: InferenceCandidate, authorization: ReviewAuthorization
+    ) -> Dict[str, Any]:
+        if not authorization.reviewer.strip():
             raise PermissionError("reviewer identity is required")
+        if (
+            authorization.memory_id != candidate.memory_id
+            or authorization.snapshot_hash != candidate.snapshot_hash
+            or authorization.action != "undo"
+        ):
+            raise PermissionError("undo authorization does not match candidate snapshot")
         if candidate.memory_id not in self._reviewed:
             raise RuntimeError("this steward has no review to undo")
+        consume_authorization(
+            self._authorization_ledger,
+            scope="graph-review.undo",
+            actor=authorization.reviewer,
+            resource_hash=authorization_resource(candidate.snapshot_hash, "undo"),
+        )
         result = self._memory.review_inferred_memory(
             self._container_tag, candidate.memory_id, action="undo"
         )

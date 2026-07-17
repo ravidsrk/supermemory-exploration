@@ -7,6 +7,7 @@ import hmac
 import json
 from typing import Any, Dict, List, Mapping, Protocol, Sequence, Tuple
 
+from .authorization import AuthorizationLedger, consume_authorization
 from .openrouter import LanguageModel
 
 
@@ -98,6 +99,7 @@ class SourceRevisionCitationGuardian:
         *,
         container_tag: str,
         signing_key: bytes,
+        authorization_ledger: AuthorizationLedger,
         max_chunks: int = 100,
         max_chunk_chars: int = 8_000,
     ) -> None:
@@ -109,6 +111,7 @@ class SourceRevisionCitationGuardian:
         self._llm = llm
         self._container_tag = container_tag
         self._key = signing_key
+        self._authorization_ledger = authorization_ledger
         self._max_chunks = max_chunks
         self._max_chunk_chars = max_chunk_chars
         self._persisted: set[str] = set()
@@ -365,6 +368,12 @@ class SourceRevisionCitationGuardian:
         ):
             raise PermissionError("authorization does not match the exact cited answer")
         self._require_current(snapshot)
+        consume_authorization(
+            self._authorization_ledger,
+            scope="citation.persist",
+            actor=authorization.actor,
+            resource_hash=report.report_hash,
+        )
         if report.report_hash in self._persisted:
             raise RuntimeError("cited answer replay denied")
         result = self._memory.create_memories(

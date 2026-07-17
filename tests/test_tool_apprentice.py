@@ -2,6 +2,8 @@ import unittest
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Mapping, Sequence
 
+from supermemory_lab.authorization import TestingAuthorizationLedger
+
 from supermemory_lab.tool_apprentice import (
     SandboxProof,
     SkillAuthorization,
@@ -50,6 +52,7 @@ class ToolApprenticeshipAgentTests(unittest.TestCase):
             llm or FakeLLM(),
             container_tag="tools:one",
             signing_key=b"0123456789abcdef",
+            authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
         )
 
     def episodes(self, agent):

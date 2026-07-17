@@ -8,6 +8,7 @@ import json
 import re
 from typing import Any, Dict, List, Mapping, Optional, Protocol, Sequence, Tuple
 
+from .authorization import AuthorizationLedger, consume_authorization
 from .openrouter import LanguageModel
 
 
@@ -117,6 +118,7 @@ class MemoryIntakeFirewall:
         *,
         container_tag: str,
         signing_key: bytes,
+        authorization_ledger: AuthorizationLedger,
         max_content_chars: int = 12_000,
     ) -> None:
         if len(signing_key) < 16:
@@ -125,6 +127,7 @@ class MemoryIntakeFirewall:
         self._llm = llm
         self._container_tag = container_tag
         self._key = signing_key
+        self._authorization_ledger = authorization_ledger
         self._max_content_chars = max_content_chars
         self._applied: set[str] = set()
         self.audit_events: List[Mapping[str, Any]] = []
@@ -327,6 +330,12 @@ class MemoryIntakeFirewall:
             or authorization.decision != proposal.decision
         ):
             raise PermissionError("authorization does not match exact intake proposal")
+        consume_authorization(
+            self._authorization_ledger,
+            scope="intake.apply",
+            actor=authorization.actor,
+            resource_hash=proposal.proposal_hash,
+        )
         if proposal.proposal_hash in self._applied:
             raise RuntimeError("memory intake replay denied")
         metadata = {

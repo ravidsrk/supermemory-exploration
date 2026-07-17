@@ -7,6 +7,7 @@ import hmac
 import json
 from typing import Any, Dict, Mapping, Protocol, Sequence, Tuple
 
+from .authorization import AuthorizationLedger, consume_authorization
 from .context import render_search_context
 from .openrouter import LanguageModel
 
@@ -80,6 +81,7 @@ class LeastPrivilegeMemoryWorker:
         *,
         container_tag: str,
         signing_key: bytes,
+        authorization_ledger: AuthorizationLedger,
     ) -> None:
         if len(signing_key) < 16:
             raise ValueError("signing_key must contain at least 16 bytes")
@@ -87,6 +89,7 @@ class LeastPrivilegeMemoryWorker:
         self._llm = llm
         self._container_tag = container_tag
         self._key = signing_key
+        self._authorization_ledger = authorization_ledger
         self._completed: set[str] = set()
 
     def _sign(self, value: Any) -> str:
@@ -187,6 +190,12 @@ class LeastPrivilegeMemoryWorker:
             or authorization.task_id != manifest.task_id
         ):
             raise PermissionError("delegation authorization does not match exact task")
+        consume_authorization(
+            self._authorization_ledger,
+            scope="delegated-worker.execute",
+            actor=authorization.actor,
+            resource_hash=manifest.manifest_hash,
+        )
         if manifest.manifest_hash in self._completed:
             raise RuntimeError("delegated task replay denied")
         response = self._memory.search_memories(

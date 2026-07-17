@@ -6,6 +6,7 @@ from typing import Any, Dict, Mapping, Optional
 
 from supermemory_lab.client import SupermemoryClient
 from supermemory_lab.config import load_config
+from supermemory_lab.authorization import TestingAuthorizationLedger
 from supermemory_lab.delegated_worker import (
     DelegationAuthorization,
     LeastPrivilegeMemoryWorker,
@@ -150,6 +151,7 @@ def main() -> None:
             clients.llm,
             container_tag=allowed,
             signing_key=signing_key,
+            authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
         )
         now = datetime.now(timezone.utc)
         manifest = worker.issue_manifest(

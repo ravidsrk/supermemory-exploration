@@ -1,6 +1,8 @@
 import dataclasses
 import unittest
 
+from supermemory_lab.authorization import TestingAuthorizationLedger
+
 from supermemory_lab.profile_schema_steward import (
     BucketEvolutionAuthorization,
     GovernedProfileSchemaSteward,
@@ -32,6 +34,7 @@ class ProfileSchemaStewardTests(unittest.TestCase):
             self.memory,
             container_tag="tenant:one",
             signing_key=b"0123456789abcdef0123456789abcdef",
+            authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
         )
 
     def test_validates_bounded_suggestions(self):

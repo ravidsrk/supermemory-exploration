@@ -7,6 +7,7 @@ import hmac
 import json
 from typing import Any, Dict, List, Mapping, Protocol, Sequence, Tuple
 
+from .authorization import AuthorizationLedger, consume_authorization
 from .context import render_search_context
 from .openrouter import LanguageModel
 
@@ -89,6 +90,7 @@ class MeetingCommitmentSteward:
         *,
         container_tag: str,
         signing_key: bytes,
+        authorization_ledger: AuthorizationLedger,
         max_chunks: int = 50,
         max_candidates: int = 20,
     ) -> None:
@@ -98,6 +100,7 @@ class MeetingCommitmentSteward:
         self._llm = llm
         self._container_tag = container_tag
         self._key = signing_key
+        self._authorization_ledger = authorization_ledger
         self._max_chunks = max_chunks
         self._max_candidates = max_candidates
         self._applied: set[str] = set()
@@ -245,6 +248,12 @@ class MeetingCommitmentSteward:
             or tuple(sorted(authorization.candidate_ids)) != expected_ids
         ):
             raise PermissionError("authorization does not match the exact candidate set")
+        consume_authorization(
+            self._authorization_ledger,
+            scope="commitment.apply",
+            actor=authorization.actor,
+            resource_hash=plan.candidate_set_hash,
+        )
         if plan.candidate_set_hash in self._applied:
             raise RuntimeError("commitment plan replay denied")
         if not plan.candidates:

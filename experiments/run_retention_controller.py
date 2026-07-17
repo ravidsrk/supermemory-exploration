@@ -7,6 +7,7 @@ import time
 from typing import Any, Dict, Mapping
 
 from supermemory_lab.config import load_config
+from supermemory_lab.authorization import TestingAuthorizationLedger
 from supermemory_lab.evaluation import contains_text
 from supermemory_lab.live import build_live_clients
 from supermemory_lab.retention_controller import (
@@ -139,6 +140,7 @@ def main() -> None:
             container_tag=workspace,
             allowed_retention_classes=["support", "marketing"],
             audit_sink=external_audit,
+            authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
         )
         initial = trace.capture(
             "preview_exact_retention_plan",

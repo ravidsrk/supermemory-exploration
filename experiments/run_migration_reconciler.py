@@ -6,6 +6,7 @@ import secrets
 from typing import Any, Dict, Mapping
 
 from supermemory_lab.config import load_config
+from supermemory_lab.authorization import TestingAuthorizationLedger
 from supermemory_lab.live import build_live_clients
 from supermemory_lab.migration_reconciler import (
     GovernedMigrationReconciler,
@@ -74,6 +75,7 @@ def main() -> None:
             control_container=control,
             migration_id=migration_id,
             signing_key=signing_key,
+            authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
         )
         manifest = reconciler.build_manifest(records)
         first = trace.capture(
@@ -119,6 +121,7 @@ def main() -> None:
             control_container=control,
             migration_id=migration_id,
             signing_key=signing_key,
+            authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
         )
         loaded = fresh.load_checkpoint()
         report = trace.capture(

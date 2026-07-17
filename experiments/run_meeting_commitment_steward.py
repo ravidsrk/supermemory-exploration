@@ -11,6 +11,7 @@ from supermemory_lab.commitment_steward import (
     MeetingCommitmentSteward,
 )
 from supermemory_lab.config import load_config
+from supermemory_lab.authorization import TestingAuthorizationLedger
 from supermemory_lab.live import build_live_clients
 from supermemory_lab.trace import RunTrace
 
@@ -65,6 +66,7 @@ This footer has no owner or due date and is not a commitment.
         clients.llm,
         container_tag=workspace,
         signing_key=signing_key,
+        authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
     )
     trace = RunTrace(
         f"meeting-commitments-{identity}",
@@ -197,6 +199,7 @@ This footer has no owner or due date and is not a commitment.
             clients.llm,
             container_tag=workspace,
             signing_key=signing_key,
+            authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
         )
         brief = trace.capture(
             "fresh_process_briefs_due_commitments",

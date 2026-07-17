@@ -7,6 +7,7 @@ import hmac
 import json
 from typing import Any, Dict, List, Mapping, Optional, Protocol, Sequence, Tuple
 
+from .authorization import AuthorizationLedger, consume_authorization
 from .openrouter import LanguageModel
 
 
@@ -104,6 +105,7 @@ class ToolApprenticeshipAgent:
         *,
         container_tag: str,
         signing_key: bytes,
+        authorization_ledger: AuthorizationLedger,
     ) -> None:
         if len(signing_key) < 16:
             raise ValueError("signing_key must contain at least 16 bytes")
@@ -111,6 +113,7 @@ class ToolApprenticeshipAgent:
         self._llm = llm
         self._container_tag = container_tag
         self._key = signing_key
+        self._authorization_ledger = authorization_ledger
         self._applied: set[str] = set()
 
     def _sign(self, value: Any) -> str:
@@ -314,6 +317,12 @@ class ToolApprenticeshipAgent:
             or tuple(sorted(authorization.episode_digests)) != candidate.episode_digests
         ):
             raise PermissionError("authorization does not match exact tool skill candidate")
+        consume_authorization(
+            self._authorization_ledger,
+            scope="tool-apprentice.promote",
+            actor=authorization.actor,
+            resource_hash=candidate.candidate_digest,
+        )
         if candidate.candidate_digest in self._applied:
             raise RuntimeError("tool skill promotion replay denied")
         result = self._memory.create_memories(

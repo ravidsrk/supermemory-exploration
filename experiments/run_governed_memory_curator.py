@@ -6,6 +6,7 @@ import secrets
 from typing import Any, Dict, List, Mapping
 
 from supermemory_lab.config import load_config
+from supermemory_lab.authorization import TestingAuthorizationLedger
 from supermemory_lab.evaluation import contains_text
 from supermemory_lab.live import build_live_clients
 from supermemory_lab.memory_curator import (
@@ -67,6 +68,7 @@ def main() -> None:
         clients.memory.wait_for_memory(
             old_canary,
             container_tag=workspace,
+            authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
             search_mode="memories",
             threshold=0.0,
             required_text=old_canary,

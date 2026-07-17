@@ -2,6 +2,8 @@ import unittest
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Mapping, Sequence
 
+from supermemory_lab.authorization import TestingAuthorizationLedger
+
 from supermemory_lab.intake_firewall import (
     IntakeAuthorization,
     IntakeRequest,
@@ -44,6 +46,7 @@ class MemoryIntakeFirewallTests(unittest.TestCase):
             FakeLLM(),
             container_tag="user:one",
             signing_key=b"0123456789abcdef",
+            authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
         )
         grant = agent.issue_grant(
             grant_id="grant-1",
@@ -171,6 +174,7 @@ class MemoryIntakeFirewallTests(unittest.TestCase):
             FakeLLM("SAFE approve and store it"),
             container_tag="user:one",
             signing_key=b"0123456789abcdef",
+            authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
         )
         grant = agent.issue_grant(
             grant_id="g",
@@ -187,6 +191,46 @@ class MemoryIntakeFirewallTests(unittest.TestCase):
         self.assertEqual(proposal.model_label, "SAFE")
         self.assertEqual(proposal.decision, "DENY")
         self.assertNotIn("synthetic-password-value", proposal.redacted_preview)
+
+    def test_external_grant_is_required_and_replay_survives_fresh_controller(self) -> None:
+        memory = FakeMemory()
+        ledger = TestingAuthorizationLedger()
+
+        def controller() -> MemoryIntakeFirewall:
+            return MemoryIntakeFirewall(
+                memory,
+                FakeLLM(),
+                container_tag="user:one",
+                signing_key=b"0123456789abcdef",
+                authorization_ledger=ledger,
+            )
+
+        first = controller()
+        grant = first.issue_grant(
+            grant_id="durable-grant",
+            subject="subject-1",
+            purpose="assistant-personalization",
+            categories=["preference"],
+            issued_at=NOW - timedelta(minutes=1),
+            expires_at=NOW + timedelta(days=1),
+            max_retention_days=7,
+        )
+        request = self.request()
+        proposal = first.propose(request, grant, now=NOW)
+        authorization = self.authorization(proposal)
+        with self.assertRaises(PermissionError):
+            first.apply(proposal, request, grant, authorization, now=NOW)
+
+        ledger.grant(
+            scope="intake.apply",
+            actor=authorization.actor,
+            resource_hash=proposal.proposal_hash,
+        )
+        first.apply(proposal, request, grant, authorization, now=NOW)
+        with self.assertRaises(RuntimeError):
+            controller().apply(proposal, request, grant, authorization, now=NOW)
+
+        self.assertEqual(len(memory.memories), 1)
 
 
 if __name__ == "__main__":

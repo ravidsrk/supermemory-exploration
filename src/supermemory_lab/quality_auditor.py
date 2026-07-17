@@ -8,6 +8,7 @@ import json
 import re
 from typing import Any, Dict, List, Mapping, Protocol, Sequence, Tuple
 
+from .authorization import AuthorizationLedger, consume_authorization
 from .openrouter import LanguageModel
 
 
@@ -122,6 +123,7 @@ class MemoryQualityAuditor:
         *,
         container_tag: str,
         signing_key: bytes,
+        authorization_ledger: AuthorizationLedger,
         max_resources: int = 200,
     ) -> None:
         if len(signing_key) < 16:
@@ -130,6 +132,7 @@ class MemoryQualityAuditor:
         self._llm = llm
         self._container_tag = container_tag
         self._key = signing_key
+        self._authorization_ledger = authorization_ledger
         self._max_resources = max_resources
         self._applied: set[str] = set()
         self.audit_events: List[Mapping[str, Any]] = []
@@ -469,6 +472,12 @@ class MemoryQualityAuditor:
             or tuple(sorted(authorization.action_ids)) != action_ids
         ):
             raise PermissionError("authorization does not match exact quarantine plan")
+        consume_authorization(
+            self._authorization_ledger,
+            scope="quality-auditor.quarantine",
+            actor=authorization.actor,
+            resource_hash=plan.plan_hash,
+        )
         if plan.plan_hash in self._applied:
             raise RuntimeError("quarantine plan replay denied")
         current = self.build_snapshot(now=now)

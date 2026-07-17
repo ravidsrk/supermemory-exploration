@@ -1,6 +1,8 @@
 import unittest
 from typing import Any, Dict, List, Mapping, Sequence
 
+from supermemory_lab.authorization import TestingAuthorizationLedger
+
 from supermemory_lab.migration_reconciler import (
     GovernedMigrationReconciler,
     MigrationRecord,
@@ -74,6 +76,7 @@ class MigrationReconcilerTests(unittest.TestCase):
             control_container="control",
             migration_id="migration-one",
             signing_key=b"0123456789abcdef",
+            authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
         )
 
     def test_manifest_rejects_duplicate_or_empty_source_ids(self) -> None:

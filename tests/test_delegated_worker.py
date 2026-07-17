@@ -2,6 +2,8 @@ import unittest
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Mapping, Sequence
 
+from supermemory_lab.authorization import TestingAuthorizationLedger
+
 from supermemory_lab.delegated_worker import (
     DelegationAuthorization,
     LeastPrivilegeMemoryWorker,
@@ -44,6 +46,7 @@ class LeastPrivilegeMemoryWorkerTests(unittest.TestCase):
             llm or FakeLLM(),
             container_tag=container,
             signing_key=b"0123456789abcdef",
+            authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
         )
         manifest = worker.issue_manifest(
             task_id="t1",

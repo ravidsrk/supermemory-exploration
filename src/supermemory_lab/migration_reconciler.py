@@ -6,6 +6,7 @@ import hmac
 import json
 from typing import Any, Dict, List, Mapping, Protocol, Sequence, Tuple
 
+from .authorization import AuthorizationLedger, consume_authorization
 from .openrouter import LanguageModel
 
 
@@ -112,6 +113,7 @@ class GovernedMigrationReconciler:
         control_container: str,
         migration_id: str,
         signing_key: bytes,
+        authorization_ledger: AuthorizationLedger,
     ) -> None:
         if len(signing_key) < 16:
             raise ValueError("signing_key must contain at least 16 bytes")
@@ -121,6 +123,7 @@ class GovernedMigrationReconciler:
         self._control_container = control_container
         self._migration_id = migration_id
         self._key = signing_key
+        self._authorization_ledger = authorization_ledger
         self._rolled_back: set = set()
 
     def _sign(self, value: Any) -> str:
@@ -393,6 +396,12 @@ class GovernedMigrationReconciler:
             or authorization.manifest_hash != plan.manifest_hash
         ):
             raise PermissionError("authorization does not match exact rollback plan")
+        consume_authorization(
+            self._authorization_ledger,
+            scope="migration.rollback",
+            actor=authorization.actor,
+            resource_hash=plan.plan_hash,
+        )
         if plan.plan_hash in self._rolled_back:
             raise RuntimeError("rollback replay denied")
         current = self.reconcile(manifest)

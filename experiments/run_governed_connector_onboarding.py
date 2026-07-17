@@ -6,6 +6,7 @@ import secrets
 from typing import Any, Dict, List, Mapping
 
 from supermemory_lab.config import load_config
+from supermemory_lab.authorization import TestingAuthorizationLedger
 from supermemory_lab.connector_onboarding_governor import (
     ConnectorAuthorization,
     GovernedConnectorOnboarding,
@@ -30,7 +31,9 @@ def main() -> None:
     workspace = f"lab:connector-governor:{identity}"
     clients = build_live_clients(load_config())
     governor = GovernedConnectorOnboarding(
-        clients.memory, signing_key=secrets.token_bytes(32)
+        clients.memory,
+        signing_key=secrets.token_bytes(32),
+        authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
     )
     intent = governor.issue_intent(
         provider="github",

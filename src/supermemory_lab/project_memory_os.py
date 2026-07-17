@@ -7,6 +7,11 @@ import hmac
 import json
 from typing import Any, Dict, List, Mapping, Optional, Protocol, Sequence, Tuple
 
+from .authorization import (
+    AuthorizationLedger,
+    authorization_resource,
+    consume_authorization,
+)
 from .context import render_search_context
 from .openrouter import LanguageModel
 
@@ -117,6 +122,7 @@ class ProjectMemoryOS:
         user_container: str,
         project_id: str,
         signing_key: bytes,
+        authorization_ledger: AuthorizationLedger,
     ) -> None:
         if len(signing_key) < 16:
             raise ValueError("signing_key must contain at least 16 bytes")
@@ -127,6 +133,7 @@ class ProjectMemoryOS:
         self._user_container = user_container
         self._project_id = project_id
         self._key = signing_key
+        self._authorization_ledger = authorization_ledger
 
     def _sign(self, checkpoint: ProjectCheckpoint) -> ProjectCheckpoint:
         unsigned = replace(checkpoint, signature="")
@@ -294,6 +301,17 @@ class ProjectMemoryOS:
             or authorization.artifact_digest != proposal.artifact_digest
         ):
             raise PermissionError("authorization does not match exact transition proposal")
+        consume_authorization(
+            self._authorization_ledger,
+            scope="project-memory.transition",
+            actor=authorization.actor,
+            resource_hash=authorization_resource(
+                proposal.target_state,
+                proposal.predecessor_digest,
+                proposal.summary_digest,
+                proposal.artifact_digest,
+            ),
+        )
         resume = self.resume()
         predecessor = resume.chain[-1].payload_digest if resume.chain else "GENESIS"
         if resume.next_state != proposal.target_state or predecessor != proposal.predecessor_digest:

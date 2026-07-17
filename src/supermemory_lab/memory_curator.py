@@ -5,6 +5,7 @@ from datetime import datetime, timedelta, timezone
 import hashlib
 from typing import Any, Dict, Mapping, Optional, Protocol, Sequence
 
+from .authorization import AuthorizationLedger, consume_authorization
 from .context import render_search_context
 from .openrouter import LanguageModel
 
@@ -76,6 +77,7 @@ class GovernedMemoryCurator:
         llm: LanguageModel,
         *,
         container_tag: str,
+        authorization_ledger: AuthorizationLedger,
         max_evidence_age: timedelta = timedelta(days=7),
         now: Optional[datetime] = None,
     ) -> None:
@@ -84,6 +86,7 @@ class GovernedMemoryCurator:
         self._memory = memory
         self._llm = llm
         self._container_tag = container_tag
+        self._authorization_ledger = authorization_ledger
         self._max_evidence_age = max_evidence_age
         self._now = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
         self._applied: set[str] = set()
@@ -186,6 +189,12 @@ class GovernedMemoryCurator:
             or approval.expected_replacement_hash != proposal.replacement_hash
         ):
             raise PermissionError("approval does not match the exact curation proposal")
+        consume_authorization(
+            self._authorization_ledger,
+            scope="memory-curator.apply",
+            actor=approval.approved_by,
+            resource_hash=proposal.proposal_id,
+        )
         if proposal.proposal_id in self._applied:
             raise RuntimeError("curation proposal has already been applied")
         result = self._memory.update_memory(

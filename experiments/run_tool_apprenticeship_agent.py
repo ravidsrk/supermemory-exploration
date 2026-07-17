@@ -8,6 +8,7 @@ import secrets
 from typing import Any, Dict, List, Mapping, Optional
 
 from supermemory_lab.config import load_config
+from supermemory_lab.authorization import TestingAuthorizationLedger
 from supermemory_lab.live import build_live_clients
 from supermemory_lab.tool_apprentice import (
     SandboxProof,
@@ -109,6 +110,7 @@ def main() -> None:
         clients.llm,
         container_tag=workspace,
         signing_key=signing_key,
+        authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
     )
     trace = RunTrace(
         f"tool-apprentice-{identity}", experiment="episodic-to-procedural-tool-agent"
@@ -383,6 +385,7 @@ print(f'CHECKS=4 PASSED={{checks}}')
             clients.llm,
             container_tag=workspace,
             signing_key=signing_key,
+            authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
         )
         loaded = trace.capture(
             "fresh_process_revalidates_tool_skill",

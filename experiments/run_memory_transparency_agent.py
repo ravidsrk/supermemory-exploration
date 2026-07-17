@@ -6,6 +6,7 @@ import secrets
 from typing import Any, Dict, Mapping
 
 from supermemory_lab.config import load_config
+from supermemory_lab.authorization import TestingAuthorizationLedger
 from supermemory_lab.evaluation import contains_text
 from supermemory_lab.http import ApiError
 from supermemory_lab.live import build_live_clients
@@ -49,6 +50,7 @@ def main() -> None:
         container_tag=workspace,
         subject=subject,
         signing_key=secrets.token_bytes(32),
+        authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
     )
     trace = RunTrace(
         f"memory-transparency-{identity}", experiment="memory-transparency-dsar-agent"

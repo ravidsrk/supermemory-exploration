@@ -11,6 +11,7 @@ from supermemory_lab.bulk_ingestion_controller import (
     IngestionRecord,
 )
 from supermemory_lab.config import load_config
+from supermemory_lab.authorization import TestingAuthorizationLedger
 from supermemory_lab.exact_deletion_controller import (
     DeletionAuthorization,
     ExactDeletionController,
@@ -250,6 +251,7 @@ def main() -> None:
         deletion = ExactDeletionController(
             clients.memory,
             signing_key=signing_key,
+            authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
             checkpoint_sink=deletion_checkpoints.append,
         )
         plan = deletion.build_plan(
@@ -284,6 +286,7 @@ def main() -> None:
         fresh_deletion = ExactDeletionController(
             clients.memory,
             signing_key=signing_key,
+            authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
             checkpoint_sink=deletion_checkpoints.append,
         )
         completed = trace.capture(

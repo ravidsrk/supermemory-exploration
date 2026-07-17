@@ -6,6 +6,8 @@ import hmac
 import json
 from typing import Any, Callable, Dict, Optional, Protocol, Sequence, Tuple
 
+from .authorization import AuthorizationLedger, consume_authorization
+
 
 def _canonical(value: Any) -> str:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
@@ -54,12 +56,14 @@ class ExactDeletionController:
         memory: ExactDeletionMemory,
         *,
         signing_key: bytes,
+        authorization_ledger: AuthorizationLedger,
         checkpoint_sink: Optional[Callable[[DeletionCheckpoint], None]] = None,
     ) -> None:
         if len(signing_key) < 16:
             raise ValueError("signing_key must contain at least 16 bytes")
         self._memory = memory
         self._key = signing_key
+        self._authorization_ledger = authorization_ledger
         self._sink = checkpoint_sink or (lambda checkpoint: None)
 
     def _sign(self, value: Any) -> str:
@@ -169,6 +173,13 @@ class ExactDeletionController:
             raise PermissionError("exact deletion authorization is invalid")
         if checkpoint is not None and not self.verify_checkpoint(plan, checkpoint):
             raise PermissionError("deletion checkpoint is invalid")
+        if checkpoint is None:
+            consume_authorization(
+                self._authorization_ledger,
+                scope="exact-deletion.apply",
+                actor=authorization.actor,
+                resource_hash=plan.plan_hash,
+            )
         if max_batches is not None and max_batches < 1:
             raise ValueError("max_batches must be positive")
         deleted = list(checkpoint.deleted_document_ids if checkpoint else ())

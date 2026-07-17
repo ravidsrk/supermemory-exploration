@@ -7,6 +7,7 @@ import time
 from typing import Any, Dict, List, Mapping, Tuple
 
 from supermemory_lab.config import load_config
+from supermemory_lab.authorization import TestingAuthorizationLedger
 from supermemory_lab.graph_review_steward import GraphReviewSteward, ReviewAuthorization
 from supermemory_lab.live import build_live_clients
 from supermemory_lab.review_matrix import (
@@ -99,6 +100,7 @@ def main() -> None:
                 clients.memory,
                 clients.llm,
                 container_tag=workspace,
+                authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
                 # This experiment validates endpoint mechanics even for a one-parent
                 # inference. Production approval keeps the steward's safer default of two.
                 minimum_approve_parents=1,
@@ -152,7 +154,15 @@ def main() -> None:
                     "isForgotten": value.get("isForgotten"),
                 },
             )
-            first_undo = steward.undo_review(selected, reviewer="synthetic-owner")
+            first_undo = steward.undo_review(
+                selected,
+                ReviewAuthorization(
+                    selected.memory_id,
+                    selected.snapshot_hash,
+                    "undo",
+                    "synthetic-owner",
+                ),
+            )
             declined = trace.capture(
                 "decline_exact_inference",
                 "supermemory",
@@ -171,7 +181,15 @@ def main() -> None:
                     "isForgotten": value.get("isForgotten"),
                 },
             )
-            final_undo = steward.undo_review(selected, reviewer="synthetic-owner")
+            final_undo = steward.undo_review(
+                selected,
+                ReviewAuthorization(
+                    selected.memory_id,
+                    selected.snapshot_hash,
+                    "undo",
+                    "synthetic-owner",
+                ),
+            )
             lifecycle = {
                 "exercised": True,
                 "mode": mode,

@@ -2,6 +2,8 @@ import dataclasses
 from datetime import datetime, timedelta, timezone
 import unittest
 
+from supermemory_lab.authorization import TestingAuthorizationLedger
+
 from supermemory_lab.provider_permutations import (
     ALL_PROVIDER_COMMANDER,
     AUXILIARY_PROVIDERS,
@@ -99,6 +101,7 @@ class AllProviderCommanderTests(unittest.TestCase):
             self.model,
             container_tag="campaign",
             signing_key=b"0123456789abcdef0123456789abcdef",
+            authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
         )
 
     def _snapshot(self):
@@ -179,6 +182,7 @@ class AllProviderCommanderTests(unittest.TestCase):
             model,
             container_tag="campaign",
             signing_key=b"0123456789abcdef0123456789abcdef",
+            authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
         )
         snapshot = commander.issue_snapshot(
             "launch-1", observations(), expires_at=self.now + timedelta(minutes=5)

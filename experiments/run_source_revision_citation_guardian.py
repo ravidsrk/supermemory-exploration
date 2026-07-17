@@ -11,6 +11,7 @@ from supermemory_lab.citation_guardian import (
     SourceRevisionCitationGuardian,
 )
 from supermemory_lab.config import load_config
+from supermemory_lab.authorization import TestingAuthorizationLedger
 from supermemory_lab.live import build_live_clients
 from supermemory_lab.trace import RunTrace
 
@@ -68,6 +69,7 @@ def main() -> None:
         clients.llm,
         container_tag=workspace,
         signing_key=signing_key,
+        authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
     )
     trace = RunTrace(
         f"citation-guardian-{identity}",

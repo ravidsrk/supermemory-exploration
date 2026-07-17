@@ -2,6 +2,8 @@ import unittest
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Mapping, Sequence
 
+from supermemory_lab.authorization import TestingAuthorizationLedger
+
 from supermemory_lab.quality_auditor import (
     MemoryQualityAuditor,
     QuarantineAuthorization,
@@ -65,6 +67,7 @@ class MemoryQualityAuditorTests(unittest.TestCase):
             FakeLLM(),
             container_tag="user:one",
             signing_key=b"0123456789abcdef",
+            authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
         )
 
     @staticmethod

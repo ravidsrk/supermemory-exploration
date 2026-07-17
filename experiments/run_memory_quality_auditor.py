@@ -6,6 +6,7 @@ import secrets
 from typing import Any, Dict, List, Mapping
 
 from supermemory_lab.config import load_config
+from supermemory_lab.authorization import TestingAuthorizationLedger
 from supermemory_lab.live import build_live_clients
 from supermemory_lab.quality_auditor import (
     MemoryQualityAuditor,
@@ -56,6 +57,7 @@ def main() -> None:
         clients.llm,
         container_tag=workspace,
         signing_key=signing_key,
+        authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
     )
     trace = RunTrace(
         f"quality-audit-{identity}", experiment="memory-contamination-quality-auditor"

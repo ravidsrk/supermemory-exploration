@@ -6,6 +6,7 @@ import hashlib
 import json
 from typing import Any, Dict, List, Mapping, MutableSequence, Protocol, Sequence, Tuple
 
+from .authorization import AuthorizationLedger, consume_authorization
 from .context import render_search_context
 from .openrouter import LanguageModel
 
@@ -84,6 +85,7 @@ class LegalHoldRetentionController:
         container_tag: str,
         allowed_retention_classes: Sequence[str],
         audit_sink: MutableSequence[Mapping[str, Any]],
+        authorization_ledger: AuthorizationLedger,
     ) -> None:
         classes = frozenset(value.strip() for value in allowed_retention_classes if value.strip())
         if not classes:
@@ -93,6 +95,7 @@ class LegalHoldRetentionController:
         self._container_tag = container_tag
         self._classes = classes
         self._audit_sink = audit_sink
+        self._authorization_ledger = authorization_ledger
         self._applied: set = set()
 
     def inventory(self, subject_id: str) -> Tuple[RetentionItem, ...]:
@@ -214,6 +217,12 @@ class LegalHoldRetentionController:
             or not authorization.approved_by.strip()
         ):
             raise PermissionError("legal-hold authorization does not match exact inventory item")
+        consume_authorization(
+            self._authorization_ledger,
+            scope="retention.legal-hold",
+            actor=authorization.approved_by,
+            resource_hash=item.snapshot_hash,
+        )
         current = {value.memory_id: value for value in self.inventory(item.subject_id)}
         if current.get(item.memory_id) != item:
             raise RuntimeError("inventory item changed before legal hold")
@@ -256,6 +265,12 @@ class LegalHoldRetentionController:
             or not approval.approved_by.strip()
         ):
             raise PermissionError("retention approval does not match exact preview")
+        consume_authorization(
+            self._authorization_ledger,
+            scope="retention.apply",
+            actor=approval.approved_by,
+            resource_hash=plan.plan_id,
+        )
         if plan.plan_id in self._applied:
             raise RuntimeError("retention plan was already applied")
         current = self.preview(plan.subject_id, now=now)

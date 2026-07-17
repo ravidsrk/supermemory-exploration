@@ -7,6 +7,8 @@ import hmac
 import json
 from typing import Any, Dict, List, Mapping, Protocol, Sequence, Tuple
 
+from .authorization import AuthorizationLedger, consume_authorization
+
 
 def _canonical(value: Any) -> str:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
@@ -114,11 +116,18 @@ class GovernedConnectorOnboarding:
         "granola",
     }
 
-    def __init__(self, memory: ConnectorMemory, *, signing_key: bytes) -> None:
+    def __init__(
+        self,
+        memory: ConnectorMemory,
+        *,
+        signing_key: bytes,
+        authorization_ledger: AuthorizationLedger,
+    ) -> None:
         if len(signing_key) < 16:
             raise ValueError("signing_key must contain at least 16 bytes")
         self._memory = memory
         self._key = signing_key
+        self._authorization_ledger = authorization_ledger
         self._configured: set = set()
 
     def _sign(self, value: Any) -> str:
@@ -194,6 +203,12 @@ class GovernedConnectorOnboarding:
             or not authorization.actor.strip()
         ):
             raise PermissionError("connector intent authorization is invalid")
+        consume_authorization(
+            self._authorization_ledger,
+            scope="connector.begin",
+            actor=authorization.actor,
+            resource_hash=intent.intent_hash,
+        )
         response = self._memory.create_connection(
             intent.provider,
             container_tags=intent.container_tags,
@@ -369,6 +384,12 @@ class GovernedConnectorOnboarding:
             or not authorization.actor.strip()
         ):
             raise PermissionError("resource authorization is invalid")
+        consume_authorization(
+            self._authorization_ledger,
+            scope="connector.configure",
+            actor=authorization.actor,
+            resource_hash=plan.plan_hash,
+        )
         if plan.plan_hash in self._configured:
             raise RuntimeError("connector configuration replay denied")
         current = self.capture_resources(pending)
@@ -392,6 +413,12 @@ class GovernedConnectorOnboarding:
             or not authorization.actor.strip()
         ):
             raise PermissionError("disconnect authorization is invalid")
+        consume_authorization(
+            self._authorization_ledger,
+            scope="connector.disconnect",
+            actor=authorization.actor,
+            resource_hash=pending.intent_hash,
+        )
         return self._memory.delete_connection(
             pending.connection_id, delete_documents=False
         )

@@ -2,6 +2,8 @@ import unittest
 from datetime import date
 from typing import Any, Dict, List, Mapping, Sequence
 
+from supermemory_lab.authorization import TestingAuthorizationLedger
+
 from supermemory_lab.commitment_steward import (
     CommitmentAuthorization,
     MeetingCommitmentSteward,
@@ -62,6 +64,7 @@ class MeetingCommitmentStewardTests(unittest.TestCase):
             llm,
             container_tag="project:one",
             signing_key=b"0123456789abcdef",
+            authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
         )
 
     def build(self, agent: MeetingCommitmentSteward):

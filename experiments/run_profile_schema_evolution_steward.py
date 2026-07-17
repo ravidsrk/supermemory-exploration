@@ -8,6 +8,7 @@ import time
 from typing import Any, Dict, Mapping
 
 from supermemory_lab.config import load_config
+from supermemory_lab.authorization import TestingAuthorizationLedger
 from supermemory_lab.live import build_live_clients
 from supermemory_lab.profile_schema_steward import (
     BucketEvolutionAuthorization,
@@ -56,6 +57,7 @@ def main() -> None:
         clients.memory,
         container_tag=workspace,
         signing_key=secrets.token_bytes(32),
+        authorization_ledger=TestingAuthorizationLedger(trust_first_use=True),
     )
     trace = RunTrace(
         f"profile-schema-{identity}",
