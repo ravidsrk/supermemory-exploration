@@ -6,6 +6,8 @@ import hmac
 import json
 from typing import Any, Dict, List, Mapping, Protocol, Sequence, Tuple
 
+from .integrity import canonical_json as _canonical, digest_json as _digest
+
 from .openrouter import LanguageModel
 
 
@@ -21,13 +23,6 @@ class DriftMemory(Protocol):
     def search_memories(self, query: str, **kwargs: Any) -> Dict[str, Any]:
         ...
 
-
-def _canonical(value: Any) -> str:
-    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-
-
-def _digest(value: Any) -> str:
-    return hashlib.sha256(_canonical(value).encode("utf-8")).hexdigest()
 
 
 @dataclass(frozen=True)

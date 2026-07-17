@@ -26,9 +26,10 @@ COMPOSIO_ROUTE = "composio-hn"
 QUERY_CLASS = "hackernews-search"
 
 
-def _identity() -> str:
-    stamp = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
-    return f"{stamp}-{secrets.token_hex(3)}"
+from supermemory_lab.integrity import new_run_identity
+
+
+_identity = new_run_identity
 
 
 def _price(value: Mapping[str, Any]) -> Optional[float]:

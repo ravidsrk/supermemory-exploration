@@ -17,9 +17,10 @@ from supermemory_lab.profile_schema_steward import (
 from supermemory_lab.trace import RunTrace
 
 
-def _identity() -> str:
-    stamp = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
-    return f"{stamp}-{secrets.token_hex(3)}"
+from supermemory_lab.integrity import new_run_identity
+
+
+_identity = new_run_identity
 
 
 def _wait_for_bucket_memory(memory, container: str, bucket: str, marker: str) -> Dict[str, Any]:

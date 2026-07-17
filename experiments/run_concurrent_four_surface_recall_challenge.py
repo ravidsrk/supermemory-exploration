@@ -15,9 +15,10 @@ from supermemory_lab.live import build_live_clients
 from supermemory_lab.trace import RunTrace
 
 
-def _identity() -> str:
-    stamp = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
-    return f"{stamp}-{secrets.token_hex(3)}"
+from supermemory_lab.integrity import new_run_identity
+
+
+_identity = new_run_identity
 
 
 def _wait_for_profile(memory: Any, container: str, marker: str) -> None:

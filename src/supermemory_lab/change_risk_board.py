@@ -6,6 +6,8 @@ import hmac
 import json
 from typing import Any, Dict, Mapping, Protocol, Tuple
 
+from .integrity import digest_parts as _digest
+
 from .context import render_search_context
 from .openrouter import LanguageModel
 
@@ -56,9 +58,6 @@ class ChangeRiskDecision:
     action_authorized: bool
     signature: str = ""
 
-
-def _digest(*values: str) -> str:
-    return hashlib.sha256("\x1f".join(values).encode("utf-8")).hexdigest()
 
 
 class OperationalChangeRiskBoard:

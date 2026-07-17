@@ -7,18 +7,13 @@ import json
 import re
 from typing import Any, Dict, List, Mapping, Protocol, Sequence, Tuple
 
+from .integrity import canonical_json as _canonical, digest_json as _digest
+
 from .authorization import AuthorizationLedger, consume_authorization
 
 
 _KEY = re.compile(r"^[a-z0-9][a-z0-9_-]{0,63}$")
 
-
-def _canonical(value: Any) -> str:
-    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-
-
-def _digest(value: Any) -> str:
-    return hashlib.sha256(_canonical(value).encode("utf-8")).hexdigest()
 
 
 class ProfileSchemaMemory(Protocol):

@@ -7,6 +7,8 @@ import hmac
 import json
 from typing import Any, Callable, Dict, List, Mapping, Optional, Protocol, Sequence, Tuple
 
+from .integrity import digest_parts as _digest
+
 from .context import render_search_context
 from .openrouter import LanguageModel
 
@@ -88,9 +90,6 @@ class CampaignReport:
     provider_count: int
     action_authorized: bool = False
 
-
-def _digest(*values: str) -> str:
-    return hashlib.sha256("\x1f".join(values).encode("utf-8")).hexdigest()
 
 
 def _json_text(value: Any, limit: int = 14_000) -> str:

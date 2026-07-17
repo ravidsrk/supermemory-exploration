@@ -7,6 +7,7 @@ import json
 from typing import Any, Dict, List, Mapping, Optional, Protocol, Sequence, Tuple
 
 from .context import render_search_context
+from .integrity import canonical_json as _canonical
 from .openrouter import LanguageModel
 
 
@@ -30,10 +31,6 @@ class WorkcellMemory(Protocol):
 
 class OutputContractError(RuntimeError):
     pass
-
-
-def _canonical(value: Mapping[str, Any]) -> str:
-    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
 
 
 def _sha(value: str) -> str:

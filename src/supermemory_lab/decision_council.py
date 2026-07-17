@@ -5,6 +5,8 @@ import hashlib
 import json
 from typing import Any, Dict, List, Mapping, Protocol, Sequence, Tuple
 
+from .integrity import digest_parts as _digest
+
 from .context import render_search_context
 from .openrouter import LanguageModel
 
@@ -19,9 +21,6 @@ class CouncilMemory(Protocol):
     def search_memories(self, query: str, **kwargs: Any) -> Dict[str, Any]:
         ...
 
-
-def _digest(*values: str) -> str:
-    return hashlib.sha256("\x1f".join(values).encode("utf-8")).hexdigest()
 
 
 @dataclass(frozen=True)

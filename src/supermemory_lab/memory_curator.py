@@ -5,6 +5,8 @@ from datetime import datetime, timedelta, timezone
 import hashlib
 from typing import Any, Dict, Mapping, Optional, Protocol, Sequence
 
+from .integrity import digest_parts as _digest
+
 from .authorization import AuthorizationLedger, consume_authorization
 from .context import render_search_context
 from .openrouter import LanguageModel
@@ -27,9 +29,6 @@ def _parse_time(value: str) -> datetime:
         raise ValueError("captured_at must include a timezone")
     return parsed.astimezone(timezone.utc)
 
-
-def _digest(*values: str) -> str:
-    return hashlib.sha256("\x1f".join(values).encode("utf-8")).hexdigest()
 
 
 @dataclass(frozen=True)

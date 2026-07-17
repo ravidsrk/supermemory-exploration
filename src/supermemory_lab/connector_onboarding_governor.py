@@ -7,15 +7,10 @@ import hmac
 import json
 from typing import Any, Dict, List, Mapping, Protocol, Sequence, Tuple
 
+from .integrity import canonical_json as _canonical, digest_json as _digest
+
 from .authorization import AuthorizationLedger, consume_authorization
 
-
-def _canonical(value: Any) -> str:
-    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-
-
-def _digest(value: Any) -> str:
-    return hashlib.sha256(_canonical(value).encode("utf-8")).hexdigest()
 
 
 class ConnectorMemory(Protocol):

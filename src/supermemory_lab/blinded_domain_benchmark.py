@@ -10,18 +10,13 @@ import math
 import time
 from typing import Any, Dict, List, Mapping, Optional, Protocol, Sequence, Tuple
 
+from .integrity import canonical_json as _canonical, digest_json as _digest
+
 from .context import render_search_context
 from .domain_benchmark import percentile, terms_pass
 from .http import ApiError
 from .openrouter import LanguageModel
 
-
-def _canonical(value: Any) -> str:
-    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-
-
-def _digest(value: Any) -> str:
-    return hashlib.sha256(_canonical(value).encode("utf-8")).hexdigest()
 
 
 class BenchmarkMemory(Protocol):

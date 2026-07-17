@@ -8,6 +8,8 @@ from itertools import combinations
 import json
 from typing import Any, Dict, Iterable, Mapping, Protocol, Sequence, Tuple
 
+from .integrity import canonical_json as _canonical, digest_json as _digest
+
 from .authorization import AuthorizationLedger, consume_authorization
 from .openrouter import LanguageModel
 
@@ -183,13 +185,6 @@ def pair_coverage(
 def coverage_gaps(experiments: Sequence[ExperimentSpec]) -> Tuple[Tuple[str, str], ...]:
     return tuple(pair for pair, names in pair_coverage(experiments).items() if not names)
 
-
-def _canonical(value: Any) -> str:
-    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-
-
-def _digest(value: Any) -> str:
-    return hashlib.sha256(_canonical(value).encode("utf-8")).hexdigest()
 
 
 class CommanderMemory(Protocol):

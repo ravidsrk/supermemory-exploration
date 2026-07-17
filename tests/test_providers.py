@@ -46,7 +46,7 @@ class ProviderAdapterTests(unittest.TestCase):
         transport = RecordingTransport()
 
         ContextDevClient(transport).scrape_markdown(
-            "https://example.com/docs?section=memory", max_age_ms=0
+            "https://example.com/docs?section=memory"
         )
 
         method, path, body = transport.calls[0]

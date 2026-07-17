@@ -24,9 +24,10 @@ from supermemory_lab.trace import RunTrace
 UPSTREAM_COMMIT = "8d926332ab23aa5785def636aca9d0a52fea4a65"
 
 
-def _identity() -> str:
-    stamp = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
-    return f"{stamp}-{secrets.token_hex(3)}"
+from supermemory_lab.integrity import new_run_identity
+
+
+_identity = new_run_identity
 
 
 def _json_url(url: str) -> Any:

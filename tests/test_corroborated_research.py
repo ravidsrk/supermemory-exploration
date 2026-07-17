@@ -30,7 +30,7 @@ class FakeContext:
         self.text = text
         self.calls = 0
 
-    def scrape_markdown(self, url: str, *, max_age_ms: int = 0) -> Dict[str, Any]:
+    def scrape_markdown(self, url: str) -> Dict[str, Any]:
         self.calls += 1
         return {"markdown": self.text, "url": url}
 

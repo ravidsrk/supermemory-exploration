@@ -7,16 +7,11 @@ import hmac
 import json
 from typing import Any, Dict, Optional, Protocol, Sequence
 
+from .integrity import canonical_json as _canonical, digest_json as _digest
+
 from .context import render_profile_context, render_search_context
 from .openrouter import LanguageModel
 
-
-def _canonical(value: Any) -> str:
-    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-
-
-def _digest(value: Any) -> str:
-    return hashlib.sha256(_canonical(value).encode("utf-8")).hexdigest()
 
 
 class ContinuityMemory(Protocol):

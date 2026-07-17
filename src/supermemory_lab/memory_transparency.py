@@ -7,6 +7,7 @@ import json
 from typing import Any, Dict, List, Mapping, Protocol, Sequence, Tuple
 
 from .authorization import AuthorizationLedger, consume_authorization
+from .integrity import canonical_bytes as _canonical, digest_json as _digest
 from .openrouter import LanguageModel
 
 
@@ -30,16 +31,6 @@ class TransparencyMemory(Protocol):
 
     def forget_memory(self, *, memory_id: str, container_tag: str) -> Dict[str, Any]:
         ...
-
-
-def _canonical(value: Any) -> bytes:
-    return json.dumps(
-        value, sort_keys=True, separators=(",", ":"), ensure_ascii=False
-    ).encode("utf-8")
-
-
-def _digest(value: Any) -> str:
-    return hashlib.sha256(_canonical(value)).hexdigest()
 
 
 def _mappings(value: Any) -> List[Mapping[str, Any]]:

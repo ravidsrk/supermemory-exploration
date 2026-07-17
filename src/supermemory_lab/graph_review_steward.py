@@ -4,6 +4,8 @@ from dataclasses import dataclass
 import hashlib
 from typing import Any, Dict, List, Mapping, Protocol, Sequence, Tuple
 
+from .integrity import digest_parts as _digest
+
 from .authorization import (
     AuthorizationLedger,
     authorization_resource,
@@ -24,9 +26,6 @@ class GraphReviewMemory(Protocol):
     ) -> Dict[str, Any]:
         ...
 
-
-def _digest(*values: str) -> str:
-    return hashlib.sha256("\x1f".join(values).encode("utf-8")).hexdigest()
 
 
 def _mappings(value: Any) -> List[Mapping[str, Any]]:

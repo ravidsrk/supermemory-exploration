@@ -160,7 +160,7 @@ class CorroboratedResearchAgent:
 
         if refresh:
             if official_url:
-                payload = self._context.scrape_markdown(official_url, max_age_ms=0)
+                payload = self._context.scrape_markdown(official_url)
                 observations.append(
                     self._observation(
                         "context.dev",

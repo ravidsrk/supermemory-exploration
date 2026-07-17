@@ -6,6 +6,8 @@ import hashlib
 import json
 from typing import Any, Dict, List, Mapping, MutableSequence, Protocol, Sequence, Tuple
 
+from .integrity import digest_parts as _digest
+
 from .authorization import AuthorizationLedger, consume_authorization
 from .context import render_search_context
 from .openrouter import LanguageModel
@@ -24,9 +26,6 @@ class RetentionMemory(Protocol):
     def update_memory(self, **kwargs: Any) -> Dict[str, Any]:
         ...
 
-
-def _digest(*values: str) -> str:
-    return hashlib.sha256("\x1f".join(values).encode("utf-8")).hexdigest()
 
 
 def _time(value: str) -> datetime:

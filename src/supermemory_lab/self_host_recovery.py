@@ -8,10 +8,7 @@ from pathlib import Path
 import shutil
 from typing import Any
 
-
-def _canonical(value: Any) -> str:
-    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-
+from .integrity import canonical_json as _canonical
 
 @dataclass(frozen=True)
 class DirectorySnapshot:
