@@ -3,7 +3,7 @@
 import json
 import time
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence
-from urllib.parse import quote
+from urllib.parse import quote, urlencode
 
 from .http import JsonObject, JsonTransport
 
@@ -198,6 +198,21 @@ class SupermemoryClient:
                 }
             ),
         )
+
+    def get_processing_documents(
+        self, *, container_tags: Optional[Sequence[str]] = None
+    ) -> JsonObject:
+        """List documents still in the processing queue for an optional exact scope."""
+
+        path = "/v3/documents/processing"
+        if container_tags is not None:
+            normalized = [str(tag).strip() for tag in container_tags]
+            if not normalized or any(not tag for tag in normalized):
+                raise ValueError("processing document container tags must be non-empty")
+            path += "?" + urlencode(
+                [("containerTags", tag) for tag in normalized], doseq=True
+            )
+        return self._transport.request("GET", path)
 
     def update_document(
         self,

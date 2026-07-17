@@ -112,6 +112,22 @@ class SupermemoryClientTests(unittest.TestCase):
             ("GET", "/v3/documents/document%2Fid/file-url"),
         )
 
+    def test_processing_documents_encodes_exact_container_scope(self) -> None:
+        transport = RecordingTransport()
+        client = SupermemoryClient(transport)
+
+        client.get_processing_documents(container_tags=["tenant:one", "tenant/two"])
+
+        self.assertEqual(
+            transport.calls[0][0:2],
+            (
+                "GET",
+                "/v3/documents/processing?containerTags=tenant%3Aone&containerTags=tenant%2Ftwo",
+            ),
+        )
+        with self.assertRaises(ValueError):
+            client.get_processing_documents(container_tags=[])
+
     def test_bulk_document_delete_exposes_only_exact_unique_ids(self) -> None:
         transport = RecordingTransport()
         client = SupermemoryClient(transport)
