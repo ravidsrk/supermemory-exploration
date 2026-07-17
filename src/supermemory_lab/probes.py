@@ -106,6 +106,8 @@ class ProbeRecorder:
         name: str,
         action: Callable[[], Any],
         summarize: Optional[Callable[[Mapping[str, Any]], Any]] = None,
+        *,
+        expected_error: bool = False,
     ) -> Optional[Any]:
         start = time.perf_counter()
         try:
@@ -113,7 +115,7 @@ class ProbeRecorder:
             elapsed = round((time.perf_counter() - start) * 1000, 1)
             result = summarize(raw) if summarize and isinstance(raw, Mapping) else raw
             self.report["observations"][name] = {
-                "status": "ok",
+                "status": "unexpected-success" if expected_error else "ok",
                 "wallTimeMs": elapsed,
                 "result": _redact(result),
             }
@@ -122,7 +124,7 @@ class ProbeRecorder:
         except Exception as error:
             elapsed = round((time.perf_counter() - start) * 1000, 1)
             self.report["observations"][name] = {
-                "status": "error",
+                "status": "expected-error" if expected_error else "error",
                 "wallTimeMs": elapsed,
                 "errorType": type(error).__name__,
                 "error": _redact(str(error))[:1_000],
@@ -136,6 +138,16 @@ class ProbeRecorder:
         output_dir.mkdir(parents=True, exist_ok=True)
         path = output_dir / f"{self.report['runId']}.json"
         path.write_text(json.dumps(self.report, indent=2, sort_keys=True) + "\n")
+        failed = [
+            name
+            for name, observation in self.report["observations"].items()
+            if isinstance(observation, Mapping)
+            and observation.get("status") in {"error", "unexpected-success"}
+        ]
+        if failed:
+            raise RuntimeError(
+                f"probe failed in {len(failed)} operation(s); report written to {path}"
+            )
         return path
 
 
@@ -466,6 +478,7 @@ def run_core(config: LabConfig, *, with_llm: bool = False) -> Path:
         recorder.capture(
             "v3_get_deleted_document_negative_control",
             lambda: client.get_document(document_id),
+            expected_error=True,
         )
 
     path = recorder.write()
@@ -774,6 +787,7 @@ def run_scoped_key(config: LabConfig) -> Path:
                 threshold=0.0,
             ),
             _summarize_search,
+            expected_error=True,
         )
 
     seen_ids = set()

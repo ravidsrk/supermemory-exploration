@@ -54,9 +54,27 @@ class ProbeSafetyTests(unittest.TestCase):
             recorder.capture(
                 "failing-operation",
                 lambda: (_ for _ in ()).throw(RuntimeError(credential)),
+                expected_error=True,
             )
             path = recorder.write(directory=temporary)
             self.assertNotIn(credential, Path(path).read_text(encoding="utf-8"))
+
+    def test_unexpected_error_and_unexpected_success_fail_after_report_write(self) -> None:
+        for expected_error, action in (
+            (False, lambda: (_ for _ in ()).throw(RuntimeError("failure"))),
+            (True, lambda: {"unexpected": "success"}),
+        ):
+            with self.subTest(expected_error=expected_error):
+                with tempfile.TemporaryDirectory() as temporary:
+                    recorder = ProbeRecorder("failure-contract")
+                    recorder.capture(
+                        "operation", action, expected_error=expected_error
+                    )
+                    with self.assertRaises(RuntimeError):
+                        recorder.write(directory=temporary)
+                    self.assertTrue(
+                        (Path(temporary) / "failure-contract.json").exists()
+                    )
 
 
 if __name__ == "__main__":
