@@ -5,7 +5,15 @@ Supermemory over the next six months. It is not a copy of the product documentat
 
 ## Start here
 
-0. **[Nov 2026 delta](delta-2026-11.md)**: what changed since the July field lab (API v5).
+**Nov 2026 (API v5) — current:**
+
+- **[Memory Layer for Agents guide](memory-layer-for-agents-2026-11.md)**: architecture, feature choice, harness patterns, gotchas, cost model.
+- **[Capability map](capability-map.md)**: 96-row coverage table (feature, docs, status, agent use case, verified?).
+- **[Build patterns](build-patterns.md)**: 14 shippable designs on v5 routes.
+- **[Nov 2026 delta](delta-2026-11.md)**: what changed since the July field lab.
+
+**July 2026 (v3/v4). As of July 2026, superseded Nov 2026 where the delta says so:**
+
 1. [Practical multi-provider agents](practical-agents.md) — live builds and runbooks.
 2. [Provider combination map](provider-combinations.md) — useful pairings and anti-patterns.
 3. [Practical verdict](verdict.md) — where Supermemory is strong, weak, and fit for use.
