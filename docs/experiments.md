@@ -3,6 +3,11 @@
 > **As of Nov 2026:** every pass below targeted the v3/v4 API. The Nov 2026 v5 refresh probe
 > and its blocked status are recorded in the section near the end and in
 > [delta-2026-11.md](delta-2026-11.md).
+>
+> The Nov 2026 v5 feature suite is [`run_memory_layer_lab_2026_11.py`](../experiments/run_memory_layer_lab_2026_11.py)
+> (29 exercises). Its 2026-11-05 run was blocked by a 401 key; see
+> [evidence/experiments/2026-11-05-memory-layer-lab.md](evidence/experiments/2026-11-05-memory-layer-lab.md).
+> All July numbers below are **as of July 2026 / superseded Nov 2026** until re-run on v5.
 
 The curated results are in
 [2026-07-16-field-lab.md](../evidence/2026-07-16-field-lab.md). This page explains how to

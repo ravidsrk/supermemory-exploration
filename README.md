@@ -1,156 +1,101 @@
-# Supermemory Field Lab
+# Memory Layer for Agents — Supermemory lab (Nov 2026)
 
-An evidence-driven field lab for exploring [Supermemory](https://supermemory.ai) as a production memory layer for AI agents.
+A hands-on, source-cited lab for building the **memory layer of AI agents** on
+[Supermemory](https://supermemory.ai), as of **2026-11-05**. It covers API v5 namespaces,
+SDK 5.x, `@supermemory/tools` 3.0, the hosted MCP, coding-agent plugins, SMFS, and
+Supermemory Local v0.0.9. It is the companion repo for the article *"Memory Layer for
+Agents with Supermemory"*.
 
-Primary docs entrypoint: [https://supermemory.ai/docs/intro](https://supermemory.ai/docs/intro)
+> **Live status (Nov 2026).** Every claim is grounded in primary sources: docs, the live v5
+> OpenAPI, pricing, and the changelog. The live v5 suite is written and tested offline. Its
+> 2026-11-05 run was **blocked** because the workspace key returned **401** on every route
+> ([evidence](docs/evidence/experiments/2026-11-05-auth-and-sources.md)). No writes were
+> made and no credits were used. Run it yourself with a valid key (see below).
 
-This repository deliberately separates five kinds of knowledge:
+## Start here
 
-- **Documented** — behavior stated by official documentation.
-- **Source-inspected** — behavior visible in public repositories and SDKs.
-- **Observed** — behavior reproduced against a hosted or local system.
-- **Reported** — behavior described in an issue or third-party account but not reproduced here.
-- **Inferred** — architecture or product conclusions that still need validation.
-
-> **As of Nov 2026:** the experiments below ran in July 2026 against the v3/v4 API.
-> Supermemory launched a breaking **API v5** (namespaces, hybrid search default, no direct
-> memory writes or versioned memory updates) on 2026-10-07. Read
-> [docs/delta-2026-11.md](docs/delta-2026-11.md) before relying on any July recommendation.
-
-## What this repo is for
-
-Hands-on exploration of Supermemory product surface, APIs, SDKs, and integration patterns:
-
-- Reproducible probes for ingestion, search, profiles, updates, isolation, and lifecycle behavior.
-- Working agent patterns, with fake-backed unit tests and opt-in live tests.
-- A practical wiki of capabilities, tradeoffs, failure modes, and design guidance.
-- A six-month experiment roadmap that can evolve with the product.
-
-## Status
-
-The field lab includes hosted/self-hosted capability probes, nine authenticated provider
-adapters, 58 reference implementations, 282 offline tests, and live memory/no-memory
-experiments. The latest blinded 100-case domain suite scored 100/100 with bounded memory
-versus 10/100 without it, with zero case errors, tenant leaks, or prompt-injection bypasses.
-An exact 600-document ingest/delete audit and an eight-worker four-surface recall challenge
-also passed. Stopped-state local backup/restore passed, while self-host production remains a
-HOLD because clean shutdown, worker supervision, queued ingestion, and a real upgrade are open.
-Start with the
-[practical wiki](docs/README.md), [multi-provider agents](docs/practical-agents.md), or the
-[verdict](docs/verdict.md).
-
-## Repository map
-
-| Path | Purpose |
+| If you want… | Read |
 |---|---|
-| `docs/` | Durable practical wiki and research synthesis |
-| `src/` | Reusable Supermemory client and agent patterns |
-| `experiments/` | Reproducible live probes and evaluations |
-| `tests/` | Offline contract and architecture tests |
-| `evidence/` | Curated, secret-free observations from live runs |
-| `integrations/` | Reproducible overlays and framework integration contracts |
-| `examples/` | Runnable live agent patterns |
+| The full mental model, architecture, patterns, gotchas, cost model | **[docs/memory-layer-for-agents-2026-11.md](docs/memory-layer-for-agents-2026-11.md)** |
+| Every current capability (96 rows): docs URL, status, agent use case, verified? | **[docs/capability-map.md](docs/capability-map.md)** |
+| 14 concrete things to ship, each tied to real v5 routes | **[docs/build-patterns.md](docs/build-patterns.md)** |
+| What changed since the July 2026 (v3/v4) lab | [docs/delta-2026-11.md](docs/delta-2026-11.md) |
+| The July 2026 deep-dive (legacy API, kept for history) | [docs/README.md](docs/README.md) · [verdict](docs/verdict.md) · [experiments](docs/experiments.md) · [archived README](docs/archive/README-2026-07.md) |
+
+## Supermemory in 60 seconds (v5)
+
+```text
+documents in  ──▶  POST /ns/{namespace}/document   (text, URL, file, batch ≤600; stable id)
+                         │  status: queued → … → done        (chunks searchable)
+                         │  dreamingStatus: dreaming → done  (memories + profile ready)
+                         ▼
+three outputs ──▶  chunks   (RAG)        POST /ns/{ns}/search  searchMode: "chunks"
+                   memories (graph)      POST /ns/{ns}/search  searchMode: "memories"
+                   profile  (always-on)  POST /ns/{ns}/profile static · dynamic · buckets
+                   (hybrid = memories ⊕ chunks, the v5 default; threshold default 0.3)
+```
+
+- A **namespace** (formerly container tag) is the hard isolation boundary. It lives in the
+  URL, and each request touches exactly one.
+- **No direct memory writes or memory updates in v5.** Ingest short statements with
+  `dreaming: "instant"`, and correct facts by `PATCH`ing their source document.
+- Forget by ID (`DELETE /ns/{ns}/memories`) or by meaning (`…/memories/semantic`, `dryRun`
+  required).
+- The same model is exposed through SDKs (TS/Python), `@supermemory/tools`, the MCP
+  (`https://mcp.supermemory.ai/mcp`), plugins (Claude Code, Cursor, Codex, …), SMFS, and Local.
+
+## What's in the lab
+
+| Path | What |
+|---|---|
+| [`src/supermemory_lab/v5.py`](src/supermemory_lab/v5.py) | Dependency-free v5 client: one method per OpenAPI operation, documented limits checked locally, a `moveTo` footgun guard, and a cursor iterator |
+| [`src/supermemory_lab/memory_layer.py`](src/supermemory_lab/memory_layer.py) | Reference agent harness: `session_start` (profile) → `before_turn` (hybrid search) → `after_turn` (append to stable session doc), plus `remember_now`, `correct`, `forget_reviewed`, and a multi-agent `SharedMemoryRouter` |
+| [`src/supermemory_lab/memory_layer_lab.py`](src/supermemory_lab/memory_layer_lab.py) | 29-exercise live feature suite (ingest, dreaming, SuperRAG, files, search modes/threshold/filter/include, profile, buckets, updates, lists/cursor, forget, review queue, namespace move, cleanup) |
+| [`experiments/run_memory_layer_lab_2026_11.py`](experiments/run_memory_layer_lab_2026_11.py) | Runner. Writes shape-only, secret-free evidence to `docs/evidence/experiments/` |
+| [`tests/test_v5_memory_layer.py`](tests/test_v5_memory_layer.py) | 21 offline tests: paths, bodies, limits, fail-open hooks, diff-friendly appends, blocked-key behavior, end-to-end fake run |
+| `docs/evidence/experiments/2026-11-05-*` | Nov 2026 evidence (auth probe, source snapshot, blocked suite run) |
+| `evidence/2026-07-*`, other `experiments/run_*.py` | July 2026 legacy-API field lab (58 reference agents, benchmarks), unchanged |
+
+## Run it
+
+Python 3.9+ and no third-party dependencies.
+
+```bash
+python3 -m venv .venv && . .venv/bin/activate
+python -m pip install -e .
+PYTHONPATH=src:. python -m unittest -q          # offline, no key needed
+
+cp .env.example .env.local                       # set SUPERMEMORY_API_KEY (never commit it)
+PYTHONPATH=src python3 experiments/run_memory_layer_lab_2026_11.py --plan   # no network
+PYTHONPATH=src python3 experiments/run_memory_layer_lab_2026_11.py          # live v5 suite
+```
+
+The live suite writes only into synthetic `lab:mla:<run>` namespaces and deletes them at
+the end, then verifies they are gone. It never calls `/feedback`, never mints keys, never
+changes organization settings, and never creates connectors. Expect a few cents of credits
+per run on any plan (a handful of `instant` operations, ~30 searches, and a few KB of tokens).
 
 ## Primary sources
 
 | Area | URL |
 |---|---|
-| Intro | https://supermemory.ai/docs/intro |
-| v5 migration guide (Nov 2026) | https://supermemory.ai/docs/migration/api-v5 |
-| v5 OpenAPI | https://api.supermemory.ai/v5/openapi |
-| Docs home | https://supermemory.ai/docs |
+| Docs index (202 pages) | https://supermemory.ai/docs/llms.txt |
+| v5 OpenAPI (live) | https://api.supermemory.ai/openapi.json |
+| v5 API reference | https://supermemory.ai/docs/v5/api-reference/overview |
+| v5 migration guide | https://supermemory.ai/docs/migration/api-v5 |
+| Pricing | https://supermemory.ai/pricing |
+| Changelog | https://supermemory.ai/changelog |
+| MCP | https://supermemory.ai/docs/supermemory-mcp/mcp |
 | Open-source monorepo | https://github.com/supermemoryai/supermemory |
-| MemoryBench | https://github.com/supermemoryai/memorybench |
 
 ## Secret safety
 
-Copy `.env.example` to `.env.local` and fill only the keys needed by a specific experiment. All `.env*` files except the example are ignored. Scripts must redact authorization headers and never serialize environment variables.
-
-If a credential has ever been pasted into a public issue, committed file, terminal transcript shared with others, or other untrusted surface, rotate it at the provider.
-
-## Setup
-
-Python 3.9+ is sufficient; the field lab deliberately has no third-party Python dependency.
-
-```bash
-python3 -m venv .venv
-. .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -e .
-cp .env.example .env.local
-python -m unittest -v
-```
-
-Run the redacted capability probe, foundational patterns, or advanced agents:
-
-```bash
-supermemory-probe --with-llm
-PYTHONPATH=src python examples/run_agent_patterns.py --pattern all
-PYTHONPATH=src:. python experiments/run_advanced_agents.py debug
-PYTHONPATH=src:. python experiments/run_advanced_agents.py continuity
-PYTHONPATH=src python3 experiments/run_governance_scorecard.py
-PYTHONPATH=src python3 experiments/run_signal_radar.py
-PYTHONPATH=src python3 experiments/run_retrieval_policy_grid.py
-PYTHONPATH=src python3 experiments/run_evolving_preference_agent.py
-PYTHONPATH=src python3 experiments/run_filter_erasure_agent.py
-PYTHONPATH=src python3 experiments/run_lifecycle_agents.py
-PYTHONPATH=src python3 experiments/run_router_continuity_matrix.py
-PYTHONPATH=src python3 experiments/run_domain_memory_benchmark.py
-PYTHONPATH=src python3 experiments/run_enterprise_context_agent.py
-PYTHONPATH=src python3 experiments/run_corroborated_research_swarm.py
-PYTHONPATH=src python3 experiments/run_adaptive_model_router.py
-PYTHONPATH=src python3 experiments/run_temporal_agenda_agent.py
-PYTHONPATH=src python3 experiments/run_dependency_risk_guardian.py
-PYTHONPATH=src python3 experiments/run_governed_memory_curator.py
-PYTHONPATH=src python3 experiments/run_resumable_agent_workcell.py
-PYTHONPATH=src python3 experiments/run_relationship_account_briefing.py
-PYTHONPATH=src python3 experiments/run_incident_forensics_agent.py
-PYTHONPATH=src python3 experiments/run_tool_economics_portfolio.py
-PYTHONPATH=src python3 experiments/run_graph_review_steward.py
-PYTHONPATH=src python3 experiments/run_decision_council.py
-PYTHONPATH=src python3 experiments/run_adaptive_tutor.py
-PYTHONPATH=src python3 experiments/run_due_diligence_campaign.py
-PYTHONPATH=src python3 experiments/run_change_risk_board.py
-PYTHONPATH=src python3 experiments/run_retention_controller.py
-PYTHONPATH=src python3 experiments/run_dreaming_review_matrix.py
-PYTHONPATH=src python3 experiments/run_memory_transparency_agent.py
-PYTHONPATH=src python3 experiments/run_contract_drift_sentinel.py
-PYTHONPATH=src python3 experiments/run_project_memory_os.py
-PYTHONPATH=src python3 experiments/run_adversarial_dissent_council.py
-PYTHONPATH=src python3 experiments/run_migration_reconciler.py
-PYTHONPATH=src python3 experiments/run_meeting_commitment_steward.py
-PYTHONPATH=src python3 experiments/run_memory_intake_firewall.py
-PYTHONPATH=src python3 experiments/run_tool_apprenticeship_agent.py
-PYTHONPATH=src python3 experiments/run_memory_quality_auditor.py
-PYTHONPATH=src python3 experiments/run_least_privilege_worker.py
-PYTHONPATH=src python3 experiments/run_all_provider_readiness_commander.py
-PYTHONPATH=src python3 experiments/run_source_revision_citation_guardian.py
-PYTHONPATH=src python3 experiments/run_profile_schema_evolution_steward.py
-PYTHONPATH=src python3 experiments/run_memory_outage_continuity_gateway.py
-PYTHONPATH=src python3 experiments/run_adaptive_bulk_ingestion_controller.py
-PYTHONPATH=src python3 experiments/run_memory_slo_canary_monitor.py
-PYTHONPATH=src python3 experiments/run_governed_connector_onboarding.py
-PYTHONPATH=src python3 experiments/run_max_cardinality_capacity_audit.py
-PYTHONPATH=src python3 experiments/run_concurrent_four_surface_recall_challenge.py
-PYTHONPATH=src python3 experiments/run_blinded_domain_100_benchmark.py
-PYTHONPATH=src python3 experiments/run_framework_integration_contract_matrix.py
-# Nov 2026 v5 contract refresh (synthetic namespace, full cleanup):
-PYTHONPATH=src python3 experiments/run_v5_contract_refresh.py
-# Requires a disposable installed local binary, data directory, and provider-env file:
-PYTHONPATH=src python3 experiments/run_self_host_backup_restore.py \
-  --server-binary /path/to/supermemory-server \
-  --source-data-dir /tmp/supermemory-recovery-source \
-  --provider-env /path/to/provider.env
-```
-
-Live commands create synthetic, isolated `lab:` containers. Core probes clean their exact
-documents, memories, and Router pools and verify the cleanup path. Raw output is ignored under
-`.runs/`; the agent demo deliberately leaves its containers available for dashboard inspection.
+All `.env*` files except `.env.example` are git-ignored. Scripts redact authorization
+headers and registered secret values, and evidence records only shapes, counts, and
+status codes. If a key was ever pasted somewhere untrusted, rotate it.
 
 ## License
 
-[MIT](LICENSE) © 2026 Ravindra Kumar.
-
-The upstream [Supermemory repository](https://github.com/supermemoryai/supermemory) is also
-MIT-licensed. This field lab is an independent exploration; source-inspected behavior is
-attributed and kept distinct from code written in this repository.
+[MIT](LICENSE) © 2026 Ravindra Kumar. This is an independent exploration, not affiliated
+with Supermemory. The upstream [Supermemory repository](https://github.com/supermemoryai/supermemory)
+is MIT-licensed.

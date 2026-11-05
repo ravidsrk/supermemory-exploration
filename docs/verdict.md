@@ -5,6 +5,11 @@
 > Claims marked _As of Nov 2026_ below are stale or changed. See
 > [delta-2026-11.md](delta-2026-11.md) for the full diff. Nov 2026 live re-verification was
 > **blocked** (the workspace key returned 401), so July observations are not re-confirmed.
+>
+> For the current (Nov 2026, v5) view, read [memory-layer-for-agents-2026-11.md](memory-layer-for-agents-2026-11.md)
+> §12 (trade-offs) and §14 (verified vs docs-only). The bottom line below still holds. The v4 direct-write
+> and versioned-update recommendations are **superseded Nov 2026** (legacy-only; see
+> [build-patterns.md §6](build-patterns.md#6-decision-journal-with-application-owned-lineage)).
 
 ## Bottom line
 
