@@ -1,0 +1,331 @@
+{
+  "counts": {
+    "blocked": 29
+  },
+  "exercises": [
+    {
+      "detail": {
+        "error": "Unauthorized",
+        "path": "/namespaces?limit=1"
+      },
+      "docs": "https://supermemory.ai/docs/authentication",
+      "exercise": "preflight",
+      "feature": "Auth + namespace list (read-only)",
+      "httpStatus": 401,
+      "seconds": 0.1,
+      "status": "blocked"
+    },
+    {
+      "detail": {
+        "reason": "preflight failed with HTTP 401; no writes attempted"
+      },
+      "docs": "https://supermemory.ai/docs/ingestion/add-memories",
+      "exercise": "add_instant",
+      "feature": "Add text, dreaming=instant, auto-create namespace",
+      "httpStatus": null,
+      "seconds": 0.0,
+      "status": "blocked"
+    },
+    {
+      "detail": {
+        "reason": "preflight failed with HTTP 401; no writes attempted"
+      },
+      "docs": "https://supermemory.ai/docs/concepts/how-it-works",
+      "exercise": "add_dynamic",
+      "feature": "Add text, dreaming=dynamic; time to status/dreamingStatus",
+      "httpStatus": null,
+      "seconds": 0.0,
+      "status": "blocked"
+    },
+    {
+      "detail": {
+        "reason": "preflight failed with HTTP 401; no writes attempted"
+      },
+      "docs": "https://supermemory.ai/docs/concepts/super-rag",
+      "exercise": "add_superrag",
+      "feature": "taskType=superrag (chunks only, no memories)",
+      "httpStatus": null,
+      "seconds": 0.0,
+      "status": "blocked"
+    },
+    {
+      "detail": {
+        "reason": "preflight failed with HTTP 401; no writes attempted"
+      },
+      "docs": "https://supermemory.ai/docs/concepts/content-types",
+      "exercise": "add_url",
+      "feature": "Ingest a URL as content",
+      "httpStatus": null,
+      "seconds": 0.0,
+      "status": "blocked"
+    },
+    {
+      "detail": {
+        "reason": "preflight failed with HTTP 401; no writes attempted"
+      },
+      "docs": "https://supermemory.ai/docs/ingestion/batch-ingest-historical-data",
+      "exercise": "batch_add",
+      "feature": "Batch add with metadata and ids",
+      "httpStatus": null,
+      "seconds": 0.0,
+      "status": "blocked"
+    },
+    {
+      "detail": {
+        "reason": "preflight failed with HTTP 401; no writes attempted"
+      },
+      "docs": "https://supermemory.ai/docs/v5/api-reference/ingest/upload-file",
+      "exercise": "upload_file",
+      "feature": "Multipart file upload (Markdown)",
+      "httpStatus": null,
+      "seconds": 0.0,
+      "status": "blocked"
+    },
+    {
+      "detail": {
+        "reason": "preflight failed with HTTP 401; no writes attempted"
+      },
+      "docs": "https://supermemory.ai/docs/recall/search",
+      "exercise": "search_default",
+      "feature": "Search with no options = hybrid / 0.3",
+      "httpStatus": null,
+      "seconds": 0.0,
+      "status": "blocked"
+    },
+    {
+      "detail": {
+        "reason": "preflight failed with HTTP 401; no writes attempted"
+      },
+      "docs": "https://supermemory.ai/docs/recall/search",
+      "exercise": "search_modes",
+      "feature": "memories vs chunks vs hybrid result kinds",
+      "httpStatus": null,
+      "seconds": 0.0,
+      "status": "blocked"
+    },
+    {
+      "detail": {
+        "reason": "preflight failed with HTTP 401; no writes attempted"
+      },
+      "docs": "https://supermemory.ai/docs/recall/search",
+      "exercise": "search_threshold",
+      "feature": "Threshold sweep 0.3 / 0.6 / 0.8",
+      "httpStatus": null,
+      "seconds": 0.0,
+      "status": "blocked"
+    },
+    {
+      "detail": {
+        "reason": "preflight failed with HTTP 401; no writes attempted"
+      },
+      "docs": "https://supermemory.ai/docs/concepts/filtering",
+      "exercise": "search_filter",
+      "feature": "Typed metadata filter (and/eq)",
+      "httpStatus": null,
+      "seconds": 0.0,
+      "status": "blocked"
+    },
+    {
+      "detail": {
+        "reason": "preflight failed with HTTP 401; no writes attempted"
+      },
+      "docs": "https://supermemory.ai/docs/concepts/graph-memory",
+      "exercise": "search_include",
+      "feature": "include.related / include.documents",
+      "httpStatus": null,
+      "seconds": 0.0,
+      "status": "blocked"
+    },
+    {
+      "detail": {
+        "reason": "preflight failed with HTTP 401; no writes attempted"
+      },
+      "docs": "https://supermemory.ai/docs/recall/user-profiles",
+      "exercise": "profile",
+      "feature": "Profile static/dynamic/buckets",
+      "httpStatus": null,
+      "seconds": 0.0,
+      "status": "blocked"
+    },
+    {
+      "detail": {
+        "reason": "preflight failed with HTTP 401; no writes attempted"
+      },
+      "docs": "https://supermemory.ai/docs/user-profiles/buckets",
+      "exercise": "buckets",
+      "feature": "Namespace bucket set/get/delete",
+      "httpStatus": null,
+      "seconds": 0.0,
+      "status": "blocked"
+    },
+    {
+      "detail": {
+        "reason": "preflight failed with HTTP 401; no writes attempted"
+      },
+      "docs": "https://supermemory.ai/docs/ingestion/add-memories",
+      "exercise": "append_same_id",
+      "feature": "Re-add same id appends/diffs",
+      "httpStatus": null,
+      "seconds": 0.0,
+      "status": "blocked"
+    },
+    {
+      "detail": {
+        "reason": "preflight failed with HTTP 401; no writes attempted"
+      },
+      "docs": "https://supermemory.ai/docs/ingestion/document-operations",
+      "exercise": "patch_replace",
+      "feature": "PATCH replaces content; latest fact wins",
+      "httpStatus": null,
+      "seconds": 0.0,
+      "status": "blocked"
+    },
+    {
+      "detail": {
+        "reason": "preflight failed with HTTP 401; no writes attempted"
+      },
+      "docs": "https://supermemory.ai/docs/ingestion/document-operations",
+      "exercise": "metadata_only_patch",
+      "feature": "Metadata-only PATCH (no reindex)",
+      "httpStatus": null,
+      "seconds": 0.0,
+      "status": "blocked"
+    },
+    {
+      "detail": {
+        "reason": "preflight failed with HTTP 401; no writes attempted"
+      },
+      "docs": "https://supermemory.ai/docs/ingestion/document-operations",
+      "exercise": "list_cursor",
+      "feature": "Unified list + cursor pagination + include.content",
+      "httpStatus": null,
+      "seconds": 0.0,
+      "status": "blocked"
+    },
+    {
+      "detail": {
+        "reason": "preflight failed with HTTP 401; no writes attempted"
+      },
+      "docs": "https://supermemory.ai/docs/v5/api-reference/content-management/get-document",
+      "exercise": "get_document",
+      "feature": "Get document include=chunks,memories",
+      "httpStatus": null,
+      "seconds": 0.0,
+      "status": "blocked"
+    },
+    {
+      "detail": {
+        "reason": "preflight failed with HTTP 401; no writes attempted"
+      },
+      "docs": "https://supermemory.ai/docs/v5/api-reference/content-management/get-memory",
+      "exercise": "get_memory",
+      "feature": "Get memory include=related",
+      "httpStatus": null,
+      "seconds": 0.0,
+      "status": "blocked"
+    },
+    {
+      "detail": {
+        "reason": "preflight failed with HTTP 401; no writes attempted"
+      },
+      "docs": "https://supermemory.ai/docs/v5/api-reference/content-management/list-resources",
+      "exercise": "memory_counts",
+      "feature": "Count memories per document",
+      "httpStatus": null,
+      "seconds": 0.0,
+      "status": "blocked"
+    },
+    {
+      "detail": {
+        "reason": "preflight failed with HTTP 401; no writes attempted"
+      },
+      "docs": "https://supermemory.ai/docs/recall/memory-operations",
+      "exercise": "forget_ids",
+      "feature": "Forget memories by id (soft)",
+      "httpStatus": null,
+      "seconds": 0.0,
+      "status": "blocked"
+    },
+    {
+      "detail": {
+        "reason": "preflight failed with HTTP 401; no writes attempted"
+      },
+      "docs": "https://supermemory.ai/docs/recall/memory-operations",
+      "exercise": "forget_semantic",
+      "feature": "Semantic forget dry run \u2192 exact ids",
+      "httpStatus": null,
+      "seconds": 0.0,
+      "status": "blocked"
+    },
+    {
+      "detail": {
+        "reason": "preflight failed with HTTP 401; no writes attempted"
+      },
+      "docs": "https://supermemory.ai/docs/recall/memory-review",
+      "exercise": "inferred_queue",
+      "feature": "Inferred-memory review queue (read only)",
+      "httpStatus": null,
+      "seconds": 0.0,
+      "status": "blocked"
+    },
+    {
+      "detail": {
+        "reason": "preflight failed with HTTP 401; no writes attempted"
+      },
+      "docs": "https://supermemory.ai/docs/concepts/container-tags",
+      "exercise": "namespace_settings",
+      "feature": "Namespace get + supportingContext",
+      "httpStatus": null,
+      "seconds": 0.0,
+      "status": "blocked"
+    },
+    {
+      "detail": {
+        "reason": "preflight failed with HTTP 401; no writes attempted"
+      },
+      "docs": "https://supermemory.ai/docs/concepts/container-tags",
+      "exercise": "namespace_move",
+      "feature": "DELETE ?moveTo= (queued move)",
+      "httpStatus": null,
+      "seconds": 0.0,
+      "status": "blocked"
+    },
+    {
+      "detail": {
+        "reason": "preflight failed with HTTP 401; no writes attempted"
+      },
+      "docs": "https://supermemory.ai/docs/v5/api-reference/organization/get-organization-settings",
+      "exercise": "organization",
+      "feature": "GET /organization (read only)",
+      "httpStatus": null,
+      "seconds": 0.0,
+      "status": "blocked"
+    },
+    {
+      "detail": {
+        "reason": "preflight failed with HTTP 401; no writes attempted"
+      },
+      "docs": "https://supermemory.ai/docs/connectors/overview",
+      "exercise": "connectors_list",
+      "feature": "List connectors (read only)",
+      "httpStatus": null,
+      "seconds": 0.0,
+      "status": "blocked"
+    },
+    {
+      "detail": {
+        "reason": "preflight failed with HTTP 401; no writes attempted"
+      },
+      "docs": "https://supermemory.ai/docs/overview/security",
+      "exercise": "cleanup",
+      "feature": "Delete documents + namespaces, verify absent",
+      "httpStatus": null,
+      "seconds": 0.0,
+      "status": "blocked"
+    }
+  ],
+  "namespace": "lab:mla:20261105153340-22ca44",
+  "passed": false,
+  "runId": "20261105153340-22ca44",
+  "startedAt": "2026-11-05T15:33:40+00:00"
+}
