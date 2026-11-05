@@ -1,5 +1,11 @@
 # Practical verdict
 
+> **As of Nov 2026:** this page records the July 2026 field lab, which ran against the
+> v3/v4 API. Supermemory shipped a breaking, namespace-scoped **API v5 on 2026-10-07**.
+> Claims marked _As of Nov 2026_ below are stale or changed. See
+> [delta-2026-11.md](delta-2026-11.md) for the full diff. Nov 2026 live re-verification was
+> **blocked** (the workspace key returned 401), so July observations are not re-confirmed.
+
 ## Bottom line
 
 Supermemory is best understood as a managed **context system**, not merely a vector
@@ -46,6 +52,11 @@ asynchronously extract candidate facts. That supports an important separation:
 - ingest conversations and documents when extraction is the desired behavior;
 - use `taskType=superrag` for sources that should remain citable knowledge rather than
   become user traits.
+
+_As of Nov 2026:_ direct v4 memory creation, versioned memory update, and v4 conversation
+upsert still exist on the legacy API but have **no v5 replacement**. v5 derives every memory
+from a document (`dreaming: "instant"` is the fast path). The readiness numbers below are
+July v4 observations and have not been re-measured on v5.
 
 **Observed:** direct facts became profile-visible on the first poll at roughly one second in
 the support and debugging runs. The tool-selection decision was profile-visible while hybrid
@@ -120,6 +131,10 @@ diversity, validation, grading, action authority, and current-state checks.
 
 ### Memory Router is not yet the default recommendation
 
+_As of Nov 2026:_ the docs index no longer lists Memory Router pages, and
+`/docs/memory-router/*` now serves the Vercel AI SDK page. Whether the hosted proxy is still
+operated is **unverified**. Treat the guidance below as historical.
+
 The Router is a transparent OpenAI-compatible proxy that promises compression, retrieval,
 and fail-open forwarding. In this lab it successfully forwarded OpenRouter calls, stored a
 raw searchable chunk, modified context, kept another user isolated, and continued delta-only
@@ -148,6 +163,11 @@ created nothing. OAuth/resource/sync/revocation behavior is therefore still unob
 failed; it needs entitlement and a consenting user.
 
 ### Self-host recovery works, but production is still a HOLD
+
+_As of Nov 2026:_ Supermemory Local **v0.0.9** and Docker images are released, and upgrades now
+save a verified DB copy before migrating. So "no newer upgrade target" is stale, and the v5
+SDKs require ≥ v0.0.9. The HOLD stands until a real v0.0.5→v0.0.9 upgrade drill and the
+shutdown/worker checks pass. They have not been re-run.
 
 A fresh disposable v0.0.5 server successfully ingested, extracted, searched, and profiled
 synthetic facts using local embeddings and an OpenRouter-compatible model endpoint.
@@ -183,6 +203,12 @@ Examples found across the passes:
   worked and also returned a legacy singular field;
 - the Context.dev Markdown endpoint currently requires a GET query, while the lab's older POST
   adapter returned `403`; the corrected contract passed live.
+
+_As of Nov 2026:_ the `searchMode` item is now documented explicitly: v4 defaults to
+`memories`/threshold 0.6, and **v5 defaults to `hybrid`/threshold 0.3**. The authentication
+page now documents multi-namespace `containerTags` scoped keys, which resolves that drift
+item. The scoped-key endpoint is now documented at `/auth/scoped-key`, while this lab's client
+still calls `/v3/auth/scoped-key` (unverified).
 
 Use explicit parameters even when defaults look convenient. Treat generated SDK types plus
 a contract test as the effective API contract.
@@ -302,7 +328,10 @@ decision records, not locks, schedulers, graders, or action permissions.
 
 ### Treat contract changes as test generators
 
-The current 32-path OpenAPI plus reported wrapper regressions produced a targeted
+_As of Nov 2026:_ the legacy OpenAPI has 33 paths (`POST /feedback` added), and v5 is a
+separate 22-path spec at `/v5/openapi` and `/openapi.json`.
+
+The July 32-path OpenAPI plus reported wrapper regressions produced a targeted
 `HOLD-FOR-CONTRACT-TESTS`. This is the right granularity: issue titles are reports rather than
 reproduced failures, and a schema diff is evidence for exact upgrade tests rather than an
 automatic deploy or permanent block.
@@ -326,6 +355,12 @@ and transparent failure reporting only. All 19 ingested documents were deleted a
 absent. Larger public-dataset quality claims remain open.
 
 ## Adoption recommendation
+
+_As of Nov 2026:_ these ratings are July v3/v4 judgments. Rows that depend on direct v4
+memory writes or versioned updates (preference agent, decision journal, governed curator,
+Project Memory OS, release-memory copilot) are **legacy-API-only** until they are rebuilt on
+v5 document `id` + `PATCH` replacement. The semantic-erasure row has improved since
+2026-08-07: dry-run IDs can now be applied exactly. See [delta-2026-11.md](delta-2026-11.md).
 
 | Use case | Recommendation | Why |
 |---|---|---|
