@@ -12,6 +12,11 @@ This repository deliberately separates five kinds of knowledge:
 - **Reported** — behavior described in an issue or third-party account but not reproduced here.
 - **Inferred** — architecture or product conclusions that still need validation.
 
+> **As of Nov 2026:** the experiments below ran in July 2026 against the v3/v4 API.
+> Supermemory launched a breaking **API v5** (namespaces, hybrid search default, no direct
+> memory writes or versioned memory updates) on 2026-10-07. Read
+> [docs/delta-2026-11.md](docs/delta-2026-11.md) before relying on any July recommendation.
+
 ## What this repo is for
 
 Hands-on exploration of Supermemory product surface, APIs, SDKs, and integration patterns:
@@ -51,6 +56,8 @@ Start with the
 | Area | URL |
 |---|---|
 | Intro | https://supermemory.ai/docs/intro |
+| v5 migration guide (Nov 2026) | https://supermemory.ai/docs/migration/api-v5 |
+| v5 OpenAPI | https://api.supermemory.ai/v5/openapi |
 | Docs home | https://supermemory.ai/docs |
 | Open-source monorepo | https://github.com/supermemoryai/supermemory |
 | MemoryBench | https://github.com/supermemoryai/memorybench |
@@ -127,6 +134,8 @@ PYTHONPATH=src python3 experiments/run_max_cardinality_capacity_audit.py
 PYTHONPATH=src python3 experiments/run_concurrent_four_surface_recall_challenge.py
 PYTHONPATH=src python3 experiments/run_blinded_domain_100_benchmark.py
 PYTHONPATH=src python3 experiments/run_framework_integration_contract_matrix.py
+# Nov 2026 v5 contract refresh (synthetic namespace, full cleanup):
+PYTHONPATH=src python3 experiments/run_v5_contract_refresh.py
 # Requires a disposable installed local binary, data directory, and provider-env file:
 PYTHONPATH=src python3 experiments/run_self_host_backup_restore.py \
   --server-binary /path/to/supermemory-server \

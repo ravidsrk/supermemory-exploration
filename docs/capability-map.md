@@ -1,5 +1,11 @@
 # Capability map
 
+> **As of Nov 2026:** this page records the July 2026 field lab, which ran against the
+> v3/v4 API. Supermemory shipped a breaking, namespace-scoped **API v5 on 2026-10-07**.
+> Claims marked _As of Nov 2026_ below are stale or changed. See
+> [delta-2026-11.md](delta-2026-11.md) for the full diff. Nov 2026 live re-verification was
+> **blocked** (the workspace key returned 401), so July observations are not re-confirmed.
+
 This map covers the current product surface discovered through the official
 [documentation index](https://supermemory.ai/docs/llms.txt), public repositories, generated
 SDKs, and live probes. “Maturity” is a lab judgment, not a vendor status label.
@@ -7,6 +13,15 @@ Mixed labels mean the documented/source contract and the observed behavior were 
 separately; a local contract observation is never presented as a hosted framework run.
 
 ## Core API
+
+_As of Nov 2026:_ the table below is the **legacy v3/v4** surface (still served, with no
+published sunset). v5 equivalents, as Documented in the
+[migration guide](https://supermemory.ai/docs/migration/api-v5.md):
+`POST /ns/{ns}/document[/batch|/file]`, `PATCH /ns/{ns}/document/{id}`,
+`POST /ns/{ns}/list/{documents|chunks|memories}` (cursor pagination),
+`DELETE /ns/{ns}/memories[/semantic]`, `POST /ns/{ns}/search|profile`, and `DELETE /ns/{ns}?moveTo=`.
+**No v5 replacement exists for:** direct memory creation, versioned memory update,
+conversation upsert, `file-url`, `suggest-buckets`, or settings reset.
 
 | Capability | Practical use | Evidence | Maturity judgment |
 |---|---|---|---|
@@ -39,7 +54,7 @@ separately; a local contract observation is never presented as a hosted framewor
 | Metadata filters | AND/OR, scalar, string, numeric, array, negation | [Filtering](https://supermemory.ai/docs/concepts/filtering); seven-shape hosted matrix | Put tenant in container; use metadata for subsets. Dotted search keys worked despite doc ambiguity. |
 | Reranking | Better result order for added latency | [Search](https://supermemory.ai/docs/search) | Enable selectively; benchmark quality gain. |
 | Query rewriting | Broader query understanding for added latency | Same source | Use for difficult natural-language queries, not every turn. |
-| Natural-language time windows | Retrieve past, present, and future facts using phrases such as `last week` or `in August 2026` | [June 25 API changelog](https://supermemory.ai/changelog/api/); 10-case hosted matrix | Passed with rewrite off/on on a three-event corpus; provide trusted date/timezone and keep canonical event state elsewhere. |
+| Natural-language time windows (_As of Nov 2026: date phrases now **boost** rather than filter, per the 2026-10-15 changelog; re-run needed_) | Retrieve past, present, and future facts using phrases such as `last week` or `in August 2026` | [June 25 API changelog](https://supermemory.ai/changelog/api/); 10-case hosted matrix | Passed with rewrite off/on on a three-event corpus; provide trusted date/timezone and keep canonical event state elsewhere. |
 | Aggregate results | Compress multiple memories into query-specific context | Current SDK/changelog and HandoffBoard probe contract | Useful for multi-agent boards; verify citations are not lost. |
 | User profile | Stable, dynamic, bucketed, and query-specific context | [Profiles](https://supermemory.ai/docs/concepts/user-profiles); hosted probe | Excellent session-start primitive. |
 | Profile buckets | Built-in preferences plus custom org/container categories | [Buckets API](https://supermemory.ai/docs/api-reference/profiles/get-profile-buckets); custom-bucket and schema-evolution hosted probes | Custom buckets persisted and classified the corrected fact. Treat evolution as additive schema: preserve container buckets, detect effective-key collision/drift, and remember organization buckets cannot be removed by a container update. |
@@ -49,8 +64,8 @@ separately; a local contract observation is never presented as a hosted framewor
 
 | Capability | Notes |
 |---|---|
-| Container tags | Strict namespace, current v4 singular field, 100 characters, pattern `^[a-zA-Z0-9_:-]+$`. A negative-control search returned zero. |
-| Scoped keys | One- or multi-container key, expiry and rate-window controls, restricted endpoint set. Hosted single-scope and three-scope reads, cross-tenant denial, and immediate revocation were observed. A delegated-worker key returned `403` for cross-scope read/write, `401` after revocation, and `[200,200,429]` with `Retry-After` at a two-request limit. Current authentication prose still shows the singular form. Prefer one short-lived container per user-facing or sandboxed worker. |
+| Container tags (_As of Nov 2026: called **namespaces** in v5; same pattern, now in the URL path, one per document_) | Strict namespace, current v4 singular field, 100 characters, pattern `^[a-zA-Z0-9_:-]+$`. A negative-control search returned zero. |
+| Scoped keys | One- or multi-container key, expiry and rate-window controls, restricted endpoint set. Hosted single-scope and three-scope reads, cross-tenant denial, and immediate revocation were observed. A delegated-worker key returned `403` for cross-scope read/write, `401` after revocation, and `[200,200,429]` with `Retry-After` at a two-request limit. _As of Nov 2026:_ the auth page now documents `containerTags` and v5 allowed endpoints, at `/auth/scoped-key`. Prefer one short-lived container per user-facing or sandboxed worker. |
 | Per-container entity context | Steers extraction for a domain or tenant. Treat it as processing configuration, not an authorization policy. |
 | Organization context/filter prompt | Shapes extraction and relevance for new content. Existing content is not retroactively rebuilt. |
 | Chunk size/settings | Organization-level ingestion tuning. Changing embedding dimension in self-hosting requires a new data directory. |
@@ -79,7 +94,7 @@ the provider rather than count only explicit source-document writes.
 | n8n/Zapier/viaSocket | No/low-code automation | Good for ingest workflows, not a trust boundary. |
 | MCP | Portable `memory`, `recall`, identity/profile context | **Source-inspected / Observed (local):** current monorepo surface mapped; strict tools and one-time authorized write contract passed. |
 | Coding plugins | Automatic project/user recall and periodic capture | **Source-inspected / Observed (local):** user/project/custom session-hook contract passed; real auto-capture still deserves review. |
-| Memory Router | Drop-in OpenAI-compatible proxy | Delta/full-history and direct API pool controls passed; Router-generated cross-session recall failed. Keep prototype-only. |
+| Memory Router (_As of Nov 2026: removed from docs index; status unverified_) | Drop-in OpenAI-compatible proxy | Delta/full-history and direct API pool controls passed; Router-generated cross-session recall failed. Keep prototype-only. |
 | Memory Graph UI | Explore documents, memories, relationships | Visualization, not evidence of a particular storage algorithm. |
 
 The runnable [framework integration contracts](framework-integrations.md) cover the ten local
@@ -116,6 +131,8 @@ unobserved until this account receives entitlement and a user consents.
 
 ### Self-hosted server
 
+_As of Nov 2026:_ Local v0.0.9 and Docker images are available, so an upgrade drill is now possible (not run). v5 SDKs require ≥ v0.0.9.
+
 **Documented / Source-inspected / Observed (local):** the local server exposes the hosted-style API with encrypted local storage, local or remote
 embeddings, and a bring-your-own extraction model. The local edition is single-tenant and
 does not include managed connectors/MCP. A v0.0.5 stopped snapshot, same-directory restart,
@@ -135,6 +152,8 @@ list, semantic search, and cleanup. It also found alpha quirks: delayed profile 
 and a zero-byte list entry despite readable content. See [SMFS](https://supermemory.ai/docs/smfs/overview).
 
 ### Consumer app and browser extension
+
+_As of Nov 2026:_ hosted Company Brain was discontinued on 2026-09-25, and its harness is open source.
 
 The app, Nova agent, extension, and memory graph let an individual collect and query
 personal context without building an application. They share concepts with the developer

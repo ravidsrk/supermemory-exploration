@@ -1,5 +1,9 @@
 # Reproducible experiments
 
+> **As of Nov 2026:** every pass below targeted the v3/v4 API. The Nov 2026 v5 refresh probe
+> and its blocked status are recorded in the section near the end and in
+> [delta-2026-11.md](delta-2026-11.md).
+
 The curated results are in
 [2026-07-16-field-lab.md](../evidence/2026-07-16-field-lab.md). This page explains how to
 repeat and extend them safely.
@@ -513,6 +517,27 @@ conditionals, loops, and semantic `sgrep`; it is not a process sandbox. Current 
 include no symlinks, `chmod`, `utimes`, `/dev/null` redirection, or binary upload. See the
 [Python Bash tool docs](https://supermemory.ai/docs/smfs/bash-tool-python).
 
+## November 2026 v5 contract refresh
+
+```bash
+PYTHONPATH=src python3 experiments/run_v5_contract_refresh.py
+```
+
+The probe creates one synthetic `lab:v5refresh:*` namespace and performs these steps:
+
+1. a v5 add (`dreaming: "instant"`) and a poll until done;
+2. a default-mode search (expect `hybrid`) and an explicit `memories` search;
+3. a profile read and a `limit=1` list (expect `pagination.nextCursor`/`hasMore`);
+4. a legacy v4 search over the same tag, plus a v4 direct memory write that v5 search should see;
+5. a semantic-forget `dryRun`;
+6. an exact document delete, a permanent namespace delete, and an absence check.
+
+It never calls `/feedback`, mints keys, or touches org settings.
+
+**2026-11-05 result: blocked.** The workspace key returned 401 on every route (legacy and
+v5), so nothing was created. See
+[evidence](../evidence/2026-11-05-v5-contract-refresh.md).
+
 ## Monthly regression record
 
 For each run, add a dated evidence note containing:
@@ -528,6 +553,11 @@ For each run, add a dated evidence note containing:
 - no secrets, real PII, or customer content.
 
 ## Experiments still needed
+
+_Added Nov 2026 (v5):_ run the v5 refresh with a valid key; measure v5 `instant` readiness vs
+July direct-write; check legacy↔v5 interop; re-run temporal recall under date boosting; check
+`/auth/scoped-key` vs `/v3/auth/scoped-key`; do a Local v0.0.5→v0.0.9 upgrade drill; check
+Router liveness; and port the core client to v5.
 
 The local ten-surface framework matrix and the patched one-question MemoryBench/OpenRouter run
 are now implemented. The former validates scoped recall/capture contracts without installing
